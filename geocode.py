@@ -10,7 +10,7 @@ def geocode(address):
 	# Is the gmaps object something that I want to include within or outside of the function
 	gmaps = googlemaps.Client(key=my_key)
 	geocode_result = gmaps.geocode(address)
-	#print(json.dumps(geocode_result, indent=2))
+	print(json.dumps(geocode_result, indent=2))
 	geoCodeInfo = {}
 	geoCodeInfo["formatted_address"] = geocode_result[0]["formatted_address"]
 	geoCodeInfo["lat"] = geocode_result[0]["geometry"]["location"]["lat"]
@@ -23,5 +23,5 @@ def geocode(address):
 			postalCode = component["long_name"]
 			geoCodeInfo["postalCode"] = postalCode
 			#print(postalCode)
-	print(geoCodeInfo)
+	#print(geoCodeInfo)
 	return(geoCodeInfo)
