@@ -1,0 +1,20 @@
+### Ignore all csv files so that raw data doesn't get uploaded to remote rep ###
+**.csv
+
+### Ignroe api_secrets file ###
+app-env
+
+### JupyterNotebook ###
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+## Ignore Python Created by https://www.gitignore.io/api/python ##
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+
+
+
+
