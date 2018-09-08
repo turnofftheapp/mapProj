@@ -58,7 +58,7 @@ class Itenerary(Base):
         # Returns object data in easily serializeable format
 
         return {
-            'primary_ky': self.primary_key,
+            'primary_key': self.distinctKey,
             'numberItinerariesReturned': self.numberItinerariesReturned,
             'selectedDestination_id': self.selectedDestination_id,
             'selectedDestination_name': self.selectedDestination_name,
