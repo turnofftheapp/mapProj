@@ -1,6 +1,6 @@
 import os
 import sys
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, Float, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
@@ -41,17 +41,17 @@ class Itenerary(Base):
     formatted_address = Column(String())
 
     # Lat
-    lat = Column(String())
+    lat = Column(Float)
 
     # Lng
-    lng = Column(String())
+    lng = Column(Float)
 
     # Postal Code
     postalCode = Column(
         String())
 
     valid = Column(
-        Integer, nullable = False)
+        Boolean, nullable = False)
 
     @property
     def serialize(self):
