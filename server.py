@@ -1,6 +1,7 @@
 from flask import (
     Flask,
     jsonify,
+    render_template
 )
 
 from sqlalchemy import create_engine
@@ -19,6 +20,10 @@ app = Flask(__name__)
 def getJSON():
     iteneraries = session.query(Itenerary).all()
     return jsonify(Itenerary=[i.serialize for i in iteneraries])
+
+@app.route('/map/')
+def showMap():
+    return render_template('map.html')
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
