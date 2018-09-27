@@ -10,7 +10,7 @@ def geocode(address):
 	# Is this the best place for the gmaps object?
 	gmaps = googlemaps.Client(key=my_key)
 	geocode_result = gmaps.geocode(address)
-	print(json.dumps(geocode_result, indent=2))
+	#print(json.dumps(geocode_result, indent=2))
 	geoCodeInfo = {}
 	geoCodeInfo["formatted_address"] = geocode_result[0]["formatted_address"]
 	geoCodeInfo["lat"] = geocode_result[0]["geometry"]["location"]["lat"]

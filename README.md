@@ -6,6 +6,7 @@
 3. Initialize the database `python3 database_setup.py`
 3. Install Jupyter notebooks: `pip3 install jupyter`
 4. Install Mixpanel API: `pip install mixpanel_api`
+5. Install pandas: `pip3 install pandas`
 
 ## Set up environment variables
 Good tutorial: https://www.idiotinside.com/2015/05/10/python-auto-generate-requirements-txt/

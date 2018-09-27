@@ -7,7 +7,6 @@ from sqlalchemy import create_engine
 
 Base = declarative_base()
 
-
 class Itenerary(Base):
     __tablename__ = 'itenerary'
 
