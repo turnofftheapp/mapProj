@@ -31,7 +31,6 @@ def count():
     
     #result = session.execute('SELECT postalCode, count(*) FROM itenerary GROUP BY postalCode ORDER BY COUNT(*) desc;')
     
-
     # DO it with the ORM Syntax:
     result = session.query(Itenerary.postalCode, func.count(Itenerary.postalCode)).group_by(Itenerary.postalCode).all()
     # It looks like the result object is a list of tuples
@@ -42,11 +41,13 @@ def count():
     print("Done printing******")
     return jsonify(result)
 
-
-
 @app.route('/map/')
 def showMap():
     return render_template('map.html')
+
+@app.route('/example/')
+def showExampleMap():
+    return render_template('example.html')
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
