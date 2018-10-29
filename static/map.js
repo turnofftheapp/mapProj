@@ -5,9 +5,12 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiYXhtZTEwMCIsImEiOiJjam0ybHJpYWgycnU1M3BsaXBmb
 
 var map = new mapboxgl.Map({
     container: 'map',
-    style: 'mapbox://styles/mapbox/light-v9'
+    style: 'mapbox://styles/mapbox/light-v9',
     // Old style that already had built in property
     //style: 'mapbox://styles/axme100/cjmffc3x90kg62sru3qxh7g7b'
+    center: [-122.33, 47.60],
+    // TODO: NOTICE HOW THE TILESET ONLY APPEARS AT A ZOOM LEVEL OF 8, AT THIS POINT, ANYWAY
+    zoom: 8
 });
 
 $(document).ready(function () {
@@ -42,6 +45,11 @@ $(document).ready(function () {
 
   map.on('load', function() {
 
+    // Thig logic is mostly an adaptation of the following blog
+    // The big difference being that the data comes from an AJAX call that extracts the data from a local database
+    // whereas in the example the data is hard coded
+    //https://www.mapbox.com/mapbox-gl-js/example/data-join/
+    
     // Add source for zip code polygons hosted on Mapbox, based on US Census Data:
     // https://www.census.gov/geo/maps-data/data/cbf/cbf_state.html
     map.addSource("wa-bj10t4", {
@@ -60,7 +68,7 @@ $(document).ready(function () {
 
     // Calculate color for each state based on the unemployment rate
     waData.forEach(function(row) {
-        var green = (row["postalCodeHits"] / maxValue) * 255;
+        var green = (row["postalCodeHits"] / maxValue) * 300;
         var color = "rgba(" + 0 + ", " + green + ", " + 0 + ", 1)";
         expression.push(row["ZCTA5CE10"], color);
     });
