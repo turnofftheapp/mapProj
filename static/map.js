@@ -45,6 +45,7 @@ $(document).ready(function () {
 
   map.on('load', function() {
 
+
     // Thig logic is mostly an adaptation of the following blog
     // The big difference being that the data comes from an AJAX call that extracts the data from a local database
     // whereas in the example the data is hard coded
@@ -89,6 +90,30 @@ $(document).ready(function () {
             "fill-color": expression
         }
     }, 'waterway-label');
+
+    // Add legend from tutorial
+    // As of this point this part was just copied over
+    // https://www.mapbox.com/help/choropleth-studio-gl-pt-2/#mission-complete
+    var layers = ['0-10', '10-20', '20-50', '50-100', '100-200', '200-500', '500-1000', '1000+'];
+    var colors = ['#FFEDA0', '#FED976', '#FEB24C', '#FD8D3C', '#FC4E2A', '#E31A1C', '#BD0026', '#800026'];
+
+    for (i = 0; i < layers.length; i++) {
+        var layer = layers[i];
+        var color = colors[i];
+        var item = document.createElement('div');
+        var key = document.createElement('span');
+        key.className = 'legend-key';
+        key.style.backgroundColor = color;
+
+        var value = document.createElement('span');
+        value.innerHTML = layer;
+        item.appendChild(key);
+        item.appendChild(value);
+        legend.appendChild(item);
+}
+
+
+
 });
 
   
