@@ -110,9 +110,12 @@ $(document).ready(function () {
         item.appendChild(key);
         item.appendChild(value);
         legend.appendChild(item);
-}
+    }
 
-
+    map.on('mousemove', function (e) {
+    var features = map.queryRenderedFeatures(e.point);
+    console.log(features[0]['properties']['ZCTA5CE10']);
+});
 
 });
 
