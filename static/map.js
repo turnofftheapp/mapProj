@@ -3,7 +3,7 @@
 // See Mapbox documentation here: https://www.mapbox.com/help/define-access-token/
 mapboxgl.accessToken = 'pk.eyJ1IjoiYXhtZTEwMCIsImEiOiJjam0ybHJpYWgycnU1M3BsaXBmbnJicmxuIn0.rec0Fay3v7aDTAuptsaqEA';
 
-// MODEL
+/** MODEL **/
 // The model pulls the data from a local endpoint 
 var mydata = [];
 $.ajax({
@@ -14,7 +14,6 @@ $.ajax({
         mydata = json;
     }
 });
-
 
 var arrayLength = mydata.length;
 var waData = [];
@@ -32,6 +31,22 @@ for (var i = 0; i < arrayLength; i++) {
     }
 }
 
+
+/** View Model **/
+var ViewModel = function() {
+    var self = this;
+
+    this.highlightedPostalCode = ko.observable("Observable array");
+
+};
+
+
+
+// What am I going to put here?
+
+
+
+/** VIEW **/
 // Create the map object
 var map = new mapboxgl.Map({
     container: 'map',
@@ -43,7 +58,6 @@ var map = new mapboxgl.Map({
     zoom: 8
 });
 
-// Crea
 $(document).ready(function () {
     map.on('load', function() {
         // Thig logic is mostly an adaptation of the following blog
@@ -114,7 +128,20 @@ $(document).ready(function () {
 
         map.on('mousemove', function (e) {
         var features = map.queryRenderedFeatures(e.point);
-        console.log(features[0]['properties']['ZCTA5CE10']);
+        var hoveredPostalCode = features[0]['properties']['ZCTA5CE10'];
+        // Remember observables are functions
+        // https://stackoverflow.com/a/14159596/5420796
+        my.viewModel.highlightedPostalCode(hoveredPostalCode);
         });
     });
 });
+
+/** Apply Bindings */
+// This cod was also just copied over from what I had on knockout from
+// My Udacity project
+// https://github.com/axme100/mapProj/blob/master/js/app.js
+// I'm creating an instance of my view model called "my" 
+// The idea for this comes from the following post on the next line:
+// https://stackoverflow.com/questions/46943988/how-can-i-access-an-observable-outside-the-viewmodel-in-knockoutjs?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
+my = { viewModel: new ViewModel() };
+ko.applyBindings(my.viewModel);
