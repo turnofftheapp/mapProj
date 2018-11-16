@@ -3,6 +3,38 @@
 // See Mapbox documentation here: https://www.mapbox.com/help/define-access-token/
 mapboxgl.accessToken = 'pk.eyJ1IjoiYXhtZTEwMCIsImEiOiJjam0ybHJpYWgycnU1M3BsaXBmbnJicmxuIn0.rec0Fay3v7aDTAuptsaqEA';
 
+// MODEL
+// The model pulls the data from a local endpoint 
+var mydata = [];
+    $.ajax({
+        url: 'http://0.0.0.0:8000/count/',
+        async: false,
+        dataType: 'json',
+        success: function (json) {
+            mydata = json;
+        }
+    });
+
+    // Confirm that we got all of the data
+    //console.log(mydata)
+
+    var arrayLength = mydata.length;
+    var waData = [];
+    for (var i = 0; i < arrayLength; i++) {
+        var postalCode = mydata[i][0];
+        // All of the Washington State Zip codes start with 9, so we shuld just grab those ones
+        if (postalCode !== null && postalCode.startsWith("9")) {
+        // Get the hits for that postal code
+        // Example to follow from map
+        // Construct a variable like this but for traits in mapbox
+        //{"STATE_ID": "01", "unemployment": 13.17}
+        postalCodeHits = mydata[i][1]
+        var entry = {"ZCTA5CE10": postalCode, "postalCodeHits": postalCodeHits};
+        waData.push(entry);
+        }
+    }
+
+
 var map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/light-v9',
@@ -14,34 +46,7 @@ var map = new mapboxgl.Map({
 });
 
 $(document).ready(function () {
-	var mydata = [];
-	$.ajax({
-  		url: 'http://0.0.0.0:8000/count/',
-  		async: false,
-  		dataType: 'json',
-  		success: function (json) {
-    		mydata = json;
-  		}
-	});
-
-	// Confirm that we got all of the data
-	//console.log(mydata)
-
-	var arrayLength = mydata.length;
-	var waData = [];
-	for (var i = 0; i < arrayLength; i++) {
-    	var postalCode = mydata[i][0];
-    	// All of the Washington State Zip codes start with 9, so we shuld just grab those ones
-    	if (postalCode !== null && postalCode.startsWith("9")) {
-        // Get the hits for that postal code
-        // Example to follow from map
-        // Construct a variable like this but for traits in mapbox
-        //{"STATE_ID": "01", "unemployment": 13.17}
-        postalCodeHits = mydata[i][1]
-        var entry = {"ZCTA5CE10": postalCode, "postalCodeHits": postalCodeHits};
-        waData.push(entry);
-    	}
-	}
+	
 
   map.on('load', function() {
 
