@@ -15,6 +15,7 @@ $.ajax({
     }
 });
 
+
 var arrayLength = mydata.length;
 var waData = [];
 for (var i = 0; i < arrayLength; i++) {
@@ -36,14 +37,20 @@ for (var i = 0; i < arrayLength; i++) {
 var ViewModel = function() {
     var self = this;
 
-    this.highlightedPostalCode = ko.observable("Observable array");
+    self.highlightedPostalCode = ko.observable("Observable array");
+    
+    self.highlightedPostalCodeHits = ko.computed(function() {
+    
+        // https://stackoverflow.com/a/7178381/5420796
+        for(var i = 0; i < waData.length; i += 1) {
+            if(waData[i]["ZCTA5CE10"] === self.highlightedPostalCode()) {
+            return waData[i]["postalCodeHits"];
+            }
+        }   
+
+    });
 
 };
-
-
-
-// What am I going to put here?
-
 
 
 /** VIEW **/
@@ -90,8 +97,8 @@ $(document).ready(function () {
 
         // Last value is the default, used where there is no data
         expression.push("rgba(0,0,0,0)");
-        console.log("expression: ")
-        console.log(expression);
+        //console.log("expression: ")
+        //console.log(expression);
 
         // Add layer from the vector tile source with data-driven style
         map.addLayer({
