@@ -50,8 +50,7 @@ class Itenerary(Base):
         String())
 
     # Postal Code Mapped
-    # The idea
-
+    # When this script was originally run, I didn't have this column in there
     postalCodeMapped = Column(
         String())
 

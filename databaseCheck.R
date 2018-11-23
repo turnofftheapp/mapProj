@@ -21,8 +21,10 @@ dbDisconnect(con)
 # See if there are any rows that are coded as not valid, but have both
 totagoDataWrangled <- totagoData %>%
   filter(valid == 1, postalCode == "none") %>%
-  group
-  count(startFromLocation)
+  group_by(startFromLocation) %>%
+  count() %>%
+  arrange(desc(n))
+  
   
 
 

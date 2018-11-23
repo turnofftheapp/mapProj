@@ -20,6 +20,10 @@ __pycache__/
 # Ignore the geoJSON file of states data
 
 
+# Ignore the local backup folder
+local_backup/
+
+
 
 
 

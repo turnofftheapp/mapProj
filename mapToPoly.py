@@ -19,6 +19,10 @@ def mapToPoly(lat, lon):
 	for feature in js['features']:
 	    polygon = shape(feature['geometry'])
 	    if polygon.contains(point):
-	        print('Found containing polygon:', feature['properties']['ZCTA5CE10'])
+	        return(feature['properties']['ZCTA5CE10'])
+	    else
+	    	return("NOT WASH, TEMP")
 
-mapToPoly(47.616445, -122.310786)
+
+# Test to make sure it works
+#mapToPoly(47.616445, -122.310786)
