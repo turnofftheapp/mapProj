@@ -49,6 +49,14 @@ class Itenerary(Base):
     postalCode = Column(
         String())
 
+    # Postal Code Mapped
+    # The idea
+
+    postalCodeMapped = Column(
+        String())
+
+
+    # Whether or not the row is a valid observation
     valid = Column(
         Boolean, nullable = False)
 

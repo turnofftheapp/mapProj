@@ -92,6 +92,7 @@ $(document).ready(function () {
         waData.forEach(function(row) {
             var green = (row["postalCodeHits"] / maxValue) * 300;
             var color = "rgba(" + 0 + ", " + green + ", " + 0 + ", 1)";
+            console.log(color);
             expression.push(row["ZCTA5CE10"], color);
         });
 
