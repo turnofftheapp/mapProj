@@ -14,15 +14,17 @@ def mapToPoly(lat, lon):
 
 	# construct point based on lon/lat returned by geocoder
 	point = Point(lon, lat)
+	print(point)
 
 	# check each polygon to see if it contains the point
 	for feature in js['features']:
 	    polygon = shape(feature['geometry'])
+	    #print(polygon)
 	    if polygon.contains(point):
+	        print(feature['properties']['ZCTA5CE10'])
 	        return(feature['properties']['ZCTA5CE10'])
-	    else
+	    else:
+	    	print("NOT WASH, TEMP")
 	    	return("NOT WASH, TEMP")
 
-
-# Test to make sure it works
-#mapToPoly(47.616445, -122.310786)
+mapToPoly(47.6062, -122.3320)

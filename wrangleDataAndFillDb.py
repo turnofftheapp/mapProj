@@ -1,10 +1,17 @@
-#Import libraries, set options, connect to DB
+
+# coding: utf-8
+
+# # Import libraries, set options, connect to DB
+
+# In[ ]:
+
 
 # Configuration code for datawrangling
 import pandas as pd
 import numpy as np
 from datetime import datetime
 from geocode import geocode
+from mapToPoly import mapToPoly
 pd.set_option('display.max_row', 30000)
 
 # Configuration code in order to connect to the database
@@ -16,17 +23,31 @@ engine = create_engine('sqlite:///totagoData.db')
 # Bind the engine to the metadata of the Base class so that the
 # declaratives can be accessed through a DBSession instance
 Base.metadata.bind = engine
+
 DBSession = sessionmaker(bind=engine)
+
 session = DBSession()
 
-# Read in data as pandas data frame, selecting only certain fields
+
+# # Read in data as pandas data frame, selecting only certain fields
+
+# In[ ]:
+
+
 fields = ['distinct_id', 'numItinerariesReturned', 'departureDate', 'startFromLocation', 'selectedDestination_id', 'selectedDestination_name', 'time']
 
-# In[3]:
+
+# In[ ]:
+
+
 df = pd.read_csv('generated_itineraries.csv', usecols = fields)
 
 
-# Wrange field: destinationIDs
+# # Wrange field: destinationIDs
+
+# In[ ]:
+
+
 # Replace all of the NAs for destinationIDs with 0
 df.selectedDestination_id.fillna(0, inplace = True)
 
@@ -40,7 +61,7 @@ df['selectedDestination_id'] = df.selectedDestination_id.astype(int)
 
 # # Wrangle field: numItenerariesReturned
 
-# In[5]:
+# In[ ]:
 
 
 # Replace all of the NAs for numItinerariesReturned with 1
@@ -54,7 +75,7 @@ df['numItinerariesReturned'] = df.numItinerariesReturned.astype(int)
 
 # # Wrangle Field: Destination Name
 
-# In[6]:
+# In[ ]:
 
 
 #Replace all of the NAs in
@@ -66,7 +87,7 @@ print(len(df))
 
 # # Wrangle Field: departureDate
 
-# In[7]:
+# In[ ]:
 
 
 #Convert destinationIDs column to an integer value
@@ -126,7 +147,7 @@ df['departureDate'] = df.departureDate.apply(extractDate)
 
 # # Wrangle Field: distinctID
 
-# In[8]:
+# In[ ]:
 
 
 #It turns out distinc_id correpsonds to a user
@@ -147,7 +168,7 @@ unique_keys = df.primary_key.unique()
 
 # # Create a subset of the datle with sample method to test geocode and database entry logic
 
-# In[12]:
+# In[ ]:
 
 
 #Out put the entire database
@@ -156,7 +177,7 @@ unique_keys = df.primary_key.unique()
 len(df)
 
 
-# In[10]:
+# In[ ]:
 
 
 #Create a random sample of the database, these entries will be added to the database in the next section
@@ -168,7 +189,7 @@ sampleDf.head(len(sampleDf))
 
 # # Loop through the rows in the dataframe, geocode, add entry to database
 
-# In[11]:
+# In[ ]:
 
 
 # Loop through the subsetted pandas data frame
@@ -233,4 +254,28 @@ for index, row in df.iterrows():
         session.commit()
     
     else:
-        print("Entry already inside of database")
+        print("Entry already inside of database, but will edit information to new row")
+        # Get the row what I'm going to modift
+        rowToModify = session.query(Itenerary).filter_by(distinctKey=testKey).one()
+        
+        # Pull the lat and lng coordinates out
+        lat = rowToModify.lat
+        lng = rowToModify.lng
+
+        print("lat: ", lat)
+        print("lng: ", lng)
+        
+        # Test to see if there is even a lat value in there
+        if lat:
+            
+            # Match these lat and lng coordinates to a zipCode
+            newZip = mapToPoly(lat, lng)
+            print(newZip)
+
+            # Match this new zip to the postalCodeMapped Field in database
+            rowToModify.postalCodeMapped = newZip
+        
+            # Add to database
+            session.add(rowToModify)
+            session.commit()
+
