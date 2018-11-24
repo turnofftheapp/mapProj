@@ -10,21 +10,16 @@ from shapely.geometry import shape, Point
 def mapToPoly(lat, lon):
 
 	with open('wa.geojson') as f:
-	    js = json.load(f)
+	   	js = json.load(f)
 
 	# construct point based on lon/lat returned by geocoder
 	point = Point(lon, lat)
-	print(point)
 
 	# check each polygon to see if it contains the point
 	for feature in js['features']:
 	    polygon = shape(feature['geometry'])
-	    #print(polygon)
 	    if polygon.contains(point):
 	        print(feature['properties']['ZCTA5CE10'])
 	        return(feature['properties']['ZCTA5CE10'])
-	    else:
-	    	print("NOT WASH, TEMP")
-	    	return("NOT WASH, TEMP")
-
-mapToPoly(47.6062, -122.3320)
+	
+	return("tempNotWA")
