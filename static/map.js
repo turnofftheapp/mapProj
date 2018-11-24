@@ -97,7 +97,7 @@ $(document).ready(function () {
 
         // Calculate color for each state based on the unemployment rate
         waData.forEach(function(row) {
-            var green = (row["postalCodeHits"] / maxValue) * 300;
+            var green = (row["postalCodeHits"] / maxValue) * 500;
             var color = "rgba(" + 0 + ", " + green + ", " + 0 + ", 1)";
             console.log(color);
             expression.push(row["ZCTA5CE10"], color);
@@ -120,26 +120,26 @@ $(document).ready(function () {
             }
         }, 'waterway-label');
 
-        // Add legend from tutorial
+        // TODO: Add legend from tutorial
         // As of this point this part was just copied over
         // https://www.mapbox.com/help/choropleth-studio-gl-pt-2/#mission-complete
-        var layers = ['0-10', '10-20', '20-50', '50-100', '100-200', '200-500', '500-1000', '1000+'];
-        var colors = ['#FFEDA0', '#FED976', '#FEB24C', '#FD8D3C', '#FC4E2A', '#E31A1C', '#BD0026', '#800026'];
+        //var layers = ['0-10', '10-20', '20-50', '50-100', '100-200', '200-500', '500-1000', '1000+'];
+        //var colors = ['#FFEDA0', '#FED976', '#FEB24C', '#FD8D3C', '#FC4E2A', '#E31A1C', '#BD0026', '#800026'];
 
-        for (i = 0; i < layers.length; i++) {
-            var layer = layers[i];
-            var color = colors[i];
-            var item = document.createElement('div');
-            var key = document.createElement('span');
-            key.className = 'legend-key';
-            key.style.backgroundColor = color;
+        //for (i = 0; i < layers.length; i++) {
+        //   var layer = layers[i];
+        //    var color = colors[i];
+        //    var item = document.createElement('div');
+        //    var key = document.createElement('span');
+        //    key.className = 'legend-key';
+        //    key.style.backgroundColor = color;
 
-            var value = document.createElement('span');
-            value.innerHTML = layer;
-            item.appendChild(key);
-            item.appendChild(value);
-            legend.appendChild(item);
-        }
+        //    var value = document.createElement('span');
+        //    value.innerHTML = layer;
+        //    item.appendChild(key);
+        //    item.appendChild(value);
+        //    legend.appendChild(item);
+        //}
 
         map.on('mousemove', function (e) {
         var features = map.queryRenderedFeatures(e.point);
