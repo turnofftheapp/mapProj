@@ -15,22 +15,27 @@ $.ajax({
     }
 });
 
+console.log("my data: ")
+console.log(mydata);
 
 var arrayLength = mydata.length;
 var waData = [];
 for (var i = 0; i < arrayLength; i++) {
     var postalCode = mydata[i][0];
+    console.log(postalCode)
     // All of the Washington State Zip codes start with 9, so we shuld just grab those ones
-    if (postalCode !== null && postalCode.startsWith("9")) {
+    if (postalCode !== null && postalCode.toString().startsWith("9")) {
     // Get the hits for that postal code
     // Example to follow from map
     // Construct a variable like this but for traits in mapbox
     //{"STATE_ID": "01", "unemployment": 13.17}
     postalCodeHits = mydata[i][1]
-    var entry = {"ZCTA5CE10": postalCode, "postalCodeHits": postalCodeHits};
+    var entry = {"ZCTA5CE10": postalCode.toString(), "postalCodeHits": postalCodeHits};
     waData.push(entry);
     }
 }
+
+    console.log(waData);
 
 
 /** View Model **/
@@ -43,8 +48,10 @@ var ViewModel = function() {
     
         // https://stackoverflow.com/a/7178381/5420796
         for(var i = 0; i < waData.length; i += 1) {
-            if(waData[i]["ZCTA5CE10"] === self.highlightedPostalCode()) {
-            return waData[i]["postalCodeHits"];
+            //console.log(waData[i]["ZCTA5CE10"]);
+            if(waData[i]["ZCTA5CE10"] == self.highlightedPostalCode()) {
+                //console.log(waData[i]["postalCodeHits"]);
+                return waData[i]["postalCodeHits"];
             }
         }   
 
@@ -98,8 +105,8 @@ $(document).ready(function () {
 
         // Last value is the default, used where there is no data
         expression.push("rgba(0,0,0,0)");
-        //console.log("expression: ")
-        //console.log(expression);
+        console.log("expression: ")
+        console.log(expression);
 
         // Add layer from the vector tile source with data-driven style
         map.addLayer({

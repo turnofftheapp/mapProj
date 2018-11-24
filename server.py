@@ -32,7 +32,7 @@ def count():
     #result = session.execute('SELECT postalCode, count(*) FROM itenerary GROUP BY postalCode ORDER BY COUNT(*) desc;')
     
     # DO it with the ORM Syntax:
-    result = session.query(Itenerary.postalCode, func.count(Itenerary.postalCode)).group_by(Itenerary.postalCode).all()
+    result = session.query(Itenerary.postalCodeMapped, func.count(Itenerary.postalCodeMapped)).group_by(Itenerary.postalCodeMapped).all()
     # It looks like the result object is a list of tuples
 
     #for r in result:
