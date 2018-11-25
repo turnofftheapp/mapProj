@@ -1,6 +1,7 @@
-Coding Notes
+# Coding Notes
+Here lives notes on how to implement data driven circles for the destination circles as well as notes on getting the zoom level to work properly. Future notes will be added here as well.
 
-# Making a circle based on a certain size
+# Making circles for destinations with data-driven sizing:
 ## Looks like I would esentially follow this example: 
 https://stackoverflow.com/a/39006388/5420796
 ## Here is another example from mapBox
