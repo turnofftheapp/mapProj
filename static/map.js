@@ -81,9 +81,9 @@ $(document).ready(function () {
         
         // Add source for zip code polygons hosted on Mapbox, based on US Census Data:
         // https://www.census.gov/geo/maps-data/data/cbf/cbf_state.html
-        map.addSource("wa-bj10t4", {
+        map.addSource("wa", {
             type: "vector",
-            url: "mapbox://axme100.1u657h51"
+            url: "mapbox://axme100.0bz1txrj"
         });
 
         var expression = ["match", ["get", "ZCTA5CE10"]];
@@ -111,10 +111,10 @@ $(document).ready(function () {
         // Add layer from the vector tile source with data-driven style
         map.addLayer({
             // be careful that second dash works
-            "id": "wa-bj10t4-join",
+            "id": "wa-join",
             "type": "fill",
-            "source": "wa-bj10t4",
-            "source-layer": "wa-bj10t4",
+            "source": "wa",
+            "source-layer": "wa",
             "paint": {
                 "fill-color": expression
             }

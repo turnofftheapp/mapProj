@@ -31,3 +31,10 @@ https://www.mapbox.com/mapbox-gl-js/example/geojson-polygon/
 # Then use this new table to update the radius of the destinationID objects.
 	- Do this like it's done at the end of the stackoverfLow tutorial by Dwyer
 	-Hopefully this will carry into the view
+
+# Issue with zoom level
+https://github.com/mapbox/mapbox-gl-js/issues/4954
+https://www.mapbox.com/help/adjust-tileset-zoom-extent/
+## Looks like this might be the way to solve it
+https://www.mapbox.com/help/large-data-tippecanoe/
+
