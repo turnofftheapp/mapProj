@@ -16,6 +16,7 @@ $.ajax({
 });
 
 
+
 var arrayLength = mydata.length;
 var waData = [];
 for (var i = 0; i < arrayLength; i++) {
@@ -46,30 +47,21 @@ for (var i = 0; i < arrayLength; i++) {
 //    }
 //});
 
-var destinationsArrayLength = destinationsWA.length;
-for (var i = 0; i < destinationsArrayLength; i++) {
-    var postalCode = mydata[i][0];
-    // All of the Washington State Zip codes start with 9, so we shuld just grab those ones
-    if (postalCode !== null && postalCode.toString().startsWith("9")) {
-    // Get the hits for that postal code
-    // Example to follow from map
-    // Construct a variable like this but for traits in mapbox
-    //{"STATE_ID": "01", "unemployment": 13.17}
-    postalCodeHits = mydata[i][1]
-    var entry = {"ZCTA5CE10": postalCode.toString(), "postalCodeHits": postalCodeHits};
-    waData.push(entry);
-    }
-}
+
+// Pull the array of destination objects out of the JSON variable
+var waDestinations = destinationsWA['destinations'];
 
 
 
 // Function to Create Objects that will live in the view model
 // This comes from this post:
 // https://stackoverflow.com/a/39006388/5420796
+// Pretty sure that points can be left blank
 var createGeoJSONCircle = function(center, radiusInKm, points) {
     if(!points) points = 64;
 
     var coords = {
+        // These were switched up
         latitude: center[1],
         longitude: center[0]
     };
@@ -127,7 +119,34 @@ var ViewModel = function() {
     });
 
     // Create an empty array of destination circle objects
-    self.destinationCircles = ko.observable();
+    self.destinationCircles = ko.observableArray([]);
+
+
+    var waDestinationsLength = waDestinations.length;
+    console.log(waDestinationsLength);
+    console.log(waDestinationsLength);
+    for (var i = 0; i < waDestinationsLength; i++) {
+    
+        var name = waDestinations[i]['name'];
+        var lat = waDestinations[i]['begin_lat'];
+        var lng = waDestinations[i]['begin_lng'];
+
+        latLngArray = [];
+        latLngArray.push(lat);
+        latLngArray.push(lng);
+        
+
+        geoJSONCircle = createGeoJSONCircle(latLngArray, 500);
+
+        //console.log(geoJSONCircle);
+        destinationObject = {
+            name: name,
+            geoJSONCircle: geoJSONCircle
+        }
+        
+        // Push out to observable array
+        self.destinationCircles.push(destinationObject);
+    }
 
 };
 
@@ -188,6 +207,36 @@ $(document).ready(function () {
                 "fill-color": expression
             }
         }, 'waterway-label');
+
+        for (var i = 0; i < my.viewModel.destinationCircles().length; i++) {
+
+            var name = my.viewModel.destinationCircles()[i].name;
+            var circle = my.viewModel.destinationCircles()[i].geoJSONCircle;
+            console.log(circle);
+
+            map.addSource(name,circle);
+            map.addLayer({
+                "id": name,
+                "type": "fill",
+                "source": name,
+                "layout": {
+                    'visibility': 'visible'
+                },
+                "paint": {
+                    "fill-color": "red",
+                    "fill-opacity": 0.6
+                }
+            });
+
+            var mapLayer = map.getLayer(name);
+
+            if(typeof mapLayer == 'undefined') {
+            // Remove map layer & source.
+            console.log("UNDEFINED LAYER");
+            }
+
+        }
+
 
         // TODO: Add legend from tutorial
         // As of this point this part was just copied over
