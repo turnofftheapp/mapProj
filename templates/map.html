@@ -1,5 +1,4 @@
 <html>
-
 <head>
 	<link rel="stylesheet" href="{{ url_for('static', filename='map.css') }}">
 	<script
@@ -16,6 +15,7 @@
 	<!--<div class='map-overlay' id='legend'></div>-->
 	<h1> TOTAGO Mapping Project </h1>
 	<script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js'></script>
+	<script src='{{url_for('static', filename='destinationsWA.js')}}'> </script>
 	<script src='{{url_for('static', filename='map.js')}}'> </script>
 </body>
 </html>

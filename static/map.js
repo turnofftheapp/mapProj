@@ -15,14 +15,11 @@ $.ajax({
     }
 });
 
-console.log("my data: ")
-console.log(mydata);
 
 var arrayLength = mydata.length;
 var waData = [];
 for (var i = 0; i < arrayLength; i++) {
     var postalCode = mydata[i][0];
-    console.log(postalCode)
     // All of the Washington State Zip codes start with 9, so we shuld just grab those ones
     if (postalCode !== null && postalCode.toString().startsWith("9")) {
     // Get the hits for that postal code
@@ -35,7 +32,79 @@ for (var i = 0; i < arrayLength; i++) {
     }
 }
 
-    console.log(waData);
+
+/*  Get the destination data*/
+// No need for AJAX call because of CORS, when developing locally, need to call another file
+// Call the data
+//var myDestinations = [];
+//$.ajax({
+//    url: 'https://www.totago.co/api/v1/destinations.json?region_id=1',
+//    async: false,
+//    dataType: 'json',
+//    success: function (json) {
+//        myDestinations = json;
+//    }
+//});
+
+var destinationsArrayLength = destinationsWA.length;
+for (var i = 0; i < destinationsArrayLength; i++) {
+    var postalCode = mydata[i][0];
+    // All of the Washington State Zip codes start with 9, so we shuld just grab those ones
+    if (postalCode !== null && postalCode.toString().startsWith("9")) {
+    // Get the hits for that postal code
+    // Example to follow from map
+    // Construct a variable like this but for traits in mapbox
+    //{"STATE_ID": "01", "unemployment": 13.17}
+    postalCodeHits = mydata[i][1]
+    var entry = {"ZCTA5CE10": postalCode.toString(), "postalCodeHits": postalCodeHits};
+    waData.push(entry);
+    }
+}
+
+
+
+// Function to Create Objects that will live in the view model
+// This comes from this post:
+// https://stackoverflow.com/a/39006388/5420796
+var createGeoJSONCircle = function(center, radiusInKm, points) {
+    if(!points) points = 64;
+
+    var coords = {
+        latitude: center[1],
+        longitude: center[0]
+    };
+
+    var km = radiusInKm;
+
+    var ret = [];
+    var distanceX = km/(111.320*Math.cos(coords.latitude*Math.PI/180));
+    var distanceY = km/110.574;
+
+    var theta, x, y;
+    for(var i=0; i<points; i++) {
+        theta = (i/points)*(2*Math.PI);
+        x = distanceX*Math.cos(theta);
+        y = distanceY*Math.sin(theta);
+
+        ret.push([coords.longitude+x, coords.latitude+y]);
+    }
+    ret.push(ret[0]);
+
+    return {
+        "type": "geojson",
+        "data": {
+            "type": "FeatureCollection",
+            "features": [{
+                "type": "Feature",
+                "geometry": {
+                    "type": "Polygon",
+                    "coordinates": [ret]
+                }
+            }]
+        }
+    };
+};
+
 
 
 /** View Model **/
@@ -56,6 +125,9 @@ var ViewModel = function() {
         }   
 
     });
+
+    // Create an empty array of destination circle objects
+    self.destinationCircles = ko.observable();
 
 };
 
@@ -99,14 +171,11 @@ $(document).ready(function () {
         waData.forEach(function(row) {
             var green = (row["postalCodeHits"] / maxValue) * 500;
             var color = "rgba(" + 0 + ", " + green + ", " + 0 + ", 1)";
-            console.log(color);
             expression.push(row["ZCTA5CE10"], color);
         });
 
         // Last value is the default, used where there is no data
         expression.push("rgba(0,0,0,0)");
-        console.log("expression: ")
-        console.log(expression);
 
         // Add layer from the vector tile source with data-driven style
         map.addLayer({
