@@ -9,12 +9,14 @@ https://www.mapbox.com/mapbox-gl-js/example/geojson-polygon/
 
 ## Plan:
 
-1. First I should read in the CSV of destinations into the backend of python and serve it up as an api end point.
-*Instead of reading a CSV, I guess it could be a database, but since it's a relatively small file that won't change much I think it would be better for it to just read in the CSV file into a pandas data frame*
+~~1. First I should read in the CSV of destinations into the backend of python and serve it up as an api end point.
+*Instead of reading a CSV, I guess it could be a database, but since it's a relatively small file that won't change much I think it would be better for it to just read in the CSV file into a pandas data frame*~~
 
-2. Then I make an additional initial AJAX call on the front end that pulls all of this data
+~~2. Then I make an additional initial AJAX call on the front end that pulls all of this data~~
 
-3. Create a bunch of destination objets, that contain additional information such as the name of the destination, could potentially contain other things like links and pictures.
+1. Before deployment the destination polygon data will be read from a Totago API, because of CORS, for now this data lives in a variable from copy and pasted raw JSON
+
+2. Create a bunch of destination objets, that contain additional information such as the name of the destination, could potentially contain other things like links and pictures.
 
 4. Using computed observables, create a bunch of geoJSONCircle objects from the tutorial above (https://stackoverflow.com/a/39006388/5420796) that live in the viewModel. Note: do this at the end of the model and before the viewModel like it is done in this project: https://github.com/axme100/mapProj/blob/master/js/app.js. **See function createGeoJSONCircle.js**
 

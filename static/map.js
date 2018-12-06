@@ -15,8 +15,6 @@ $.ajax({
     }
 });
 
-
-
 var arrayLength = mydata.length;
 var waData = [];
 for (var i = 0; i < arrayLength; i++) {
@@ -33,14 +31,9 @@ for (var i = 0; i < arrayLength; i++) {
     }
 }
 
-
-
-
 // Pull the array of destination objects out of the JSON variable
 // This will have to become an AJAX call before deployment
 var waDestinations = destinationsWA['destinations'];
-
-
 
 // Function to Create Objects that will live in the view model
 // This comes from this post:
@@ -86,8 +79,6 @@ var createGeoJSONCircle = function(center, radiusInKm, points) {
         }
     };
 };
-
-
 
 /** View Model **/
 var ViewModel = function() {
