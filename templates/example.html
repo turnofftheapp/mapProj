@@ -6,6 +6,7 @@
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css' rel='stylesheet' />
+    <script src='{{url_for('static', filename='destinationsWA.js')}}'> </script>
     <style>
         body { margin:0; padding:0; }
         #map { position:absolute; top:0; bottom:0; width:50%; }
@@ -117,6 +118,66 @@ map.on('load', function() {
             "fill-color": expression
         }
     }, 'waterway-label');
+
+    // Function to Create Objects that will live in the view model
+// This comes from this post:
+// https://stackoverflow.com/a/39006388/5420796
+// Pretty sure that points can be left blank
+    var createGeoJSONCircle = function(center, radiusInKm, points) {
+        if(!points) points = 64;
+
+        var coords = {
+            // The only thing that was switched up in this function was teh
+            // order of the two points
+            latitude: center[0],
+            longitude: center[1]
+        };
+
+        var km = radiusInKm;
+
+        var ret = [];
+        var distanceX = km/(111.320*Math.cos(coords.latitude*Math.PI/180));
+        var distanceY = km/110.574;
+
+        var theta, x, y;
+        for(var i=0; i<points; i++) {
+            theta = (i/points)*(2*Math.PI);
+            x = distanceX*Math.cos(theta);
+            y = distanceY*Math.sin(theta);
+
+            ret.push([coords.longitude+x, coords.latitude+y]);
+        }
+        ret.push(ret[0]);
+
+        return {
+            "type": "geojson",
+            "data": {
+                "type": "FeatureCollection",
+                "features": [{
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [ret]
+                    }
+                }]
+            }
+        };
+    };
+
+
+    map.addSource("testPolyGon", createGeoJSONCircle([47.608013, -122.335167], 200));
+
+    map.addLayer({
+        "id": "testPolyGon",
+        "type": "fill",
+        "source": "testPolyGon",
+        "layout": {},
+        "paint": {
+            "fill-color": "blue",
+            "fill-opacity": 0.6
+        }
+    });
+
 });
 </script>
 

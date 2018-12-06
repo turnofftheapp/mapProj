@@ -61,9 +61,10 @@ var createGeoJSONCircle = function(center, radiusInKm, points) {
     if(!points) points = 64;
 
     var coords = {
-        // These were switched up
-        latitude: center[1],
-        longitude: center[0]
+        // The only thing that was switched up in this function was teh
+        // order of the two points
+        latitude: center[0],
+        longitude: center[1]
     };
 
     var km = radiusInKm;
@@ -81,6 +82,9 @@ var createGeoJSONCircle = function(center, radiusInKm, points) {
         ret.push([coords.longitude+x, coords.latitude+y]);
     }
     ret.push(ret[0]);
+
+    console.log("internal function coordinates");
+    console.log(ret);
 
     return {
         "type": "geojson",
@@ -123,22 +127,28 @@ var ViewModel = function() {
 
 
     var waDestinationsLength = waDestinations.length;
-    console.log(waDestinationsLength);
-    console.log(waDestinationsLength);
+    //console.log(waDestinationsLength);
+    //console.log(waDestinationsLength);
     for (var i = 0; i < waDestinationsLength; i++) {
     
         var name = waDestinations[i]['name'];
-        var lat = waDestinations[i]['begin_lat'];
-        var lng = waDestinations[i]['begin_lng'];
+        var lat = parseFloat(waDestinations[i]['begin_lat']);
+        var lng = parseFloat(waDestinations[i]['begin_lng']);
+
+        //console.log("Check me: ")
+        //console.log(lat);
+        //console.log(lng);
 
         latLngArray = [];
         latLngArray.push(lat);
         latLngArray.push(lng);
         
+        console.log("Before function call")
+        console.log(latLngArray);
 
-        geoJSONCircle = createGeoJSONCircle(latLngArray, 500);
-
-        //console.log(geoJSONCircle);
+        geoJSONCircle = createGeoJSONCircle(latLngArray, 1);
+        console.log(geoJSONCircle);
+        
         destinationObject = {
             name: name,
             geoJSONCircle: geoJSONCircle
@@ -212,6 +222,8 @@ $(document).ready(function () {
 
             var name = my.viewModel.destinationCircles()[i].name;
             var circle = my.viewModel.destinationCircles()[i].geoJSONCircle;
+            
+            console.log(name);
             console.log(circle);
 
             map.addSource(name,circle);
@@ -219,23 +231,38 @@ $(document).ready(function () {
                 "id": name,
                 "type": "fill",
                 "source": name,
-                "layout": {
-                    'visibility': 'visible'
-                },
+                "layout": {},
                 "paint": {
-                    "fill-color": "red",
-                    "fill-opacity": 0.6
+                    "fill-color": "blue",
+                    "fill-opacity": 1.0
                 }
             });
 
             var mapLayer = map.getLayer(name);
 
+            // This code esentially if the layer is undefined when it's added
             if(typeof mapLayer == 'undefined') {
             // Remove map layer & source.
             console.log("UNDEFINED LAYER");
             }
 
         }
+
+        circle = createGeoJSONCircle([47.708013, -122.335167], 1)
+        console.log("Circle should have to be like this: ")
+        console.log(circle);
+        map.addSource("Mount Si", circle);
+
+        map.addLayer({
+            "id": "Mount Si",
+            "type": "fill",
+            "source": "Mount Si",
+            "layout": {},
+            "paint": {
+                "fill-color": "red",
+                "fill-opacity": 1.0
+            }
+        });
 
 
         // TODO: Add legend from tutorial

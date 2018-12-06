@@ -1,3 +1,4 @@
+// This comes frmo the answer in the coding notes
 var createGeoJSONCircle = function(center, radiusInKm, points) {
     if(!points) points = 64;
 
