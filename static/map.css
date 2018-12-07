@@ -33,6 +33,11 @@ p {
   width: 100%;
 }
 
+#chartContainer {
+  position: absolute;
+  top:70%;
+}
+
 /**
 * Set rules for how the map overlays
 * (info box and legend) will be displayed

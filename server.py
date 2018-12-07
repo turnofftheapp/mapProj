@@ -5,7 +5,7 @@ from flask import (
     url_for
 )
 
-from sqlalchemy import create_engine, func
+from sqlalchemy import create_engine, func, text
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Itenerary
 
@@ -44,6 +44,23 @@ def count():
 @app.route('/map/')
 def showMap():
     return render_template('map.html')
+
+@app.route('/postalCodeToDestination/<int:postal_code>')
+def postalCodeToDestination(postal_code):
+    
+    # Construct the raw SQL query
+    sql = text('SELECT postalCodeMapped, selectedDestination_ID, COUNT(*) FROM itenerary GROUP BY postalCodeMapped, selectedDestination_ID;')
+    result = session.execute(sql)
+    # https://stackoverflow.com/questions/17972020/how-to-execute-raw-sql-in-sqlalchemy-flask-app
+    data = []
+    for row in result:
+        if row[0] == postal_code:
+            nestedDictionary = {"postalCode": row[0],
+                                "destinationID": row[1],
+                                "count": row[2]}
+            data.append(nestedDictionary)
+    print(data)
+    return jsonify(data)
 
 @app.route('/example/')
 def showExampleMap():

@@ -100,9 +100,8 @@ var ViewModel = function() {
     // Create an empty array of destination circle objects
     self.destinationCircles = ko.observableArray([]);
 
-
+    // Populate that array
     var waDestinationsLength = waDestinations.length;
-    
     for (var i = 0; i < waDestinationsLength; i++) {
     
         var name = waDestinations[i]['name'];
@@ -123,6 +122,22 @@ var ViewModel = function() {
         // Push out to observable array
         self.destinationCircles.push(destinationObject);
     }
+
+    self.postalCodeToDestinationData = ko.observableArray([]);
+
+    self.postalCodeToDestinationDataGraph = ko.computed(function() {
+    
+        arrayToReturn = [];
+        // https://stackoverflow.com/a/7178381/5420796
+        for(var i = 0; i < postalCodeToDestinationData().length; i += 1) {
+            addToDict = { y: postalCodeToDestinationData()[i].count, label: postalCodeToDestinationData()[i].destinationID.toString() }
+            arrayToReturn.push();
+        }
+
+        print(arrayToReturn)
+        return arrayToReturn   
+
+    });
 
 };
 
@@ -204,14 +219,83 @@ $(document).ready(function () {
 
         }
 
+        // This code basically renders the zip code that is being displayed
         map.on('mousemove', function (e) {
         var features = map.queryRenderedFeatures(e.point);
+        //console.log(features);
         var hoveredPostalCode = features[0]['properties']['ZCTA5CE10'];
         // Remember observables are functions
         // https://stackoverflow.com/a/14159596/5420796
         my.viewModel.highlightedPostalCode(hoveredPostalCode);
         });
+    
+        map.on('click', function (e) { 
+
+            // This is where I will call a fucntion to the back end and update the viewModel:
+            // With an array of objects giving me the counts for specific zip code two the different destinations
+
+            console.log(my.viewModel.highlightedPostalCode());
+            var postalCode = my.viewModel.highlightedPostalCode();
+
+            var postalCodeToDestination = [];
+                $.ajax({
+                url: 'http://0.0.0.0:8000/postalCodeToDestination/' + postalCode,
+                async: false,
+                dataType: 'json',
+                success: function (json) {
+                postalCodeToDestination = json;
+                }
+            });
+                console.log(postalCodeToDestination);
+                my.viewModel.postalCodeToDestinationData(postalCodeToDestination);
+        
+        });
+
+
     });
+
+    var chart = new CanvasJS.Chart("chartContainer", {
+        animationEnabled: true,
+        
+        title:{
+            text:"Fortune 500 Companies by Country"
+        },
+        axisX:{
+            interval: 1
+        },
+        axisY2:{
+            interlacedColor: "rgba(1,77,101,.2)",
+            gridColor: "rgba(1,77,101,.1)",
+            title: "Number of Companies"
+        },
+        data: [{
+            type: "bar",
+            name: "companies",
+            axisYType: "secondary",
+            color: "#014D65",
+            dataPoints: [
+                { y: 3, label: "Sweden" },
+                { y: 7, label: "Taiwan" },
+                { y: 5, label: "Russia" },
+                { y: 9, label: "Spain" },
+                { y: 7, label: "Brazil" },
+                { y: 7, label: "India" },
+                { y: 9, label: "Italy" },
+                { y: 8, label: "Australia" },
+                { y: 11, label: "Canada" },
+                { y: 15, label: "South Korea" },
+                { y: 12, label: "Netherlands" },
+                { y: 15, label: "Switzerland" },
+                { y: 25, label: "Britain" },
+                { y: 28, label: "Germany" },
+                { y: 29, label: "France" },
+                { y: 52, label: "Japan" },
+                { y: 103, label: "China" },
+                { y: 134, label: "US" }
+            ]
+        }]
+    });
+    chart.render();
 });
 
 /** Apply Bindings */
