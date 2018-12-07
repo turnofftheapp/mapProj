@@ -130,19 +130,33 @@ var ViewModel = function() {
         //console.log("here: ")
         //console.log(self.postalCodeToDestinationData())
         arrayToReturn = [];
+        
+        subArrayLabels = [];
+        subArrayCounts = [];
+
         lengthOfDestinationData = self.postalCodeToDestinationData().length
         //console.log("length: ")
         //console.log(lengthOfDestinationData)
 
+
+
         // https://stackoverflow.com/a/7178381/5420796
         for(var i = 0; i < lengthOfDestinationData; i += 1) {
+            
             console.log(self.postalCodeToDestinationData()[i].count)
             console.log(self.postalCodeToDestinationData()[i].destinationID.toString())
-            addToDict = { y: self.postalCodeToDestinationData()[i].count, label: self.postalCodeToDestinationData()[i].destinationID.toString() }
-            console.log(addToDict);
-            arrayToReturn.push(addToDict);
+            
+            subArrayCounts.push(self.postalCodeToDestinationData()[i].count);
+            subArrayLabels.push(self.postalCodeToDestinationData()[i].destinationID.toString());
+
+            //addToDict = {x: self.postalCodeToDestinationData()[i].destinationID.toString(), y: self.postalCodeToDestinationData()[i].count}
+            //console.log(addToDict);
+            //arrayToReturn.push(addToDict);
         }
 
+        arrayToReturn.push(subArrayLabels);
+        arrayToReturn.push(subArrayCounts);
+        console.log("here: ")
         console.log(arrayToReturn);
         return arrayToReturn;  
 
@@ -257,36 +271,63 @@ $(document).ready(function () {
             });
                 console.log(postalCodeToDestination);
                 my.viewModel.postalCodeToDestinationData(postalCodeToDestination);
-        
+                renderGraph();
         });
 
 
     });
 
-    var chart = new CanvasJS.Chart("chartContainer", {
-        animationEnabled: true,
+    function renderGraph () {
+        // http://tobiasahlin.com/blog/chartjs-charts-to-get-you-started/#1-bar-chart
+
+        // Create an array of strings with the labesls of the zip codes
+        console.log("View Model State of Variables: ")
+        console.log(my.viewModel.postalCodeToDestinationDataGraph());
+
         
-        title:{
-            text:"Fortune 500 Companies by Country"
-        },
-        axisX:{
-            interval: 1
-        },
-        axisY2:{
-            interlacedColor: "rgba(1,77,101,.2)",
-            gridColor: "rgba(1,77,101,.1)",
-            title: "Number of Companies"
-        },
-        data: [{
-            type: "bar",
-            name: "companies",
-            axisYType: "secondary",
-            color: "#014D65",
-            // Not sure why I cant get this array of objects to display
-            dataPoints: my.viewModel.postalCodeToDestinationDataGraph()
-        }]
-    });
-    chart.render();
+        // Create an array of strings with the labesls of the zip codes
+        console.log("View Model State of Variables Labels (Strings): ")
+        console.log(my.viewModel.postalCodeToDestinationDataGraph()[0]);
+        var arrayOfLabels = my.viewModel.postalCodeToDestinationDataGraph()[0];
+
+        // Create an array of numbers counts
+        console.log("View Model State of Variables Labels (Strings): ")
+        console.log(my.viewModel.postalCodeToDestinationDataGraph()[1]);
+        var arrayOfCounts = my.viewModel.postalCodeToDestinationDataGraph()[1];
+
+
+        // Create an array of counts that we are getting from the backend
+        //console.log(arrayOfCounts = my.viewModel.postalCodeToDestinationCounts());
+
+        console.log(arrayOfLabels);
+        console.log(arrayOfCounts);
+
+        // Bar chart
+        new Chart(document.getElementById("myChart"), {
+            type: 'horizontalBar',
+            data: {
+            labels: arrayOfLabels,
+            datasets: [
+                {
+              label: "Population (millions)",
+              backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+              data: arrayOfCounts
+                }
+                        ]
+            },
+            options: {
+            legend: { display: false },
+            title: {
+            display: true,
+            text: 'Destination Counts For Selected Zip Code'
+            }
+            }
+        });
+
+
+    };
+
+
 });
 
 /** Apply Bindings */

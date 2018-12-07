@@ -33,7 +33,7 @@ p {
   width: 100%;
 }
 
-#chartContainer {
+#myChart {
   position: absolute;
   top:70%;
 }

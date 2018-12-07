@@ -16,10 +16,21 @@
 	<div class='map-overlay' id='features'><h2>Postal code</h2><div id='pd'><p data-bind="text: highlightedPostalCode"></p><p data-bind="text: highlightedPostalCodeHits"></p></div></div>
 	<!--<div class='map-overlay' id='legend'></div>-->
 	<h1> TOTAGO Mapping Project </h1>
-	<div id="chartContainer" style="height: 370px; width: 100%;"></div>
+	
+	<!--<canvas width="300" height="300" data-bind="chart: { type: 'bar', data: postalCodeToDestinationDataGraph(), options: { observeChanges: true, throttle: 100 } }""></canvas> -->
+	
+	<canvas id="myChart"></canvas>
+
+	<!--<div id="chartContainer" style="height: 370px; width: 100%;"></div>-->
+	
+
 	<script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.2/knockout-min.js'></script>
 	<script src='{{url_for('static', filename='destinationsWA.js')}}'> </script>
-	<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+	<!--<script src='{{url_for('static', filename='chart.js')}}'> </script> -->
+	<!-- this is the cartjs library -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+	<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.2.0/Chart.min.js"></script>-->
+	<!--<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>-->
 	<script src='{{url_for('static', filename='map.js')}}'> </script>
 </body>
 </html>
