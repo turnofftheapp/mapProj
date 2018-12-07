@@ -302,7 +302,10 @@ $(document).ready(function () {
         console.log(arrayOfLabels);
         console.log(arrayOfCounts);
 
+        myChart.destroy();
+
         // Bar chart
+        // https://stackoverflow.com/questions/43490743/chartjs-mouse-hover-bug-showing-previous-charts
         new Chart(document.getElementById("myChart"), {
             type: 'horizontalBar',
             data: {
