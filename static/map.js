@@ -126,16 +126,25 @@ var ViewModel = function() {
     self.postalCodeToDestinationData = ko.observableArray([]);
 
     self.postalCodeToDestinationDataGraph = ko.computed(function() {
-    
+        
+        //console.log("here: ")
+        //console.log(self.postalCodeToDestinationData())
         arrayToReturn = [];
+        lengthOfDestinationData = self.postalCodeToDestinationData().length
+        //console.log("length: ")
+        //console.log(lengthOfDestinationData)
+
         // https://stackoverflow.com/a/7178381/5420796
-        for(var i = 0; i < postalCodeToDestinationData().length; i += 1) {
-            addToDict = { y: postalCodeToDestinationData()[i].count, label: postalCodeToDestinationData()[i].destinationID.toString() }
-            arrayToReturn.push();
+        for(var i = 0; i < lengthOfDestinationData; i += 1) {
+            console.log(self.postalCodeToDestinationData()[i].count)
+            console.log(self.postalCodeToDestinationData()[i].destinationID.toString())
+            addToDict = { y: self.postalCodeToDestinationData()[i].count, label: self.postalCodeToDestinationData()[i].destinationID.toString() }
+            console.log(addToDict);
+            arrayToReturn.push(addToDict);
         }
 
-        print(arrayToReturn)
-        return arrayToReturn   
+        console.log(arrayToReturn);
+        return arrayToReturn;  
 
     });
 
@@ -273,26 +282,8 @@ $(document).ready(function () {
             name: "companies",
             axisYType: "secondary",
             color: "#014D65",
-            dataPoints: [
-                { y: 3, label: "Sweden" },
-                { y: 7, label: "Taiwan" },
-                { y: 5, label: "Russia" },
-                { y: 9, label: "Spain" },
-                { y: 7, label: "Brazil" },
-                { y: 7, label: "India" },
-                { y: 9, label: "Italy" },
-                { y: 8, label: "Australia" },
-                { y: 11, label: "Canada" },
-                { y: 15, label: "South Korea" },
-                { y: 12, label: "Netherlands" },
-                { y: 15, label: "Switzerland" },
-                { y: 25, label: "Britain" },
-                { y: 28, label: "Germany" },
-                { y: 29, label: "France" },
-                { y: 52, label: "Japan" },
-                { y: 103, label: "China" },
-                { y: 134, label: "US" }
-            ]
+            // Not sure why I cant get this array of objects to display
+            dataPoints: my.viewModel.postalCodeToDestinationDataGraph()
         }]
     });
     chart.render();
