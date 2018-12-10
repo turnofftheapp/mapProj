@@ -301,18 +301,28 @@ $(document).ready(function () {
 
         console.log(arrayOfLabels);
         console.log(arrayOfCounts);
-
-        myChart.destroy();
+        //if (myChart) {  myChart.destroy(); } 
+       
 
         // Bar chart
         // https://stackoverflow.com/questions/43490743/chartjs-mouse-hover-bug-showing-previous-charts
-        new Chart(document.getElementById("myChart"), {
+        
+        //Try post below: 
+        /*https://stackoverflow.com/a/25064035/5420796*/
+
+        $('#myChart').remove()
+        $('#graph-container').append('<canvas id="myChart"><canvas>')
+
+        var ctx = $("#myChart")
+        
+        var myChart = new Chart(ctx, {
+
             type: 'horizontalBar',
             data: {
             labels: arrayOfLabels,
             datasets: [
                 {
-              label: "Population (millions)",
+              label: "Total Trips from This Zip Code",
               backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
               data: arrayOfCounts
                 }
@@ -326,6 +336,8 @@ $(document).ready(function () {
             }
             }
         });
+
+
 
 
     };
