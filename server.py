@@ -49,7 +49,7 @@ def showMap():
 def postalCodeToDestination(postal_code):
     
     # Construct the raw SQL query
-    sql = text('SELECT postalCodeMapped, selectedDestination_ID, COUNT(*) FROM itenerary GROUP BY postalCodeMapped, selectedDestination_ID;')
+    sql = text('SELECT postalCodeMapped, selectedDestination_ID, COUNT(*) FROM itenerary GROUP BY postalCodeMapped, selectedDestination_ID ORDER BY COUNT(*) DESC;')
     result = session.execute(sql)
     # https://stackoverflow.com/questions/17972020/how-to-execute-raw-sql-in-sqlalchemy-flask-app
     data = []
