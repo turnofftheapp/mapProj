@@ -84,7 +84,7 @@ var createGeoJSONCircle = function(center, radiusInKm, points) {
 var ViewModel = function() {
     var self = this;
 
-    self.highlightedPostalCode = ko.observable("Observable array");
+    self.highlightedPostalCode = ko.observable("");
     
     self.highlightedPostalCodeHits = ko.computed(function() {
     
@@ -278,38 +278,18 @@ $(document).ready(function () {
     });
 
     function renderGraph () {
+        // Really helpful blog with some example charts to get started right away:
         // http://tobiasahlin.com/blog/chartjs-charts-to-get-you-started/#1-bar-chart
 
         // Create an array of strings with the labesls of the zip codes
-        console.log("View Model State of Variables: ")
-        console.log(my.viewModel.postalCodeToDestinationDataGraph());
-
-        
-        // Create an array of strings with the labesls of the zip codes
-        console.log("View Model State of Variables Labels (Strings): ")
-        console.log(my.viewModel.postalCodeToDestinationDataGraph()[0]);
         var arrayOfLabels = my.viewModel.postalCodeToDestinationDataGraph()[0];
 
         // Create an array of numbers counts
-        console.log("View Model State of Variables Labels (Strings): ")
-        console.log(my.viewModel.postalCodeToDestinationDataGraph()[1]);
         var arrayOfCounts = my.viewModel.postalCodeToDestinationDataGraph()[1];
-
-
-        // Create an array of counts that we are getting from the backend
-        //console.log(arrayOfCounts = my.viewModel.postalCodeToDestinationCounts());
-
-        console.log(arrayOfLabels);
-        console.log(arrayOfCounts);
-        //if (myChart) {  myChart.destroy(); } 
-       
-
-        // Bar chart
-        // https://stackoverflow.com/questions/43490743/chartjs-mouse-hover-bug-showing-previous-charts
         
-        //Try post below: 
+        //.remove() and .append() were used on the canvas element within it's parent
+        // This solved the issue listed below: 
         /*https://stackoverflow.com/a/25064035/5420796*/
-
         $('#myChart').remove()
         $('#graph-container').append('<canvas id="myChart"><canvas>')
 
@@ -323,13 +303,13 @@ $(document).ready(function () {
             datasets: [
                 {
               label: "Total Trips from This Zip Code",
-              backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+              backgroundColor: ["#80ff80", "#66ff66","#4dff4d","#33ff33","#33ff33", "#33ff33", "#33ff33", "#33ff33", "#33ff33", "#33ff33", "#33ff33"],
               data: arrayOfCounts
                 }
                         ]
             },
             options: {
-            legend: { display: false },
+            legend: { display: true },
             title: {
             display: true,
             text: 'Destination Counts For Selected Zip Code'
