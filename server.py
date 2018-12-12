@@ -49,7 +49,7 @@ def showMap():
 def postalCodeToDestination(postal_code):
     
     # Construct the raw SQL query
-    sql = text('SELECT postalCodeMapped, selectedDestination_ID, COUNT(*) FROM itenerary GROUP BY postalCodeMapped, selectedDestination_ID ORDER BY COUNT(*) DESC;')
+    sql = text('SELECT postalCodeMapped, selectedDestination_ID, selectedDestination_name, COUNT(*) FROM itenerary GROUP BY postalCodeMapped, selectedDestination_ID ORDER BY COUNT(*) DESC;')
     result = session.execute(sql)
     # https://stackoverflow.com/questions/17972020/how-to-execute-raw-sql-in-sqlalchemy-flask-app
     data = []
@@ -57,7 +57,8 @@ def postalCodeToDestination(postal_code):
         if row[0] == postal_code:
             nestedDictionary = {"postalCode": row[0],
                                 "destinationID": row[1],
-                                "count": row[2]}
+                                "destinationName": row[2],
+                                "count": row[3]}
             data.append(nestedDictionary)
     print(data)
     return jsonify(data)

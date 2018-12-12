@@ -105,6 +105,10 @@ var ViewModel = function() {
     for (var i = 0; i < waDestinationsLength; i++) {
     
         var name = waDestinations[i]['name'];
+
+        
+        var id = waDestinations[i]["id"];
+        var name = waDestinations[i]['name'];
         var lat = parseFloat(waDestinations[i]['begin_lat']);
         var lng = parseFloat(waDestinations[i]['begin_lng']);
 
@@ -116,7 +120,8 @@ var ViewModel = function() {
         
         destinationObject = {
             name: name,
-            geoJSONCircle: geoJSONCircle
+            geoJSONCircle: geoJSONCircle,
+            id: id
         }
         
         // Push out to observable array
@@ -147,7 +152,7 @@ var ViewModel = function() {
             console.log(self.postalCodeToDestinationData()[i].destinationID.toString())
             
             subArrayCounts.push(self.postalCodeToDestinationData()[i].count);
-            subArrayLabels.push(self.postalCodeToDestinationData()[i].destinationID.toString());
+            subArrayLabels.push(self.postalCodeToDestinationData()[i].destinationName);
 
             //addToDict = {x: self.postalCodeToDestinationData()[i].destinationID.toString(), y: self.postalCodeToDestinationData()[i].count}
             //console.log(addToDict);
@@ -156,7 +161,7 @@ var ViewModel = function() {
 
         arrayToReturn.push(subArrayLabels);
         arrayToReturn.push(subArrayCounts);
-        console.log("here: ")
+        console.log("arrayToREtyrn: ")
         console.log(arrayToReturn);
         return arrayToReturn;  
 
