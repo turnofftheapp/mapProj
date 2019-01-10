@@ -121,7 +121,9 @@ var ViewModel = function() {
         destinationObject = {
             name: name,
             geoJSONCircle: geoJSONCircle,
-            id: id
+            id: id,
+            lat: lat,
+            lng: lng
         }
         
         // Push out to observable array
@@ -148,8 +150,8 @@ var ViewModel = function() {
         // https://stackoverflow.com/a/7178381/5420796
         for(var i = 0; i < lengthOfDestinationData; i += 1) {
             
-            console.log(self.postalCodeToDestinationData()[i].count)
-            console.log(self.postalCodeToDestinationData()[i].destinationID.toString())
+            //console.log(self.postalCodeToDestinationData()[i].count)
+            //console.log(self.postalCodeToDestinationData()[i].destinationID.toString())
             
             subArrayCounts.push(self.postalCodeToDestinationData()[i].count);
             subArrayLabels.push(self.postalCodeToDestinationData()[i].destinationName);
@@ -161,8 +163,8 @@ var ViewModel = function() {
 
         arrayToReturn.push(subArrayLabels);
         arrayToReturn.push(subArrayCounts);
-        console.log("arrayToREtyrn: ")
-        console.log(arrayToReturn);
+        //console.log("arrayToREtyrn: ")
+        //console.log(arrayToReturn);
         return arrayToReturn;  
 
     });
@@ -250,7 +252,7 @@ $(document).ready(function () {
         // This code basically renders the zip code that is being displayed
         map.on('mousemove', function (e) {
         var features = map.queryRenderedFeatures(e.point);
-        //console.log(features);
+        console.log(features);
         var hoveredPostalCode = features[0]['properties']['ZCTA5CE10'];
         // Remember observables are functions
         // https://stackoverflow.com/a/14159596/5420796
@@ -262,7 +264,7 @@ $(document).ready(function () {
             // This is where I will call a fucntion to the back end and update the viewModel:
             // With an array of objects giving me the counts for specific zip code two the different destinations
 
-            console.log(my.viewModel.highlightedPostalCode());
+            //console.log(my.viewModel.highlightedPostalCode());
             var postalCode = my.viewModel.highlightedPostalCode();
 
             var postalCodeToDestination = [];
@@ -274,9 +276,10 @@ $(document).ready(function () {
                 postalCodeToDestination = json;
                 }
             });
-                console.log(postalCodeToDestination);
+                //console.log(postalCodeToDestination);
                 my.viewModel.postalCodeToDestinationData(postalCodeToDestination);
                 renderGraph();
+                setCircles();
         });
 
 
@@ -322,9 +325,26 @@ $(document).ready(function () {
             }
         });
 
+    };
+
+    function setCircles () {
+        
+        // Have an an embedded for loop that goes the destination Circle ID
+        // Looks for a match in the destination circles
+        // If there is a match it increaes the size of the circle
+        //console.log(my.viewModel.postalCodeToDestinationData())
+        //console.log(my.viewModel.destinationCircles())
 
 
+        // The following for loop makes all of the data double in size
+        // Starting from the insdie out for this for loop
+        for (var i = 0; i < my.viewModel.destinationCircles().length; i++) {
+            nameID = my.viewModel.destinationCircles()[i]['name']
+            lat = my.viewModel.destinationCircles()[i]['lat']
+            lng = my.viewModel.destinationCircles()[i]['lng']
+            map.getSource(nameID).setData(createGeoJSONCircle([lat, lng], 2).data);
 
+        };
     };
 
 
