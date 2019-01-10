@@ -252,8 +252,17 @@ $(document).ready(function () {
         // This code basically renders the zip code that is being displayed
         map.on('mousemove', function (e) {
         var features = map.queryRenderedFeatures(e.point);
-        console.log(features);
+        //console.log(features);
+        
         var hoveredPostalCode = features[0]['properties']['ZCTA5CE10'];
+        
+        // In the case that the red dot blocks the zip code we have to get the
+        // second rendered feature down
+        if (hoveredPostalCode == null){
+            var hoveredPostalCode = features[1]['properties']['ZCTA5CE10'];
+        }
+
+
         // Remember observables are functions
         // https://stackoverflow.com/a/14159596/5420796
         my.viewModel.highlightedPostalCode(hoveredPostalCode);
