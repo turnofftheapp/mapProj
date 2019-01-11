@@ -353,6 +353,7 @@ $(document).ready(function () {
             
             // Get the destinationID that we want to size
             destinationToSize = my.viewModel.postalCodeToDestinationData()[i]['destinationID'];
+            
             sizeFactor = Math.log(my.viewModel.postalCodeToDestinationData()[i]['count']);
             
             // Get that item from the destinationCircles objects
@@ -360,12 +361,13 @@ $(document).ready(function () {
             // postalCodeToDestinationData
             let destinationCircleObjectToSize = my.viewModel.destinationCircles().find(i => i.id === destinationToSize);
 
-            nameID = destinationCircleObjectToSize['name']
-            lat = destinationCircleObjectToSize['lat']
-            lng = destinationCircleObjectToSize['lng']
-            
-            map.getSource(nameID).setData(createGeoJSONCircle([lat, lng], sizeFactor).data);
+            if (destinationCircleObjectToSize != null){
+                nameID = destinationCircleObjectToSize['name']
+                lat = destinationCircleObjectToSize['lat']
+                lng = destinationCircleObjectToSize['lng']
+                map.getSource(nameID).setData(createGeoJSONCircle([lat, lng], sizeFactor).data);
 
+            };
         };
     };
 });
