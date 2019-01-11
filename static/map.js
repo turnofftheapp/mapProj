@@ -365,7 +365,7 @@ $(document).ready(function () {
             // Get the destinationID that we want to size
             destinationToSize = my.viewModel.postalCodeToDestinationData()[i]['destinationID'];
             
-            sizeFactor = Math.log(my.viewModel.postalCodeToDestinationData()[i]['count']);
+            sizeFactor = Math.log(my.viewModel.postalCodeToDestinationData()[i]['count']) + 1;
             
             // Get that item from the destinationCircles objects
             // Thought now that I think about it, I could just have this information be part of the
