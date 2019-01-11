@@ -348,6 +348,17 @@ $(document).ready(function () {
         // Size to 1 so that when this function is called multiple times
         // It resets the size of the circles 
 
+        for (var i = 0; i < my.viewModel.destinationCircles().length; i++) {
+            nameID = my.viewModel.destinationCircles()[i]['name']
+            console.log(nameID)
+            lat = my.viewModel.destinationCircles()[i]['lat']
+            console.log(lat);
+            lng = my.viewModel.destinationCircles()[i]['lng']
+            console.log(lng)
+            map.getSource(nameID).setData(createGeoJSONCircle([lat, lng], 0).data);
+
+        };
+
         // First loop over the postalCode data loop
         for (var i = 0; i < my.viewModel.postalCodeToDestinationData().length; i++) {
             
