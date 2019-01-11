@@ -344,19 +344,30 @@ $(document).ready(function () {
         //console.log(my.viewModel.postalCodeToDestinationData())
         //console.log(my.viewModel.destinationCircles())
 
+        // First loop over the all the destinations and set the
+        // Size to 1 so that when this function is called multiple times
+        // It resets the size of the circles 
 
-        // The following for loop makes all of the data double in size
-        // Starting from the insdie out for this for loop
-        for (var i = 0; i < my.viewModel.destinationCircles().length; i++) {
-            nameID = my.viewModel.destinationCircles()[i]['name']
-            lat = my.viewModel.destinationCircles()[i]['lat']
-            lng = my.viewModel.destinationCircles()[i]['lng']
-            map.getSource(nameID).setData(createGeoJSONCircle([lat, lng], 2).data);
+        // First loop over the postalCode data loop
+        for (var i = 0; i < my.viewModel.postalCodeToDestinationData().length; i++) {
+            
+            // Get the destinationID that we want to size
+            destinationToSize = my.viewModel.postalCodeToDestinationData()[i]['destinationID'];
+            sizeFactor = Math.log(my.viewModel.postalCodeToDestinationData()[i]['count']);
+            
+            // Get that item from the destinationCircles objects
+            // Thought now that I think about it, I could just have this information be part of the
+            // postalCodeToDestinationData
+            let destinationCircleObjectToSize = my.viewModel.destinationCircles().find(i => i.id === destinationToSize);
+
+            nameID = destinationCircleObjectToSize['name']
+            lat = destinationCircleObjectToSize['lat']
+            lng = destinationCircleObjectToSize['lng']
+            
+            map.getSource(nameID).setData(createGeoJSONCircle([lat, lng], sizeFactor).data);
 
         };
     };
-
-
 });
 
 /** Apply Bindings */
