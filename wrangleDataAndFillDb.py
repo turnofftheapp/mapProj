@@ -3,7 +3,7 @@
 
 # # Import libraries, set options, connect to DB
 
-# In[ ]:
+# In[114]:
 
 
 # Configuration code for datawrangling
@@ -13,6 +13,7 @@ from datetime import datetime
 from geocode import geocode
 from mapToPoly import mapToPoly
 pd.set_option('display.max_row', 30000)
+import csv
 
 # Configuration code in order to connect to the database
 from sqlalchemy import create_engine, exists
@@ -31,13 +32,13 @@ session = DBSession()
 
 # # Read in data as pandas data frame, selecting only certain fields
 
-# In[ ]:
+# In[115]:
 
 
 fields = ['distinct_id', 'numItinerariesReturned', 'departureDate', 'startFromLocation', 'selectedDestination_id', 'selectedDestination_name', 'time']
 
 
-# In[ ]:
+# In[116]:
 
 
 df = pd.read_csv('generated_itineraries.csv', usecols = fields)
@@ -45,7 +46,7 @@ df = pd.read_csv('generated_itineraries.csv', usecols = fields)
 
 # # Wrange field: destinationIDs
 
-# In[ ]:
+# In[117]:
 
 
 # Replace all of the NAs for destinationIDs with 0
@@ -61,7 +62,7 @@ df['selectedDestination_id'] = df.selectedDestination_id.astype(int)
 
 # # Wrangle field: numItenerariesReturned
 
-# In[ ]:
+# In[118]:
 
 
 # Replace all of the NAs for numItinerariesReturned with 1
@@ -75,7 +76,7 @@ df['numItinerariesReturned'] = df.numItinerariesReturned.astype(int)
 
 # # Wrangle Field: Destination Name
 
-# In[ ]:
+# In[119]:
 
 
 #Replace all of the NAs in
@@ -87,7 +88,7 @@ print(len(df))
 
 # # Wrangle Field: departureDate
 
-# In[ ]:
+# In[120]:
 
 
 #Convert destinationIDs column to an integer value
@@ -147,7 +148,7 @@ df['departureDate'] = df.departureDate.apply(extractDate)
 
 # # Wrangle Field: distinctID
 
-# In[ ]:
+# In[121]:
 
 
 #It turns out distinc_id correpsonds to a user
@@ -168,7 +169,7 @@ unique_keys = df.primary_key.unique()
 
 # # Create a subset of the datle with sample method to test geocode and database entry logic
 
-# In[ ]:
+# In[122]:
 
 
 #Out put the entire database
@@ -177,7 +178,7 @@ unique_keys = df.primary_key.unique()
 len(df)
 
 
-# In[ ]:
+# In[123]:
 
 
 #Create a random sample of the database, these entries will be added to the database in the next section
@@ -187,9 +188,33 @@ sampleDf = df.sample(5)
 sampleDf.head(len(sampleDf))    
 
 
+# ## Read in the destination data to allow the possibility to pull the correct names
+# 
+#  
+# 
+
+# In[124]:
+
+
+f = open("destinations_mapping_Jul-30-18.csv")
+
+reader = csv.reader(f)
+
+
+destinations = {}
+
+
+# The index at the end of the for loop just skips the first row which is the header in the csv file
+next(reader)
+for row in reader:
+    destinations[row[0]] = {'name':row[1]}
+
+print(destinations)
+
+
 # # Loop through the rows in the dataframe, geocode, add entry to database
 
-# In[ ]:
+# In[125]:
 
 
 # Loop through the subsetted pandas data frame
@@ -255,27 +280,48 @@ for index, row in df.iterrows():
     
     else:
         print("Entry already inside of database, but will edit information to new row")
-        # Get the row what I'm going to modift
+        
+        # Get the row what I'm going to modify
         rowToModify = session.query(Itenerary).filter_by(distinctKey=testKey).one()
         
+        
+        destinationID = rowToModify.selectedDestination_id
+        destinationName = rowToModify.selectedDestination_name
+        
+        
+        # See i
+        if not destinationName:
+            
+            #if destinationID != 0 and destinationID != 30 and destinationID != 31 and destinationID != 52 and destinationID != 41 and destinationID != 53 and destinationID != 104 and destinationID != 70 and destinationID != 199 and destinationID != 195:
+            key = str(destinationID)
+            if key in destinations:
+            
+                # Pull the data out from the dictionary that was created in the cell above
+                newName = destinations[str(destinationID)]['name']
+        
+                # Add the new name to the new row
+                rowToModify.selectedDestination_name = newName
+            
+            else:
+                rowToModify.postalCodeMapped = "DELETED"
+        # The code that is commented out below was used to populate the new column of the database that
+        # was added manually on the sqlite command line, see git history
+        
         # Pull the lat and lng coordinates out
-        lat = rowToModify.lat
-        lng = rowToModify.lng
-
-        print("lat: ", lat)
-        print("lng: ", lng)
+        # lat = rowToModify.lat
+        # lng = rowToModify.lng
         
         # Test to see if there is even a lat value in there
-        if lat:
+        #
+        #if lat:
             
             # Match these lat and lng coordinates to a zipCode
-            newZip = mapToPoly(lat, lng)
-            print(newZip)
-
-            # Match this new zip to the postalCodeMapped Field in database
-            rowToModify.postalCodeMapped = newZip
+            #newZip = mapToPoly(lat, lng)
         
-            # Add to database
-            session.add(rowToModify)
-            session.commit()
+            # Match this new zip to the postalCodeMapped Field in database
+            #rowToModify.postalCodeMapped = newZip
+        
+        # Add to database
+                session.add(rowToModify)
+                session.commit()
 
