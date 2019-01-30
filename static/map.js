@@ -304,6 +304,34 @@ $(document).ready(function () {
         // Create an array of numbers counts
         var arrayOfCounts = my.viewModel.postalCodeToDestinationDataGraph()[1];
         
+        
+        // Get a random list of colors
+        // Function copied from StackOverFlow Post Below
+        // https://stackoverflow.com/questions/1484506/random-color-generator
+        function getRandomColor() {
+            var letters = '0123456789ABCDEF';
+            
+            var color = '#';
+            
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        arrayOfColors = [];
+
+
+        // Loop over the postalCodeToDestinationData() and get a random color for each element
+        // populating the arrayOfColors database
+        for (var i = 0; i < my.viewModel.postalCodeToDestinationData().length; i++) {
+            randomColor = getRandomColor();
+            arrayOfColors.push(randomColor);
+        }
+
+
+
+
         //.remove() and .append() were used on the canvas element within it's parent
         // This solved the issue listed below: 
         /*https://stackoverflow.com/a/25064035/5420796*/
@@ -320,7 +348,7 @@ $(document).ready(function () {
             datasets: [
                 {
               label: "Total Trips from This Zip Code",
-              backgroundColor: ["#80ff80", "#66ff66","#4dff4d","#33ff33","#33ff33", "#33ff33", "#33ff33", "#33ff33", "#33ff33", "#33ff33", "#33ff33"],
+              backgroundColor: arrayOfColors,
               data: arrayOfCounts
                 }
                         ]
