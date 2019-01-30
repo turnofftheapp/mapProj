@@ -353,11 +353,19 @@ $(document).ready(function () {
                 }
                         ]
             },
+            
             options: {
             legend: { display: true },
             title: {
             display: true,
             text: 'Destination Counts For Selected Zip Code'
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero:true
+                    }
+                }]
             }
             }
         });
