@@ -85,7 +85,26 @@ var ViewModel = function() {
     var self = this;
 
     self.highlightedPostalCode = ko.observable("");
+
+    self.highlightedDestination = ko.observable("");
     
+    self.displayedInfo = ko.computed(function() {
+    
+        destinationDisplayed = self.highlightedDestination();
+        postalCodeDisplayed = self.highlightedPostalCode();
+        console.log("****")
+        console.log(destinationDisplayed);
+
+
+        if (typeof destinationDisplayed !== 'undefined') {
+            return postalCodeDisplayed + ' ' + destinationDisplayed;
+        } else {
+            return postalCodeDisplayed;
+        }
+
+    });
+
+
     self.highlightedPostalCodeHits = ko.computed(function() {
     
         // https://stackoverflow.com/a/7178381/5420796
@@ -260,12 +279,22 @@ $(document).ready(function () {
         // second rendered feature down
         if (hoveredPostalCode == null){
             var hoveredPostalCode = features[1]['properties']['ZCTA5CE10'];
+            // But in this case we also want to get the red dot so we can
+            // display it to the user
+            var hoveredDestination = features[0]["layer"]["id"];
+            //console.log(hoveredDestination);
         }
 
 
         // Remember observables are functions
         // https://stackoverflow.com/a/14159596/5420796
         my.viewModel.highlightedPostalCode(hoveredPostalCode);
+        
+        my.viewModel.highlightedDestination(hoveredDestination);
+        
+        //console.log(my.viewModel.highlightedDestination())
+
+
         });
     
         map.on('click', function (e) { 
@@ -329,9 +358,6 @@ $(document).ready(function () {
             arrayOfColors.push(randomColor);
         }
 
-
-
-
         //.remove() and .append() were used on the canvas element within it's parent
         // This solved the issue listed below: 
         /*https://stackoverflow.com/a/25064035/5420796*/
@@ -341,7 +367,6 @@ $(document).ready(function () {
         var ctx = $("#myChart")
         
         var myChart = new Chart(ctx, {
-
             type: 'horizontalBar',
             data: {
             labels: arrayOfLabels,
