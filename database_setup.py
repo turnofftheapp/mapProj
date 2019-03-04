@@ -42,23 +42,23 @@ class Itenerary(Base):
     
     #Departure date
     ## String
-    departureDate = Column(String())
+    departuredate = Column(String())
 
     # Number of Itineraries Returned
     ## Int
-    numberItinerariesReturned = Column(Integer)
+    numberitinerariesreturned = Column(Integer)
 
     # Selected Destination ID
     ## Int
-    selectedDestination_id = Column(Integer)
+    selecteddestination_id = Column(Integer)
 
     # Selected Destination Name
     ## String
-    selectedDestination_name = Column(String())
+    selecteddestination_name = Column(String())
 
     # startFromLocation
     ## String
-    startFromLocation = Column(String())
+    startfromlocation = Column(String())
 
     # Formatted Address
     formatted_address = Column(String())
@@ -70,12 +70,12 @@ class Itenerary(Base):
     lng = Column(Float)
 
     # Postal Code
-    postalCode = Column(
+    postalcode = Column(
         String())
 
     # Postal Code Mapped
     # When this script was originally run, I didn't have this column in there
-    postalCodeMapped = Column(
+    postalcodemapped = Column(
         String())
 
     # Whether or not the row is a valid observation

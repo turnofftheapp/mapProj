@@ -31,3 +31,31 @@ https://www.mapbox.com/mapbox-gl-js/example/geojson-polygon/
 # Issue with zoom level
 This was solved by simply converting from geoJSON to MBTiles using the command-line utilit Tippecanoe, you can follow this tutorial:
 https://www.mapbox.com/help/large-data-tippecanoe/
+Bascially, in ther terminal, just run this is the command to convert:
+`$ tippecanoe -o ca.mbtiles ca.geojson`
+
+# Downloading large geoJSON files from github
+Instead of copying and pasting a raw Git Hub Document into a text editor, or something like that, you can easily download large files by just grabbing the raw url from github and then use curl
+`$ tippecanoe -o ca.mbtiles ca.geojson`
+
+
+# Dowloading shape files of canada postal codes
+In Canada, postal codes are known as Forward Sorting Locations
+# This answer explains how you can download them on the Canada Open Government website initiative
+https://gis.stackexchange.com/a/28974/137465
+# Here is the website where you download the files
+# https://www12.statcan.gc.ca/census-recensement/2011/geo/bound-limit/bound-limit-2011-eng.cfm
+# You can select between cartographic and non-cartographic files, the former include lakes and shoreline, for our purposes digital should be fine and it's less data
+# This post explains the difference:
+# https://www150.statcan.gc.ca/n1/pub/92-195-x/2011001/other-autre/carto-eng/carto-eng.htm
+# SHP FILES (ARG GIS INVENTED THESE)
+https://en.wikipedia.org/wiki/Geography_Markup_Language
+# Convert to GEOJSON USING QGIS AND SAVING AS A NEW LAYER
+# Seems like it would be simple: https://gis.stackexchange.com/questions/28613/convert-gml-to-geojson/28617
+# TODO: CUT THIS DOWN TO JUST BRITISH COLOMBIA (IF NOT TOO MUCH WORK)
+# GETTING A PROJECTION WARNING WHEN USING TIPPECANOE
+`gfsa.geojson: Warning: GeoJSON specified projection "urn:ogc:def:crs:EPSG::4269", not the expected "urn:ogc:def:crs:OGC:1.3:CRS84".
+gfsa.geojson: If "urn:ogc:def:crs:OGC:1.3:CRS84" is not the expected projection, use -s to specify the right one.
+1621 features, 8149709 bytes of geometry, 14855 bytes of separate metadata, 9179 bytes of string pool`
+# There could be something wrong with this projection later on the line
+tippecanoe -o gfsa.mbtiles gfsa.geojson
