@@ -36,7 +36,7 @@ class Itenerary(Base):
 
     # Primary Key
     ## String
-    distinctKey = Column(
+    distinctkey = Column(
         String(), primary_key=True)
     
     

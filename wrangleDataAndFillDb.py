@@ -3,7 +3,7 @@
 
 # # Import libraries, set options, connect to DB
 
-# In[133]:
+# In[1]:
 
 
 # Configuration code for datawrangling
@@ -12,6 +12,7 @@ import os
 import numpy as np
 from datetime import datetime
 from geocode import geocode
+import mapToPoly
 from mapToPoly import mapToPoly
 pd.set_option('display.max_row', 30000)
 import csv
@@ -38,13 +39,13 @@ session = DBSession()
 
 # # Read in data as pandas data frame, selecting only certain fields
 
-# In[134]:
+# In[2]:
 
 
 fields = ['distinct_id', 'numItinerariesReturned', 'departureDate', 'startFromLocation', 'selectedDestination_id', 'selectedDestination_name', 'time']
 
 
-# In[135]:
+# In[3]:
 
 
 df = pd.read_csv('generated_itineraries.csv', usecols = fields)
@@ -52,7 +53,7 @@ df = pd.read_csv('generated_itineraries.csv', usecols = fields)
 
 # # Wrange field: destinationIDs
 
-# In[136]:
+# In[4]:
 
 
 # Replace all of the NAs for destinationIDs with 0
@@ -69,7 +70,7 @@ df['selectedDestination_id'] = df.selectedDestination_id.astype(int)
 
 # # Wrangle field: numItenerariesReturned
 
-# In[137]:
+# In[5]:
 
 
 # Replace all of the NAs for numItinerariesReturned with 1
@@ -83,7 +84,7 @@ df['numItinerariesReturned'] = df.numItinerariesReturned.astype(int)
 
 # # Wrangle Field: Destination Name
 
-# In[138]:
+# In[6]:
 
 
 #Replace all of the NAs in
@@ -95,7 +96,7 @@ print(len(df))
 
 # # Wrangle Field: departureDate
 
-# In[139]:
+# In[7]:
 
 
 #Convert destinationIDs column to an integer value
@@ -155,7 +156,7 @@ df['departureDate'] = df.departureDate.apply(extractDate)
 
 # # Wrangle Field: distinctID
 
-# In[140]:
+# In[8]:
 
 
 #It turns out distinc_id correpsonds to a user
@@ -176,7 +177,7 @@ unique_keys = df.primary_key.unique()
 
 # # Create a subset of the datle with sample method to test geocode and database entry logic
 
-# In[141]:
+# In[9]:
 
 
 #Out put the entire database
@@ -185,11 +186,11 @@ unique_keys = df.primary_key.unique()
 len(df)
 
 
-# In[142]:
+# In[10]:
 
 
 #Create a random sample of the database, these entries will be added to the database in the next section
-sampleDf = df.sample(500)
+sampleDf = df.sample(10)
 
 # Output this random sample
 sampleDf.head(len(sampleDf))    
@@ -200,7 +201,7 @@ sampleDf.head(len(sampleDf))
 #  
 # 
 
-# In[143]:
+# In[11]:
 
 
 f = open("destinations_mapping_Jul-30-18.csv")
@@ -221,7 +222,7 @@ print(destinations)
 
 # # Loop through the rows in the dataframe, geocode, add entry to database
 
-# In[ ]:
+# In[12]:
 
 
 # Loop through the subsetted pandas data frame
@@ -295,27 +296,27 @@ for index, row in sampleDf.iterrows():
                     # TODO: CONSIDER CHANGING THE NAME OF THIS TO SOMETHING ELSE
                     selectedDestinationName = "DELETED"
                 
-            databaseEntry = Itenerary(distinctKey=row["primary_key"],
-                                      numberItinerariesReturned=row["numItinerariesReturned"],
-                                      selectedDestination_id=row["selectedDestination_id"],
-                                      selectedDestination_name=selectedDestinationName,
-                                      startFromLocation=row["startFromLocation"],
-                                      departureDate=row["departureDate"],
+            databaseEntry = Itenerary(distinctkey=row["primary_key"],
+                                      numberitinerariesReturned=row["numItinerariesReturned"],
+                                      selecteddestination_id=row["selectedDestination_id"],
+                                      selecteddestination_name=selectedDestinationName,
+                                      startfromlocation=row["startFromLocation"],
+                                      departuredate=row["departureDate"],
                                       # Get data from python dictionary returned from geocode() function
                                       formatted_address=geocodeInfo['formatted_address'],
                                       lat=geocodeInfo['lat'],
                                       lng=geocodeInfo['lng'],
-                                      postalCode=geocodeInfo['postalCode'],
-                                      postalCodeMapped=zipCodeMapped,
+                                      postalcode=geocodeInfo['postalCode'],
+                                      postalcodemapped=zipCodeMapped,
                                       valid=valid)
         # If valid is false, just fill in the information that we have from the pandas data frame
         else:
-            databaseEntry = Itenerary(distinctKey=row["primary_key"],
-                                      numberItinerariesReturned=row["numItinerariesReturned"],
-                                      selectedDestination_id=row["selectedDestination_id"],
-                                      selectedDestination_name=row["selectedDestination_name"],
-                                      startFromLocation=row["startFromLocation"],
-                                      departureDate=row["departureDate"],
+            databaseEntry = Itenerary(distinctkey=row["primary_key"],
+                                      numberitinerariesreturned=row["numItinerariesReturned"],
+                                      selecteddestination_id=row["selectedDestination_id"],
+                                      selecteddestination_name=row["selectedDestination_name"],
+                                      startfromlocation=row["startFromLocation"],
+                                      departuredate=row["departureDate"],
                                       valid=valid)
 
         # Add the the information to a database.    
