@@ -87,16 +87,16 @@ class Itenerary(Base):
         # Returns object data in easily serializeable format
 
         return {
-            'primary_key': self.distinctKey,
-            'numberItinerariesReturned': self.numberItinerariesReturned,
-            'selectedDestination_id': self.selectedDestination_id,
-            'selectedDestination_name': self.selectedDestination_name,
-            'startFromLocation': self.startFromLocation,
+            'primary_key': self.distinctkey,
+            'numberItinerariesReturned': self.numberitinerariesreturned,
+            'selectedDestination_id': self.selecteddestination_id,
+            'selectedDestination_name': self.selecteddestination_name,
+            'startFromLocation': self.startfromlocation,
             'formatted_address': self.formatted_address,
             'lat': self.lat,
             'lng': self.lng,
-            'postalCode': self.postalCode,
-            'postalCodeMapped': self.postalCodeMapped,
+            'postalCode': self.postalcode,
+            'postalCodeMapped': self.postalcodemapped,
             'valid': self.valid
 
         }

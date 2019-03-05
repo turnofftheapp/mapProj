@@ -5,12 +5,22 @@ from flask import (
     url_for
 )
 
+import os
 from sqlalchemy import create_engine, func, text
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Itenerary
 
-# Connect to Database and create database session
-engine = create_engine('sqlite:///totagoData.db')
+
+# Connect to postgres database
+# First get my password from an environment variable
+passWord = os.environ['my_password']
+
+# Concatenate a strings to get the database URI
+DATABASE_URI = 'postgres+psycopg2://maxcarey:' + passWord + '@localhost:5432/totago'
+
+engine = create_engine(DATABASE_URI)
+
+
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
@@ -25,21 +35,14 @@ def getJSON():
 @app.route('/count/')
 def count():
     
-    # https://stackoverflow.com/questions/17972020/how-to-execute-raw-sql-in-sqlalchemy-flask-app
-    # Do it with good old SQL
-    # When you do it like this the result is not jsonifyble
-    
-    #result = session.execute('SELECT postalCode, count(*) FROM itenerary GROUP BY postalCode ORDER BY COUNT(*) desc;')
-    
-    # DO it with the ORM Syntax:
-    result = session.query(Itenerary.postalCodeMapped, func.count(Itenerary.postalCodeMapped)).group_by(Itenerary.postalCodeMapped).all()
-    # It looks like the result object is a list of tuples
-
-    #for r in result:
-    #	print(r)
-
-    print("Done printing******")
-    return jsonify(result)
+    result = session.execute('SELECT postalcodemapped, COUNT(*) FROM itenerary GROUP BY postalcodemapped ORDER BY COUNT(*) desc;')
+    data = []
+    for row in result:
+        #print(row[0])
+        nestedDictionary = {"postalCode": row[0],
+                            "postalCodeHits": row[1]}
+        data.append(nestedDictionary)
+    return jsonify(data)
 
 @app.route('/map/')
 def showMap():
@@ -49,18 +52,19 @@ def showMap():
 def postalCodeToDestination(postal_code):
     
     # Construct the raw SQL query
-    sql = text('SELECT postalCodeMapped, selectedDestination_ID, selectedDestination_name, COUNT(*) FROM itenerary GROUP BY postalCodeMapped, selectedDestination_ID ORDER BY COUNT(*) DESC;')
+    sql = text('SELECT postalcodemapped, selecteddestination_id, selecteddestination_name, COUNT(*) FROM itenerary GROUP BY postalcodemapped, selecteddestination_id, selecteddestination_name ORDER BY COUNT(*) DESC;')
     result = session.execute(sql)
     # https://stackoverflow.com/questions/17972020/how-to-execute-raw-sql-in-sqlalchemy-flask-app
     data = []
+    
     for row in result:
-        if row[0] == postal_code:
+        
+        if row[0] == str(postal_code):
             nestedDictionary = {"postalCode": row[0],
                                 "destinationID": row[1],
                                 "destinationName": row[2],
                                 "count": row[3]}
             data.append(nestedDictionary)
-    print(data)
     return jsonify(data)
 
 @app.route('/example/')

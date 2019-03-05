@@ -15,17 +15,22 @@ $.ajax({
     }
 });
 
+console.log(mydata);
+
 var arrayLength = mydata.length;
 var waData = [];
+
 for (var i = 0; i < arrayLength; i++) {
-    var postalCode = mydata[i][0];
+    console.log(mydata[i])
+    var postalCode = mydata[i]['postalCode'];
+    
     // All of the Washington State Zip codes start with 9, so we shuld just grab those ones
     if (postalCode !== null && postalCode.toString().startsWith("9")) {
     // Get the hits for that postal code
     // Example to follow from map
     // Construct a variable like this but for traits in mapbox
     //{"STATE_ID": "01", "unemployment": 13.17}
-    postalCodeHits = mydata[i][1]
+    postalCodeHits = mydata[i]['postalCodeHits']
     var entry = {"ZCTA5CE10": postalCode.toString(), "postalCodeHits": postalCodeHits};
     waData.push(entry);
     }
@@ -314,6 +319,8 @@ $(document).ready(function () {
                 postalCodeToDestination = json;
                 }
             });
+                console.log("***********")
+                console.log(postalCodeToDestination);
                 //console.log(postalCodeToDestination);
                 my.viewModel.postalCodeToDestinationData(postalCodeToDestination);
                 renderGraph();
