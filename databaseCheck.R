@@ -7,10 +7,14 @@ library(dplyr)
 library(tm)
 library(ggplot2)
 
-Sys.getenv()
+# Get the password stored in a database
+# from an environment variable
+# https://cran.r-project.org/web/packages/httr/vignettes/secrets.html
+dbPassword <- Sys.getenv("my_password")
+
 db = dbConnect(PostgreSQL(),
                user="maxcarey",
-               password="",
+               password=dbPassword,
                host="localhost",
                port=5432,
                dbname="totago")
