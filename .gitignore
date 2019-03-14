@@ -24,7 +24,9 @@ __pycache__/
 local_backup/
 
 
+# Ignore some of the potential data
+potential_data/
 
 
-
+# Ignore the rproject stuff
 .Rproj.user
