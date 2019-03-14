@@ -45,6 +45,7 @@ def count():
         nestedDictionary = {"postalCode": row[0],
                             "postalCodeHits": row[1]}
         data.append(nestedDictionary)
+    
     print("*******")
     sys.stdout.flush()
     print("HERE IS DATA:")

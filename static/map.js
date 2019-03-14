@@ -7,7 +7,8 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiYXhtZTEwMCIsImEiOiJjam0ybHJpYWgycnU1M3BsaXBmb
 // The model pulls the data from a local endpoint 
 var mydata = [];
 $.ajax({
-    url: 'http://0.0.0.0:8000/count/',
+    //url: 'http://0.0.0.0:8000/count/',
+    url: 'count/',
     async: false,
     dataType: 'json',
     success: function (json) {
