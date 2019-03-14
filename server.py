@@ -1,3 +1,4 @@
+import sys
 from flask import (
     Flask,
     jsonify,
@@ -45,8 +46,11 @@ def count():
                             "postalCodeHits": row[1]}
         data.append(nestedDictionary)
     print("*******")
+    sys.stdout.flush()
     print("HERE IS DATA:")
+    sys.stdout.flush()
     print(data)
+    sys.stdout.flush()
     return jsonify(data)
 
 @app.route('/map/')
