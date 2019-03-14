@@ -4,3 +4,4 @@ mixpanel_api==1.6.2
 SQLAlchemy==1.2.0
 gunicorn==19.9.0
 SQLAlchemy-Utils==0.33.11
+psycopg2==2.7.6.1
