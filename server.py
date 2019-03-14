@@ -18,7 +18,7 @@ passWord = os.environ['my_password']
 # Concatenate a strings to get the database URI
 #DATABASE_URI = 'postgres+psycopg2://maxcarey:' + passWord + '@localhost:5432/totago'
 
-DATABASE_URI = 'postgresql://maxcarey:' + passWord + '@totago.cqfm37jhmjmk.ap-southeast-2.rds.amazonaws.com:5432/totago?sslrootcert=rds-combined-ca-bundle.pem&sslmode=require'
+DATABASE_URI = 'postgres://maxcarey:' + passWord + '@totago.cqfm37jhmjmk.ap-southeast-2.rds.amazonaws.com:5432/totago?sslrootcert=rds-combined-ca-bundle.pem&sslmode=require'
 
 engine = create_engine(DATABASE_URI)
 
@@ -44,6 +44,9 @@ def count():
         nestedDictionary = {"postalCode": row[0],
                             "postalCodeHits": row[1]}
         data.append(nestedDictionary)
+    print("*******")
+    print("HERE IS DATA:")
+    print(data)
     return jsonify(data)
 
 @app.route('/map/')
