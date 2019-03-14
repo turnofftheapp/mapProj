@@ -8,7 +8,7 @@ from flask import (
 import os
 from sqlalchemy import create_engine, func, text
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, Itenerary
+from database_setup_cloud import Base, Itenerary
 
 
 # Connect to postgres database
