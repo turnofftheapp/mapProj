@@ -15,7 +15,7 @@ dbPassword <- Sys.getenv("my_password")
 db = dbConnect(PostgreSQL(),
                user="maxcarey",
                password=dbPassword,
-               host="localhost",
+               host="totago.cqfm37jhmjmk.ap-southeast-2.rds.amazonaws.com",
                port=5432,
                dbname="totago")
 
