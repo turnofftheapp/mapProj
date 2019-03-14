@@ -18,7 +18,7 @@ passWord = os.environ['my_password']
 # Concatenate a strings to get the database URI
 #DATABASE_URI = 'postgres+psycopg2://maxcarey:' + passWord + '@localhost:5432/totago'
 
-DATABASE_URI = 'postgres://maxcarey:' + passWord + '@totago.cqfm37jhmjmk.ap-southeast-2.rds.amazonaws.com:5432/totago?sslca=config/amazon-rds-ca-cert.pem&sslmode=require&encrypt=true'
+DATABASE_URI = 'postgres://maxcarey:' + passWord + '@totago.cqfm37jhmjmk.ap-southeast-2.rds.amazonaws.com:5432/totago?sslrootcert=rds-combined-ca-bundle.pem&sslmode=require'
 
 engine = create_engine(DATABASE_URI)
 
