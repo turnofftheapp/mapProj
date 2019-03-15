@@ -314,7 +314,7 @@ $(document).ready(function () {
             var postalCodeToDestination = [];
                 $.ajax({
                 //url: 'http://0.0.0.0:8000/postalCodeToDestination/' + postalCode,
-                url: 'https://intense-plateau-81342.herokuapp.com/count/' + postalCode,
+                url: 'https://intense-plateau-81342.herokuapp.com/postalCodeToDestination/' + postalCode,
                 async: false,
                 dataType: 'json',
                 success: function (json) {
