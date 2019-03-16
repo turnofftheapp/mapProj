@@ -8,7 +8,7 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiYXhtZTEwMCIsImEiOiJjam0ybHJpYWgycnU1M3BsaXBmb
 var mydata = [];
 $.ajax({
     //url: 'http://0.0.0.0:8000/count/',
-    url: 'https://intense-plateau-81342.herokuapp.com/count/',
+    url: '/count/',
     async: false,
     dataType: 'json',
     success: function (json) {
@@ -314,7 +314,7 @@ $(document).ready(function () {
             var postalCodeToDestination = [];
                 $.ajax({
                 //url: 'http://0.0.0.0:8000/postalCodeToDestination/' + postalCode,
-                url: 'https://intense-plateau-81342.herokuapp.com/postalCodeToDestination/' + postalCode,
+                url: '/postalCodeToDestination/' + postalCode,
                 async: false,
                 dataType: 'json',
                 success: function (json) {
