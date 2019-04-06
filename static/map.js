@@ -7,11 +7,13 @@ function getMapData (region) {
 
     // make a region URL with the correct parameter
     // TODO: Create backend calls so that is can work for other regions
+    // As of now, this just calls a backend call for all the data and
+    // then filters in to Seattle specifically
     regionURL = '/count/'
 
     var mydata = [];
     $.ajax({
-        url: regionUrl,
+        url: regionURL,
         dataType: 'json',
         success: function (json) {
             mydata = json;
@@ -115,16 +117,17 @@ var ViewModel = function() {
     });
 
 
-    self.highlightedPostalCodeHits = ko.computed(function() {
-    
-        // https://stackoverflow.com/a/7178381/5420796
-        for(var i = 0; i < waData.length; i += 1) {
-            if(waData[i]["ZCTA5CE10"] == self.highlightedPostalCode()) {
-                return waData[i]["postalCodeHits"];
-            }
-        }   
-
-    });
+    self.highlightedPostalCodeHits = ko.observable("temporary");
+    //self.highlightedPostalCodeHits = ko.computed(function() {
+    //
+    //    // https://stackoverflow.com/a/7178381/5420796
+    //    for(var i = 0; i < waData.length; i += 1) {
+    //        if(waData[i]["ZCTA5CE10"] == self.highlightedPostalCode()) {
+    //            return waData[i]["postalCodeHits"];
+    //        }
+    //    }   
+//
+    //});
 
     // Create an empty array of destination circle objects
     self.destinationCircles = ko.observableArray([]);
