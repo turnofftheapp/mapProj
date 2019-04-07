@@ -47,8 +47,6 @@ map.on('load', function() {
     
     getMapData(region);
 
-
-
     
     // This code basically renders the zip code that is being displayed
     map.on('mousemove', function (e) {
@@ -176,11 +174,16 @@ function createChoropleth (mapData, region) {
 
 function addDestinationCircles (myData) {
 
-    
-    
+
+    // First I need to delete all of the desination circles
+    // In the case there are some there already
+    //https://stackoverflow.com/a/21470076/5420796
+    my.viewModel.destinationCircles.removeAll();
+
     // This should be 24 in the case of Seattle
     var myDataLength = myData.length;
-    
+
+
     for (var i = 0; i < myDataLength; i++) {
     
         var name = myData[i]['name'];
