@@ -51,12 +51,12 @@ function getMapData (region) {
 
 function getDestinationData (region) {
 
-    // As of now region does nothing
+    var url = '/destinations/' + region
 
     var mydata = [];
     $.ajax({
         //url: 'https://www.totago.co/api/v1/destinations.json?region_id=1',
-        url: '/destinations/',
+        url: url,
         dataType: 'json',
         success: function (json) {
             mydata = json;

@@ -41,9 +41,26 @@ def getJSON():
 # I Am esentially creating a server-side proxy script to get this data then send it to the front end
 # See this post here
 # https://stackoverflow.com/a/31514305/5420796
-@app.route('/destinations/')
-def getDestination():
-    r = requests.get('https://www.totago.co/api/v1/destinations.json?region_id=1')
+@app.route('/destinations/<string:region>')
+def getDestination(region):
+    
+    print(region)
+
+    if region == "seattle":
+        region_id = "1"
+    if region == "losangeles":
+        region_id = "7"
+    
+    print(region_id)
+
+    print(region)
+
+    urlString = 'https://www.totago.co/api/v1/destinations.json?region_id=' + region_id
+
+    print("URL STRING HERE:")
+    print(urlString)
+
+    r = requests.get(urlString)
     json_data = json.loads(r.text)
     return jsonify(json_data)
 

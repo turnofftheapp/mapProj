@@ -24,7 +24,7 @@ function renderMap (mapData, region) {
     addMapSource(region);
     
     // I'm esentially passing in the map data
-    createChoropleth(mapData);
+    createChoropleth(mapData, region);
 
     
     //Get Desination Data
@@ -111,6 +111,10 @@ function addMapSource (region) {
 
             url = "mapbox://axme100.0bz1txrj"
             name = "wa"
+        } else if (region == "losangeles") {
+            console.log("got here")
+            url = "mapbox://axme100.1e3djubr"
+            name = "ca"
         }
 
         // Add source for zip code polygons hosted on Mapbox, based on US Census Data:
@@ -123,17 +127,30 @@ function addMapSource (region) {
 }
     
 
-function createChoropleth (waData) {
+function createChoropleth (mapData, region) {
+
+    console.log("region: ")
+    console.log(region)
+    
+    // TODO: Parameterize this function further
+        if (region == "seattle") {
+            id = "wa-join"
+            sourceLayer = "wa"
+        } else if (region == "losangeles") {
+            console.log("got here too")
+            id = "ca-join"
+            sourceLayer = "ca"
+        }
 
     var expression = ["match", ["get", "ZCTA5CE10"]];
 
     // Calulate Max Value
     // https://stackoverflow.com/questions/4020796/finding-the-max-value-of-an-attribute-in-an-array-of-objects
-    maxValue = Math.max.apply(Math, waData.map(function(o) { return o.postalCodeHits; }))
+    maxValue = Math.max.apply(Math, mapData.map(function(o) { return o.postalCodeHits; }))
 
 
     // Calculate color for each state based on the unemployment rate
-    waData.forEach(function(row) {
+    mapData.forEach(function(row) {
         var green = (row["postalCodeHits"] / maxValue) * 500;
         var color = "rgba(" + 0 + ", " + green + ", " + 0 + ", 1)";
         expression.push(row["ZCTA5CE10"], color);
@@ -145,10 +162,10 @@ function createChoropleth (waData) {
     // Add layer from the vector tile source with data-driven style
     map.addLayer({
         // be careful that second dash works
-        "id": "wa-join",
+        "id": id,
         "type": "fill",
-        "source": "wa",
-        "source-layer": "wa",
+        "source": sourceLayer,
+        "source-layer": sourceLayer,
         "paint": {
             "fill-color": expression
         }
@@ -342,7 +359,7 @@ function setCircles () {
 
 function changeRegion (region) {
 
-    if (region == "losAngeles") {
+    if (region == "losangeles") {
         
         // Set view model to Los Angeles
         my.viewModel.currentRegion("Los Angeles");
@@ -356,7 +373,7 @@ function changeRegion (region) {
         });
 
         
-        //getMapData(region);
+        getMapData(region);
 
     }
 }
