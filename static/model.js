@@ -9,7 +9,7 @@ function getMapData (region) {
     // TODO: Create backend calls so that is can work for other regions
     // As of now, this just calls a backend call for all the data and
     // then filters in to Seattle specifically
-    regionURL = '/count/'
+    regionURL = '/count/' + region;
 
     var mydata = [];
     $.ajax({
@@ -25,8 +25,7 @@ function getMapData (region) {
     
                 var postalCode = mydata[i]['postalCode'];
     
-                // All of the Washington State Zip codes start with 9, so we shuld just grab those ones
-                if (postalCode !== null && postalCode.toString().startsWith("9")) {
+                if (postalCode !== null) {
                     // Get the hits for that postal code
                     // Example to follow from map
                     // Construct a variable like this but for traits in mapbox

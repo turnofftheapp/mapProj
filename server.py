@@ -35,10 +35,17 @@ def getJSON():
     iteneraries = session.query(Itenerary).all()
     return jsonify(Itenerary=[i.serialize for i in iteneraries])
 
-@app.route('/count/')
-def count():
-    
-    result = session.execute('SELECT postalcodemapped, COUNT(*) FROM itenerary GROUP BY postalcodemapped ORDER BY COUNT(*) desc;')
+@app.route('/count/<string:region>')
+def count(region):
+
+    if region == "seattle":
+        # In the case of Seattle area, you start with "9" and add 4 additional characterse
+        whereRegex = "'9....'"
+
+
+    sqlQUERY = 'SELECT postalcodemapped, COUNT(*) FROM itenerary WHERE postalcodemapped ~ {} GROUP BY postalcodemapped ORDER BY COUNT(*) desc;'.format(whereRegex)
+
+    result = session.execute(sqlQUERY)
     data = []
     for row in result:
         #print(row[0])
@@ -46,12 +53,6 @@ def count():
                             "postalCodeHits": row[1]}
         data.append(nestedDictionary)
     
-    print("*******")
-    sys.stdout.flush()
-    print("HERE IS DATA:")
-    sys.stdout.flush()
-    print(data)
-    sys.stdout.flush()
     return jsonify(data)
 
 @app.route('/map/')
