@@ -43,35 +43,6 @@ var ViewModel = function() {
     // Create an empty array of destination circle objects
     self.destinationCircles = ko.observableArray([]);
 
-    // Populate that array
-    var waDestinationsLength = waDestinations.length;
-    for (var i = 0; i < waDestinationsLength; i++) {
-    
-        var name = waDestinations[i]['name'];
-
-        
-        var id = waDestinations[i]["id"];
-        var name = waDestinations[i]['name'];
-        var lat = parseFloat(waDestinations[i]['begin_lat']);
-        var lng = parseFloat(waDestinations[i]['begin_lng']);
-
-        latLngArray = [];
-        latLngArray.push(lat);
-        latLngArray.push(lng);
-
-        geoJSONCircle = createGeoJSONCircle(latLngArray, 1);
-        
-        destinationObject = {
-            name: name,
-            geoJSONCircle: geoJSONCircle,
-            id: id,
-            lat: lat,
-            lng: lng
-        }
-        
-        // Push out to observable array
-        self.destinationCircles.push(destinationObject);
-    }
 
     self.postalCodeToDestinationData = ko.observableArray([]);
 

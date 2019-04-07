@@ -26,8 +26,11 @@ function renderMap (mapData, region) {
     // I'm esentially passing in the map data
     createChoropleth(mapData);
 
-    // Add destination circles
-    addDestinationCircles(region);
+    
+    //Get Desination Data
+    getDestinationData(region);
+
+    
 };
 
 
@@ -157,10 +160,41 @@ function createChoropleth (waData) {
     }
 
 
-function addDestinationCircles (region) {
+function addDestinationCircles (myData) {
 
-    // It look like as of now, all the destination circles come from the view model
-    // It could be the case that they don't need to live there, it's not that much data afterall
+    
+    
+    // This should be 24 in the case of Seattle
+    var myDataLength = myData.length;
+    
+    for (var i = 0; i < myDataLength; i++) {
+    
+        var name = myData[i]['name'];
+
+        
+        var id = myData[i]["id"];
+        var name = myData[i]['name'];
+        var lat = parseFloat(myData[i]['begin_lat']);
+        var lng = parseFloat(myData[i]['begin_lng']);
+
+        latLngArray = [];
+        latLngArray.push(lat);
+        latLngArray.push(lng);
+
+        geoJSONCircle = createGeoJSONCircle(latLngArray, 1);
+        
+        destinationObject = {
+            name: name,
+            geoJSONCircle: geoJSONCircle,
+            id: id,
+            lat: lat,
+            lng: lng
+        }
+        
+        // Push the object to the observable array in the view model
+        // After all we are going to have to change the size of these guys
+        my.viewModel.destinationCircles.push(destinationObject);
+    }
 
     for (var i = 0; i < my.viewModel.destinationCircles().length; i++) {
 

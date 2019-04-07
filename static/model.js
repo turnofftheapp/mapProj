@@ -45,11 +45,13 @@ function getMapData (region) {
 
 // Pull the array of destination objects out of the JSON variable
 // This will have to become an AJAX call before deployment
-var waDestinations = destinationsWA['destinations'];
-console.log("Original Destinations:")
-console.log(waDestinations);
+//var waDestinations = destinationsWA['destinations'];
+//console.log("Original Destinations:")
+//console.log(waDestinations);
 
 function getDestinationData (region) {
+
+    // As of now region does nothing
 
     var mydata = [];
     $.ajax({
@@ -57,16 +59,16 @@ function getDestinationData (region) {
         url: '/destinations/',
         dataType: 'json',
         success: function (json) {
-            
             mydata = json;
             console.log("New Desintations: ")
             console.log(mydata['destinations'])
-
+            // Call the function to add these circles with this data 
+            addDestinationCircles(mydata['destinations'])
         }
     });
 };
 
-getDestinationData("seattle");
+//getDestinationData("seattle");
 
 
 // Function to Create Objects that will live in the view model
