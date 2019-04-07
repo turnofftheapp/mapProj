@@ -11,7 +11,6 @@ var map = new mapboxgl.Map({
 });
 
 
-
 // This is esentially  helper function that will be loaded
 // Once data is sucsessully returned from getMapData()
 function renderMap (mapData, region) {
@@ -30,7 +29,6 @@ function renderMap (mapData, region) {
     // Add destination circles
     addDestinationCircles(region);
 };
-
 
 
 map.on('load', function() {
