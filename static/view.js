@@ -28,11 +28,11 @@ function renderMap (mapData, region) {
 
     
     //Get Desination Data
+    //Once the data is returned sucsessfully,
+    // An additional functio will be called that will render all of this data
     getDestinationData(region);
-
     
 };
-
 
 map.on('load', function() {
     // Thig logic is mostly an adaptation of the following blog
@@ -95,9 +95,6 @@ map.on('load', function() {
             postalCodeToDestination = json;
             }
         });
-            console.log("***********")
-            console.log(postalCodeToDestination);
-            //console.log(postalCodeToDestination);
             my.viewModel.postalCodeToDestinationData(postalCodeToDestination);
             renderGraph();
             setCircles();
@@ -342,6 +339,27 @@ function setCircles () {
         };
     };
 };
+
+function changeRegion (region) {
+
+    if (region == "losAngeles") {
+        
+        // Set view model to Los Angeles
+        my.viewModel.currentRegion("Los Angeles");
+
+        // Fly to Los Angeles
+        // TODO: Instead of hardcoding in these coordinates
+        // calculate the bounds dynamically.
+        map.flyTo({
+            center: [-118.2437, 34.0522],
+            zoom: [8]
+        });
+
+        
+        //getMapData(region);
+
+    }
+}
 
 /** Apply Bindings */
 // This was copied over from my udacity project: https://github.com/axme100/mapProj/blob/master/js/app.js

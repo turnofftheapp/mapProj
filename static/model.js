@@ -19,7 +19,7 @@ function getMapData (region) {
             mydata = json;
             // Lines 26 - 43 are going to have to be incorporated ino the function above
             var arrayLength = mydata.length;
-            var waData = [];
+            var mapData = [];
 
             for (var i = 0; i < arrayLength; i++) {
     
@@ -32,11 +32,11 @@ function getMapData (region) {
                     //{"STATE_ID": "01", "unemployment": 13.17}
                     postalCodeHits = mydata[i]['postalCodeHits']
                     var entry = {"ZCTA5CE10": postalCode.toString(), "postalCodeHits": postalCodeHits};
-                    waData.push(entry);
+                    mapData.push(entry);
                 }
             }
             // Call the helper function to render the map
-            renderMap(waData, region);
+            renderMap(mapData, region);
             // Call the function tha renders the map
         }
     });

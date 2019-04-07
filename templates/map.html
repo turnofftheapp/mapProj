@@ -32,11 +32,11 @@
 		<div class='map-overlay' id='features'><h2>Postal Code:</h2><div id='pd'><p>Hovering over:</p><p data-bind="text: displayedInfo()"></p><p>Total trips taken:</p><p data-bind="text: highlightedPostalCodeHits"></p></div></div>
 		</div>
 	<div class="col span_1_of_2">
-		<h1> Seattle Region </h1>
+		<h1 data-bind="text: currentRegion"> </h1>
 		<h2> Cick to Change Region </h2>
 		<button type="button" class="btn btn-primary">Seattle</button>
 		<button type="button" class="btn btn-warning">Vancouver BC</button>
-		<button type="button" class="btn btn-warning">Los Angeles</button>
+		<button onclick="changeRegion('losAngeles')" type="button" class="btn btn-warning">Los Angeles</button>
 		<button type="button" class="btn btn-warning">San Diego</button>
 		<button type="button" class="btn btn-warning">New York</button>
 		<h2> Click on a Zip Code Area to see where people are going </h2>

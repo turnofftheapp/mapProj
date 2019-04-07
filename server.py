@@ -51,10 +51,15 @@ def getDestination():
 @app.route('/count/<string:region>')
 def count(region):
 
+    # List of zip codes available here:
+    # https://www.zip-codes.com/state/ca.asp
     if region == "seattle":
         # In the case of Seattle area, you start with "9" and add 4 additional characterse
-        whereRegex = "'9....'"
+        whereRegex = "'9[89]...'"
 
+    if region == "losangeles":
+        # In the case of los angeles area
+        whereRegex = "'9[0123456]...'"
 
     sqlQUERY = 'SELECT postalcodemapped, COUNT(*) FROM itenerary WHERE postalcodemapped ~ {} GROUP BY postalcodemapped ORDER BY COUNT(*) desc;'.format(whereRegex)
 

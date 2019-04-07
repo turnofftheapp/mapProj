@@ -2,6 +2,8 @@
 var ViewModel = function() {
     var self = this;
 
+    self.currentRegion = ko.observable("Seattle Region");
+
     self.highlightedPostalCode = ko.observable("");
 
     self.highlightedDestination = ko.observable("");
