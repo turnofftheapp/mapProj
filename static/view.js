@@ -43,6 +43,7 @@ map.on('load', function() {
     
     // Render map
     // TODO: Make region a global variable in the view model
+    // And don't have the default just be Seattle like it is here
     var region = "seattle"
     
     getMapData(region);
@@ -104,9 +105,12 @@ map.on('load', function() {
 
 function addMapSource (region) {
 
+        
+
+    
+
         // TODO: Parameterize this function further
         if (region == "seattle") {
-
             url = "mapbox://axme100.0bz1txrj"
             name = "wa"
         } else if (region == "losangeles") {
@@ -114,6 +118,14 @@ function addMapSource (region) {
             url = "mapbox://axme100.1e3djubr"
             name = "ca"
         }
+
+
+        var mapLayer = map.getLayer(name);
+        if(typeof mapLayer !== 'undefined') {
+        // Remove map layer & source.
+        map.removeLayer(name).removeSource(name);
+        }
+
 
         // Add source for zip code polygons hosted on Mapbox, based on US Census Data:
         // https://www.census.gov/geo/maps-data/data/cbf/cbf_state.html
@@ -138,6 +150,13 @@ function createChoropleth (mapData, region) {
             console.log("got here too")
             id = "ca-join"
             sourceLayer = "ca"
+        }
+
+    
+    var mapLayer = map.getLayer(id);
+        if(typeof mapLayer !== 'undefined') {
+        // Remove map layer & source.
+        map.removeLayer(id).removeSource(id);
         }
 
     var expression = ["match", ["get", "ZCTA5CE10"]];
@@ -173,7 +192,6 @@ function createChoropleth (mapData, region) {
 
 
 function addDestinationCircles (myData) {
-
 
     // First I need to delete all of the desination circles
     // In the case there are some there already
@@ -235,7 +253,6 @@ function addDestinationCircles (myData) {
 
         }
 }
-
 
 
 function renderGraph () {
@@ -374,11 +391,15 @@ function changeRegion (region) {
             center: [-118.2437, 34.0522],
             zoom: [8]
         });
-
-        
-        getMapData(region);
-
+    } else if (region == "seattle") {
+       my.viewModel.currentRegion("Seattle"); 
+        map.flyTo({
+            center: [-122.33, 47.60],
+            zoom: [8]
+        });
     }
+
+    getMapData(region);
 }
 
 /** Apply Bindings */
