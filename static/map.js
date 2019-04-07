@@ -44,7 +44,6 @@ function getMapData (region) {
 };
 
 
-
 // Pull the array of destination objects out of the JSON variable
 // This will have to become an AJAX call before deployment
 var waDestinations = destinationsWA['destinations'];
@@ -117,17 +116,20 @@ var ViewModel = function() {
     });
 
 
-    self.highlightedPostalCodeHits = ko.observable("temporary");
-    //self.highlightedPostalCodeHits = ko.computed(function() {
-    //
-    //    // https://stackoverflow.com/a/7178381/5420796
-    //    for(var i = 0; i < waData.length; i += 1) {
-    //        if(waData[i]["ZCTA5CE10"] == self.highlightedPostalCode()) {
-    //            return waData[i]["postalCodeHits"];
-    //        }
-    //    }   
-//
-    //});
+    self.regionData = ko.observable("");
+
+   
+
+    self.highlightedPostalCodeHits = ko.computed(function() {
+    
+        // https://stackoverflow.com/a/7178381/5420796
+        for(var i = 0; i < self.regionData().length; i += 1) {
+            if(self.regionData()[i]["ZCTA5CE10"] == self.highlightedPostalCode()) {
+                return self.regionData()[i]["postalCodeHits"];
+            }
+        }   
+    });
+    
 
     // Create an empty array of destination circle objects
     self.destinationCircles = ko.observableArray([]);
@@ -222,13 +224,17 @@ var map = new mapboxgl.Map({
 // Once data is sucsessully returned from getMapData()
 function renderMap (mapData, region) {
     
+    // Send map data to view model
+    // So that we can derive the total count and display it
+    my.viewModel.regionData(mapData);
+
     // Add the correct layer for the map
     // This needs to be further parameterized
     addMapSource(region);
     
     // I'm esentially passing in the map data
     createChoropleth(mapData);
-    
+
     // Add destination circles
     addDestinationCircles(region);
 };
@@ -271,8 +277,6 @@ map.on('load', function() {
         my.viewModel.highlightedPostalCode(hoveredPostalCode);
     
         my.viewModel.highlightedDestination(hoveredDestination);
-    
-        //console.log(my.viewModel.highlightedDestination())
 
 
         });
