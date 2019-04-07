@@ -6,6 +6,9 @@ var ViewModel = function() {
 
     self.highlightedDestination = ko.observable("");
     
+    // This logic is used to show the highlighted postal code and highlighted destination
+    // This logic just shows both of these items making sure "undefined insn't displayed"
+    // TODO: This seems a little complicated see if I really need it
     self.displayedInfo = ko.computed(function() {
     
         destinationDisplayed = self.highlightedDestination();
@@ -21,9 +24,10 @@ var ViewModel = function() {
     });
 
 
+    // This array contains the data used to make the choropleth
+    // It's necessary to have this here so on the next line, I can calculate the total trips taken per region
     self.regionData = ko.observable("");
 
-   
 
     self.highlightedPostalCodeHits = ko.computed(function() {
     

@@ -41,6 +41,7 @@ map.on('load', function() {
     // Render map
     // TODO: Make region a global variable in the view model
     var region = "seattle"
+    
     getMapData(region);
 
 

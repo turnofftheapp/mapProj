@@ -10,7 +10,8 @@ import os
 from sqlalchemy import create_engine, func, text
 from sqlalchemy.orm import sessionmaker
 from database_setup_cloud import Base, Itenerary
-
+import requests
+import json
 
 # Connect to postgres database
 # First get my password from an environment variable
@@ -34,6 +35,18 @@ app = Flask(__name__)
 def getJSON():
     iteneraries = session.query(Itenerary).all()
     return jsonify(Itenerary=[i.serialize for i in iteneraries])
+
+
+# Because CORS is not enabled for this totago API and I'm not ont there domain
+# I Am esentially creating a server-side proxy script to get this data then send it to the front end
+# See this post here
+# https://stackoverflow.com/a/31514305/5420796
+@app.route('/destinations/')
+def getDestination():
+    r = requests.get('https://www.totago.co/api/v1/destinations.json?region_id=1')
+    json_data = json.loads(r.text)
+    return jsonify(json_data)
+
 
 @app.route('/count/<string:region>')
 def count(region):

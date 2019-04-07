@@ -46,6 +46,28 @@ function getMapData (region) {
 // Pull the array of destination objects out of the JSON variable
 // This will have to become an AJAX call before deployment
 var waDestinations = destinationsWA['destinations'];
+console.log("Original Destinations:")
+console.log(waDestinations);
+
+function getDestinationData (region) {
+
+    var mydata = [];
+    $.ajax({
+        //url: 'https://www.totago.co/api/v1/destinations.json?region_id=1',
+        url: '/destinations/',
+        dataType: 'json',
+        success: function (json) {
+            
+            mydata = json;
+            console.log("New Desintations: ")
+            console.log(mydata['destinations'])
+
+        }
+    });
+};
+
+getDestinationData("seattle");
+
 
 // Function to Create Objects that will live in the view model
 // This comes from this post:
