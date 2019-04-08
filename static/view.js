@@ -392,25 +392,41 @@ function setCircles () {
 function changeRegion (region) {
 
 
+    // First remove the Layers and sources for the choropleth layer
     if (my.viewModel.currentRegion() == "Seattle") {
 
         // First test this to see if it works    
         map.removeLayer('wa-join');
         map.removeSource('wa');
-
     }
-
+    
     if (my.viewModel.currentRegion() == "Los Angeles") {
 
         // First test this to see if it works    
         map.removeLayer('ca-join');
         map.removeSource('ca');
+    }
+
+    // Next remove all of the desination circles and sources
+    // Loop through all of the circles and then erase them
+    for (var i = 0; i < my.viewModel.destinationCircles().length; i++) {
+
+        // First get the name of the desintation circle
+        nameID = my.viewModel.destinationCircles()[i]['name']
+        
+        // Remove them
+        map.removeLayer(nameID);
+        map.removeSource(nameID);
 
     }
 
-    // First remove all the data in the view so that we can start over, here. 
-    my.viewModel.postalCodeToDestinationData.removeAll();
+
+    // Remove all the of these objects from the view model
     my.viewModel.destinationCircles.removeAll();
+
+
+    my.viewModel.postalCodeToDestinationData.removeAll();
+    
 
     if (region == "losangeles") {
         
