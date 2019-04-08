@@ -2,7 +2,7 @@
 var ViewModel = function() {
     var self = this;
 
-    self.currentRegion = ko.observable("Seattle Region");
+    self.currentRegion = ko.observable("Seattle");
 
     self.highlightedPostalCode = ko.observable("");
 
@@ -28,7 +28,7 @@ var ViewModel = function() {
 
     // This array contains the data used to make the choropleth
     // It's necessary to have this here so on the next line, I can calculate the total trips taken per region
-    self.regionData = ko.observable("");
+    self.regionData = ko.observableArray([]);
 
 
     self.highlightedPostalCodeHits = ko.computed(function() {

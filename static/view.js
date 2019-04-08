@@ -15,8 +15,19 @@ var map = new mapboxgl.Map({
 // Once data is sucsessully returned from getMapData()
 function renderMap (mapData, region) {
     
+
     // Send map data to view model
     // So that we can derive the total count and display it
+    
+    // But first delete the map data
+    // if there is any
+
+    if (my.viewModel.regionData().length > 0) {
+        my.viewModel.regionData.removeAll();
+    }
+
+    
+
     my.viewModel.regionData(mapData);
 
     // Add the correct layer for the map
@@ -26,7 +37,6 @@ function renderMap (mapData, region) {
     // I'm esentially passing in the map data
     createChoropleth(mapData, region);
 
-    
     //Get Desination Data
     //Once the data is returned sucsessfully,
     // An additional functio will be called that will render all of this data
@@ -94,6 +104,7 @@ map.on('load', function() {
             postalCodeToDestination = json;
             }
         });
+            //my.viewModel.postalCodeToDestinationData.removeAll();
             my.viewModel.postalCodeToDestinationData(postalCodeToDestination);
             renderGraph();
             setCircles();
@@ -105,9 +116,6 @@ map.on('load', function() {
 
 function addMapSource (region) {
 
-        
-
-    
 
         // TODO: Parameterize this function further
         if (region == "seattle") {
@@ -120,11 +128,15 @@ function addMapSource (region) {
         }
 
 
-        var mapLayer = map.getLayer(name);
-        if(typeof mapLayer !== 'undefined') {
-        // Remove map layer & source.
-        map.removeLayer(name).removeSource(name);
-        }
+        
+
+        //var mapLayer = map.getSource(name);
+        //if(typeof mapLayer !== 'undefined') {
+        //// Remove map layer & source.
+        //map.removeSource(name);
+        //var layerName = name + '-join';
+        //map.removeLayer(layerName);
+        //}
 
 
         // Add source for zip code polygons hosted on Mapbox, based on US Census Data:
@@ -153,11 +165,11 @@ function createChoropleth (mapData, region) {
         }
 
     
-    var mapLayer = map.getLayer(id);
-        if(typeof mapLayer !== 'undefined') {
-        // Remove map layer & source.
-        map.removeLayer(id).removeSource(id);
-        }
+    //var mapLayer = map.getLayer(id);
+    //    if(typeof mapLayer !== 'undefined') {
+    //    // Remove map layer & source.
+    //    map.removeLayer(id);
+    //    }
 
     var expression = ["match", ["get", "ZCTA5CE10"]];
 
@@ -196,7 +208,7 @@ function addDestinationCircles (myData) {
     // First I need to delete all of the desination circles
     // In the case there are some there already
     //https://stackoverflow.com/a/21470076/5420796
-    my.viewModel.destinationCircles.removeAll();
+    //my.viewModel.destinationCircles.removeAll();
 
     // This should be 24 in the case of Seattle
     var myDataLength = myData.length;
@@ -378,6 +390,27 @@ function setCircles () {
 };
 
 function changeRegion (region) {
+
+
+    if (my.viewModel.currentRegion() == "Seattle") {
+
+        // First test this to see if it works    
+        map.removeLayer('wa-join');
+        map.removeSource('wa');
+
+    }
+
+    if (my.viewModel.currentRegion() == "Los Angeles") {
+
+        // First test this to see if it works    
+        map.removeLayer('ca-join');
+        map.removeSource('ca');
+
+    }
+
+    // First remove all the data in the view so that we can start over, here. 
+    my.viewModel.postalCodeToDestinationData.removeAll();
+    my.viewModel.destinationCircles.removeAll();
 
     if (region == "losangeles") {
         
