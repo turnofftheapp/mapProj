@@ -42,7 +42,7 @@ function renderMap (mapData, region) {
     // An additional functio will be called that will render all of this data
     getDestinationData(region);
     
-};
+}
 
 map.on('load', function() {
     // Thig logic is mostly an adaptation of the following blog
@@ -54,7 +54,7 @@ map.on('load', function() {
     // Render map
     // TODO: Make region a global variable in the view model
     // And don't have the default just be Seattle like it is here
-    var region = "seattle"
+    var region = "seattle";
     
     getMapData(region);
 
@@ -62,15 +62,15 @@ map.on('load', function() {
     // This code basically renders the zip code that is being displayed
     map.on('mousemove', function (e) {
         var features = map.queryRenderedFeatures(e.point);
-        var hoveredPostalCode = features[0]['properties']['ZCTA5CE10'];
+        var hoveredPostalCode = features[0].properties.ZCTA5CE10;
     
         // In the case that the red dot blocks the zip code we have to get the
         // second rendered feature down
         if (hoveredPostalCode == null){
-            var hoveredPostalCode = features[1]['properties']['ZCTA5CE10'];
+            hoveredPostalCode = features[1].properties.ZCTA5CE10;
             // But in this case we also want to get the red dot so we can
             // display it to the user
-            var hoveredDestination = features[0]["layer"]["id"];
+            var hoveredDestination = features[0].layer.id;
             //console.log(hoveredDestination);
         }
 
@@ -84,7 +84,6 @@ map.on('load', function() {
 
         });
 
-    
     // When clicking the map load all of the data
     map.on('click', function (e) { 
 
@@ -116,52 +115,38 @@ map.on('load', function() {
 
 function addMapSource (region) {
 
+    // TODO: Parameterize this function further
+    if (region == "seattle") {
+        url = "mapbox://axme100.0bz1txrj";
+        name = "wa";
+    } else if (region == "losangeles") {
+        url = "mapbox://axme100.1e3djubr";
+        name = "ca";
+    }
 
-        // TODO: Parameterize this function further
-        if (region == "seattle") {
-            url = "mapbox://axme100.0bz1txrj"
-            name = "wa"
-        } else if (region == "losangeles") {
-            console.log("got here")
-            url = "mapbox://axme100.1e3djubr"
-            name = "ca"
-        }
-
-
-        
-
-        //var mapLayer = map.getSource(name);
-        //if(typeof mapLayer !== 'undefined') {
-        //// Remove map layer & source.
-        //map.removeSource(name);
-        //var layerName = name + '-join';
-        //map.removeLayer(layerName);
-        //}
-
-
-        // Add source for zip code polygons hosted on Mapbox, based on US Census Data:
-        // https://www.census.gov/geo/maps-data/data/cbf/cbf_state.html
-        map.addSource(name, {
-            type: "vector",
-            url: url
-        });
-
+    // Add source for zip code polygons hosted on Mapbox, based on US Census Data:
+    // https://www.census.gov/geo/maps-data/data/cbf/cbf_state.html
+    map.addSource(name, {
+        type: "vector",
+        url: url
+    });
 }
     
 
 function createChoropleth (mapData, region) {
 
-    console.log("region: ")
-    console.log(region)
+    
+
+
     
     // TODO: Parameterize this function further
         if (region == "seattle") {
-            id = "wa-join"
-            sourceLayer = "wa"
+            id = "wa-join";
+            sourceLayer = "wa";
         } else if (region == "losangeles") {
-            console.log("got here too")
-            id = "ca-join"
-            sourceLayer = "ca"
+           
+            id = "ca-join";
+            sourceLayer = "ca";
         }
 
     
@@ -175,14 +160,14 @@ function createChoropleth (mapData, region) {
 
     // Calulate Max Value
     // https://stackoverflow.com/questions/4020796/finding-the-max-value-of-an-attribute-in-an-array-of-objects
-    maxValue = Math.max.apply(Math, mapData.map(function(o) { return o.postalCodeHits; }))
+    maxValue = Math.max.apply(Math, mapData.map(function(o) { return o.postalCodeHits; }));
 
 
     // Calculate color for each state based on the unemployment rate
     mapData.forEach(function(row) {
-        var green = (row["postalCodeHits"] / maxValue) * 500;
+        var green = (row.postalCodeHits / maxValue) * 500;
         var color = "rgba(" + 0 + ", " + green + ", " + 0 + ", 1)";
-        expression.push(row["ZCTA5CE10"], color);
+        expression.push(row.ZCTA5CE10, color);
     });
 
     // Last value is the default, used where there is no data
@@ -216,13 +201,10 @@ function addDestinationCircles (myData) {
 
     for (var i = 0; i < myDataLength; i++) {
     
-        var name = myData[i]['name'];
-
-        
-        var id = myData[i]["id"];
-        var name = myData[i]['name'];
-        var lat = parseFloat(myData[i]['begin_lat']);
-        var lng = parseFloat(myData[i]['begin_lng']);
+        var name = myData[i].name;
+        var id = myData[i].id;
+        var lat = parseFloat(myData[i].begin_lat);
+        var lng = parseFloat(myData[i].begin_lng);
 
         latLngArray = [];
         latLngArray.push(lat);
@@ -236,7 +218,7 @@ function addDestinationCircles (myData) {
             id: id,
             lat: lat,
             lng: lng
-        }
+        };
         
         // Push the object to the observable array in the view model
         // After all we are going to have to change the size of these guys
@@ -307,10 +289,10 @@ function renderGraph () {
     //.remove() and .append() were used on the canvas element within it's parent
     // This solved the issue listed below: 
     /*https://stackoverflow.com/a/25064035/5420796*/
-    $('#myChart').remove()
-    $('#graph-container').append('<canvas id="myChart"><canvas>')
+    $('#myChart').remove();
+    $('#graph-container').append('<canvas id="myChart"><canvas>');
 
-    var ctx = $("#myChart")
+    var ctx = $("#myChart");
     
     var myChart = new Chart(ctx, {
         type: 'horizontalBar',
@@ -341,7 +323,7 @@ function renderGraph () {
         }
     });
 
-};
+}
 
 function setCircles () {
     
@@ -356,23 +338,20 @@ function setCircles () {
     // It resets the size of the circles 
 
     for (var i = 0; i < my.viewModel.destinationCircles().length; i++) {
-        nameID = my.viewModel.destinationCircles()[i]['name']
-        console.log(nameID)
-        lat = my.viewModel.destinationCircles()[i]['lat']
-        console.log(lat);
-        lng = my.viewModel.destinationCircles()[i]['lng']
-        console.log(lng)
+        nameID = my.viewModel.destinationCircles()[i].name;
+        lat = my.viewModel.destinationCircles()[i].lat;
+        lng = my.viewModel.destinationCircles()[i].lng;
         map.getSource(nameID).setData(createGeoJSONCircle([lat, lng], 0).data);
 
-    };
+    }
 
     // First loop over the postalCode data loop
     for (var i = 0; i < my.viewModel.postalCodeToDestinationData().length; i++) {
         
         // Get the destinationID that we want to size
-        destinationToSize = my.viewModel.postalCodeToDestinationData()[i]['destinationID'];
+        destinationToSize = my.viewModel.postalCodeToDestinationData()[i].destinationID;
         
-        sizeFactor = Math.log(my.viewModel.postalCodeToDestinationData()[i]['count']) + 1;
+        sizeFactor = Math.log(my.viewModel.postalCodeToDestinationData()[i].count) + 1;
         
         // Get that item from the destinationCircles objects
         // Thought now that I think about it, I could just have this information be part of the
@@ -380,53 +359,20 @@ function setCircles () {
         let destinationCircleObjectToSize = my.viewModel.destinationCircles().find(i => i.id === destinationToSize);
 
         if (destinationCircleObjectToSize != null){
-            nameID = destinationCircleObjectToSize['name']
-            lat = destinationCircleObjectToSize['lat']
-            lng = destinationCircleObjectToSize['lng']
+            nameID = destinationCircleObjectToSize.name;
+            lat = destinationCircleObjectToSize.lat;
+            lng = destinationCircleObjectToSize.lng;
             map.getSource(nameID).setData(createGeoJSONCircle([lat, lng], sizeFactor).data);
 
-        };
-    };
-};
+        }
+    }
+}
 
 function changeRegion (region) {
 
-
-    // First remove the Layers and sources for the choropleth layer
-    if (my.viewModel.currentRegion() == "Seattle") {
-
-        // First test this to see if it works    
-        map.removeLayer('wa-join');
-        map.removeSource('wa');
-    }
     
-    if (my.viewModel.currentRegion() == "Los Angeles") {
-
-        // First test this to see if it works    
-        map.removeLayer('ca-join');
-        map.removeSource('ca');
-    }
-
-    // Next remove all of the desination circles and sources
-    // Loop through all of the circles and then erase them
-    for (var i = 0; i < my.viewModel.destinationCircles().length; i++) {
-
-        // First get the name of the desintation circle
-        nameID = my.viewModel.destinationCircles()[i]['name']
-        
-        // Remove them
-        map.removeLayer(nameID);
-        map.removeSource(nameID);
-
-    }
-
-
-    // Remove all the of these objects from the view model
-    my.viewModel.destinationCircles.removeAll();
-
-
-    my.viewModel.postalCodeToDestinationData.removeAll();
-    
+    // First delete all of the data that was already in there
+    deleteMapData();
 
     if (region == "losangeles") {
         
@@ -449,6 +395,46 @@ function changeRegion (region) {
     }
 
     getMapData(region);
+}
+
+
+function deleteMapData () {
+
+    // First remove the Layers and sources for the choropleth layer
+    if (my.viewModel.currentRegion() == "Seattle") {
+
+        // First test this to see if it works    
+        map.removeLayer('wa-join');
+        map.removeSource('wa');
+    }
+    
+    if (my.viewModel.currentRegion() == "Los Angeles") {
+
+        // First test this to see if it works    
+        map.removeLayer('ca-join');
+        map.removeSource('ca');
+    }
+
+    // Next remove all of the desination circles and sources
+    // Loop through all of the circles and then erase them
+    for (var i = 0; i < my.viewModel.destinationCircles().length; i++) {
+
+        // First get the name of the desintation circle
+        nameID = my.viewModel.destinationCircles()[i].name;
+        
+        // Remove them
+        map.removeLayer(nameID);
+        map.removeSource(nameID);
+
+    }
+
+
+    // Remove all the of these objects from the view model
+    my.viewModel.destinationCircles.removeAll();
+
+
+    my.viewModel.postalCodeToDestinationData.removeAll();
+
 }
 
 /** Apply Bindings */
