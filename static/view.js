@@ -392,7 +392,13 @@ function changeRegion (region) {
             center: [-122.33, 47.60],
             zoom: [8]
         });
-    }
+    } else if (regrion =="seattle_zillow") {
+        my.viewModel.currentRegion("Seattle_Zillow")
+        map.flyTo({
+            center: [-122.33, 47.60],
+            zoom: [8]
+        });
+    } 
 
     getMapData(region);
 }

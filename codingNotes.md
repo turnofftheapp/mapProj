@@ -59,3 +59,7 @@ gfsa.geojson: If "urn:ogc:def:crs:OGC:1.3:CRS84" is not the expected projection,
 1621 features, 8149709 bytes of geometry, 14855 bytes of separate metadata, 9179 bytes of string pool`
 # There could be something wrong with this projection later on the line
 tippecanoe -o gfsa.mbtiles gfsa.geojson
+
+
+# Running Postgres locally
+# https://postgresapp.com/documentation/troubleshooting.html

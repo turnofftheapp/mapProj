@@ -83,6 +83,9 @@ class Itenerary(Base):
     barriomapped = Column(
         String())
 
+    region = Column(
+        String())
+
     # Whether or not the row is a valid observation
     valid = Column(
         Boolean, nullable = False)
@@ -92,7 +95,7 @@ class Itenerary(Base):
         # Returns object data in easily serializeable format
 
         return {
-            'primary_key': self.distinctkey,
+            'distinctkey': self.distinctkey,
             'numberItinerariesReturned': self.numberitinerariesreturned,
             'selectedDestination_id': self.selecteddestination_id,
             'selectedDestination_name': self.selecteddestination_name,
@@ -102,6 +105,8 @@ class Itenerary(Base):
             'lng': self.lng,
             'postalCode': self.postalcode,
             'postalCodeMapped': self.postalcodemapped,
+            'barriomapped': self.barriomapped,
+            'region': self.region,
             'valid': self.valid
 
         }

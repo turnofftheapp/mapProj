@@ -9,7 +9,7 @@ from flask import (
 import os
 from sqlalchemy import create_engine, func, text
 from sqlalchemy.orm import sessionmaker
-from database_setup_cloud import Base, Itenerary
+from database_setup import Base, Itenerary
 import requests
 import json
 
@@ -18,9 +18,11 @@ import json
 passWord = os.environ['my_password']
 
 # Concatenate a strings to get the database URI
-#DATABASE_URI = 'postgres+psycopg2://maxcarey:' + passWord + '@localhost:5432/totago'
 
-DATABASE_URI = 'postgres://maxcarey:' + passWord + '@totago.cqfm37jhmjmk.ap-southeast-2.rds.amazonaws.com:5432/totago?sslrootcert=rds-combined-ca-bundle.pem&sslmode=require'
+DATABASE_URI = 'postgres+psycopg2://maxcarey:' + passWord + '@localhost:5432/totago'
+
+# This is how you connect to the remote database
+# DATABASE_URI = 'postgres://maxcarey:' + passWord + '@totago.cqfm37jhmjmk.ap-southeast-2.rds.amazonaws.com:5432/totago?sslrootcert=rds-combined-ca-bundle.pem&sslmode=require'
 
 engine = create_engine(DATABASE_URI)
 
@@ -77,6 +79,10 @@ def count(region):
     if region == "losangeles":
         # In the case of los angeles area
         whereRegex = "'9[0123456]...'"
+
+    if region == "seattle_zillow":
+        # All of the values that start with a number
+        whereRegex ="'^[0-9]'"
 
     sqlQUERY = 'SELECT postalcodemapped, COUNT(*) FROM itenerary WHERE postalcodemapped ~ {} GROUP BY postalcodemapped ORDER BY COUNT(*) desc;'.format(whereRegex)
 

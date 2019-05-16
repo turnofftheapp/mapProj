@@ -81,6 +81,9 @@ class Itenerary(Base):
     barriomapped = Column(
         String())
 
+    region = Column(
+        String())
+
     # Whether or not the row is a valid observation
     valid = Column(
         Boolean, nullable = False)
@@ -100,6 +103,8 @@ class Itenerary(Base):
             'lng': self.lng,
             'postalCode': self.postalcode,
             'postalCodeMapped': self.postalcodemapped,
+            'barriomapped': self.barriomapped,
+            'region': self.region,
             'valid': self.valid
 
         }

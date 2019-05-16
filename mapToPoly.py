@@ -46,7 +46,17 @@ def mapToPoly(lat, lon, myType):
 		# check each polygon to see if it contains the point
 		geoData = [wa_js, ca_js, ny_js, canada]
 
-		for data in geoData:
+		# https://stackoverflow.com/questions/522563/accessing-the-index-in-for-loops
+		for index, data in enumerate(geoData):
+
+			if index == 0:
+				region="washington"
+			elif index == 1:
+				region="california"
+			elif index == 2:
+				region="newyork"
+			else:
+				region="canada"
 
 			for feature in data['features']:
 			    polygon = shape(feature['geometry'])
@@ -58,13 +68,11 @@ def mapToPoly(lat, lon, myType):
 				    	usZIP = False
 
 				    if usZIP:
-				    	print(feature['properties']['ZCTA5CE10'])
-				    	return(feature['properties']['ZCTA5CE10'])
+				    	return([feature['properties']['ZCTA5CE10'], region])
 				    
 				    # Otherwise it must come from the canada map
 				    else:
-				    	print(feature['properties']['CFSAUID'])
-				    	return(feature['properties']['CFSAUID'])
+				    	return([feature['properties']['CFSAUID'], region])
 
 	elif myType == 'barrio':
 
@@ -74,7 +82,16 @@ def mapToPoly(lat, lon, myType):
 		# check each polygon to see if it contains the point
 		geoData = [vancouver_areas_js, wazillow_js, cazillow_js, nyzillow_js]
 
-		for data in geoData:
+		for index, data in enumerate(geoData):
+
+			if index == 0:
+				region="canada"
+			elif index == 1:
+				region="washington"
+			elif index == 2:
+				region="california"
+			else:
+				region="newyork"
 
 			for feature in data['features']:
 			    polygon = shape(feature['geometry'])
@@ -87,19 +104,16 @@ def mapToPoly(lat, lon, myType):
 				    	zillowSet = False
 
 				    if zillowSet:
-				    	print(feature['properties']['RegionID'])
-				    	return(feature['properties']['RegionID'])
+				    	return([feature['properties']['RegionID'], region])
 				    # Otherwise it must come form the vancouver map
 				    else:
-				    	print(feature['properties']['MAPID'])
-				    	return(feature['properties']['MAPID'])
+				    	return([feature['properties']['MAPID'], region])
 
 
 # Test the function out, make sure to delete this
 #mapToPoly(34.0807282,-118.4130493, 'postal')
 #mapToPoly(47.6030565,-122.3290662, 'postal')
-#mapToPoly(49.283276,-123.1161202, 'postal')
-#
+#mapToPoly(49.283276,-123.1161202, 'postal')#
 #mapToPoly(34.0807282,-118.4130493, 'barrio')
 #mapToPoly(47.6030565,-122.3290662, 'barrio')
 #mapToPoly(49.283276,-123.1161202, 'barrio')
