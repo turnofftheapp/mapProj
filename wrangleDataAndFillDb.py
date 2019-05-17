@@ -3,7 +3,7 @@
 
 # # Import libraries, set options, connect to DB
 
-# In[1]:
+# In[25]:
 
 
 # Configuration code for datawrangling
@@ -23,6 +23,8 @@ from sqlalchemy.orm import sessionmaker
 from database_setup import Itenerary, Base
 
 passWord = os.environ['my_password']
+# This commented out one was how I connected to the remote database
+# DATABASE_URI = 'postgres://maxcarey:' + passWord + '@totago.cqfm37jhmjmk.ap-southeast-2.rds.amazonaws.com:5432/totago'
 DATABASE_URI = 'postgres+psycopg2://maxcarey:' + passWord + '@localhost:5432/totago'
 engine = create_engine(DATABASE_URI)
 
@@ -39,13 +41,13 @@ session = DBSession()
 
 # # Read in data as pandas data frame, selecting only certain fields
 
-# In[2]:
+# In[26]:
 
 
 fields = ['distinct_id', 'numItinerariesReturned', 'departureDate', 'startFromLocation', 'selectedDestination_id', 'selectedDestination_name', 'time']
 
 
-# In[3]:
+# In[27]:
 
 
 df = pd.read_csv('generated_itineraries.csv', usecols = fields)
@@ -53,7 +55,7 @@ df = pd.read_csv('generated_itineraries.csv', usecols = fields)
 
 # # Wrange field: destinationIDs
 
-# In[4]:
+# In[28]:
 
 
 # Replace all of the NAs for destinationIDs with 0
@@ -70,7 +72,7 @@ df['selectedDestination_id'] = df.selectedDestination_id.astype(int)
 
 # # Wrangle field: numItenerariesReturned
 
-# In[5]:
+# In[29]:
 
 
 # Replace all of the NAs for numItinerariesReturned with 1
@@ -84,7 +86,7 @@ df['numItinerariesReturned'] = df.numItinerariesReturned.astype(int)
 
 # # Wrangle Field: Destination Name
 
-# In[6]:
+# In[30]:
 
 
 #Replace all of the NAs in
@@ -96,7 +98,7 @@ print(len(df))
 
 # # Wrangle Field: departureDate
 
-# In[7]:
+# In[31]:
 
 
 #Convert destinationIDs column to an integer value
@@ -156,7 +158,7 @@ df['departureDate'] = df.departureDate.apply(extractDate)
 
 # # Wrangle Field: distinctID
 
-# In[8]:
+# In[32]:
 
 
 #It turns out distinc_id correpsonds to a user
@@ -177,7 +179,7 @@ unique_keys = df.primary_key.unique()
 
 # # Create a subset of the datle with sample method to test geocode and database entry logic
 
-# In[9]:
+# In[33]:
 
 
 #Out put the entire database
@@ -186,11 +188,11 @@ unique_keys = df.primary_key.unique()
 len(df)
 
 
-# In[10]:
+# In[34]:
 
 
 #Create a random sample of the database, these entries will be added to the database in the next section
-sampleDf = df.sample(10)
+sampleDf = df.sample(1500)
 
 # Output this random sample
 sampleDf.head(len(sampleDf))    
@@ -201,14 +203,11 @@ sampleDf.head(len(sampleDf))
 #  
 # 
 
-# In[11]:
+# In[35]:
 
 
 f = open("destinations_mapping_Jul-30-18.csv")
-
 reader = csv.reader(f)
-
-
 destinations = {}
 
 
@@ -222,7 +221,7 @@ print(destinations)
 
 # # Loop through the rows in the dataframe, geocode, add entry to database
 
-# In[12]:
+# In[36]:
 
 
 # Loop through the subsetted pandas data frame
@@ -238,7 +237,7 @@ for index, row in sampleDf.iterrows():
     
     # Check to see if that distinctID is in the data base
     # See this post: https://stackoverflow.com/questions/6587879/how-to-elegantly-check-the-existence-of-an-object-instance-variable-and-simultan?utm_medium=organic&utm_source=google_rich_qa&utm_campaign=google_rich_qa
-    entryExists = session.query(exists().where(Itenerary.distinctKey==testKey)).scalar()
+    entryExists = session.query(exists().where(Itenerary.distinctkey==testKey)).scalar()
 
     # If the entry is not in the database
     if not entryExists:
@@ -268,10 +267,23 @@ for index, row in sampleDf.iterrows():
 
             
             # Mapp the gps coordinates returned to the zip code polygons
-            zipCodeMapped = mapToPoly(geocodeInfo['lat'], geocodeInfo['lng'])
             
-            # TODO:
-            # EXPAND THIS MAPPING TO OTHER AREAS
+            # import pdb; pdb.set_trace()
+
+            zipCodeInfo = mapToPoly(geocodeInfo['lat'], geocodeInfo['lng'], 'postal')
+            
+            # Had to wrap these around try and except blocks
+            try:
+              zipCodeMapped = zipCodeInfo[0]
+            except:
+              zipCodeMapped = None
+
+            try:
+              region = zipCodeInfo[1]
+            except:
+              zipCodeMapped = None
+
+            barrioMapped = mapToPoly(geocodeInfo['lat'], geocodeInfo['lng'], 'barrio')
             
             
             ## Get selected Destination Names
@@ -295,9 +307,11 @@ for index, row in sampleDf.iterrows():
                 
                     # TODO: CONSIDER CHANGING THE NAME OF THIS TO SOMETHING ELSE
                     selectedDestinationName = "DELETED"
+                    # And overwrite valid to false at this point because there is no destination
+                    valid = False
                 
             databaseEntry = Itenerary(distinctkey=row["primary_key"],
-                                      numberitinerariesReturned=row["numItinerariesReturned"],
+                                      numberitinerariesreturned=row["numItinerariesReturned"],
                                       selecteddestination_id=row["selectedDestination_id"],
                                       selecteddestination_name=selectedDestinationName,
                                       startfromlocation=row["startFromLocation"],
@@ -308,6 +322,8 @@ for index, row in sampleDf.iterrows():
                                       lng=geocodeInfo['lng'],
                                       postalcode=geocodeInfo['postalCode'],
                                       postalcodemapped=zipCodeMapped,
+                                      barriomapped=barrioMapped,
+                                      region=region,
                                       valid=valid)
         # If valid is false, just fill in the information that we have from the pandas data frame
         else:

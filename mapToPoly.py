@@ -82,16 +82,7 @@ def mapToPoly(lat, lon, myType):
 		# check each polygon to see if it contains the point
 		geoData = [vancouver_areas_js, wazillow_js, cazillow_js, nyzillow_js]
 
-		for index, data in enumerate(geoData):
-
-			if index == 0:
-				region="canada"
-			elif index == 1:
-				region="washington"
-			elif index == 2:
-				region="california"
-			else:
-				region="newyork"
+		for data in geoData:
 
 			for feature in data['features']:
 			    polygon = shape(feature['geometry'])
@@ -104,10 +95,10 @@ def mapToPoly(lat, lon, myType):
 				    	zillowSet = False
 
 				    if zillowSet:
-				    	return([feature['properties']['RegionID'], region])
+				    	return(feature['properties']['RegionID'])
 				    # Otherwise it must come form the vancouver map
 				    else:
-				    	return([feature['properties']['MAPID'], region])
+					    return(feature['properties']['MAPID'])
 
 
 # Test the function out, make sure to delete this
