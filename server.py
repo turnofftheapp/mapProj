@@ -48,9 +48,9 @@ def getDestination(region):
     
     print(region)
 
-    if region == "seattle":
+    if region == "washington":
         region_id = "1"
-    if region == "losangeles":
+    if region == "california":
         region_id = "7"
     
     print(region_id)
@@ -70,27 +70,10 @@ def getDestination(region):
 @app.route('/count/<string:region>')
 def count(region):
 
-    # Before all of this I was using regex, but now that I have added a region field to the data
-    # things are wokring a lot more smoothly :)
+    sqlQUERY = "SELECT postalcodemapped, COUNT(*) FROM itenerary WHERE region = '{}' GROUP BY postalcodemapped ORDER BY COUNT(*) desc;".format(region)
 
-    # List of zip codes available here:
-    # https://www.zip-codes.com/state/ca.asp
-    #if region == "seattle":
-        # In the case of Seattle area, you start with "9" and add 4 additional characterse
-    #    whereRegex = "'9[89]...'"
-
-    #if region == "losangeles":
-        # In the case of los angeles area
-    #    whereRegex = "'9[0123456]...'"
-
-    #if region == "seattle_zillow":
-        # All of the values that start with a number
-    #    whereRegex ="'^[0-9]'"
-
-    # whereRegex = "'9[89]...'"
-    # sqlQUERY = 'SELECT postalcodemapped, COUNT(*) FROM itenerary WHERE postalcodemapped ~ {} GROUP BY postalcodemapped ORDER BY COUNT(*) desc;'.format(whereRegex)
-    
-    sqlQUERY = "SELECT postalcodemapped, COUNT(*) FROM itenerary WHERE region = 'washington' GROUP BY postalcodemapped ORDER BY COUNT(*) desc;"
+    print("**********")
+    print(sqlQUERY)
 
     result = session.execute(sqlQUERY)
     data = []

@@ -54,7 +54,7 @@ map.on('load', function() {
     // Render map
     // TODO: Make region a global variable in the view model
     // And don't have the default just be Seattle like it is here
-    var region = "seattle";
+    var region = "washington";
     
     getMapData(region);
 
@@ -116,10 +116,10 @@ map.on('load', function() {
 function addMapSource (region) {
 
     // TODO: Parameterize this function further
-    if (region == "seattle") {
+    if (region == "washington") {
         url = "mapbox://axme100.0bz1txrj";
         name = "wa";
-    } else if (region == "losangeles") {
+    } else if (region == "california") {
         url = "mapbox://axme100.1e3djubr";
         name = "ca";
     }
@@ -140,10 +140,10 @@ function createChoropleth (mapData, region) {
 
     
     // TODO: Parameterize this function further
-        if (region == "seattle") {
+        if (region == "washington") {
             id = "wa-join";
             sourceLayer = "wa";
-        } else if (region == "losangeles") {
+        } else if (region == "california") {
            
             id = "ca-join";
             sourceLayer = "ca";
@@ -374,10 +374,11 @@ function changeRegion (region) {
     // First delete all of the data that was already in there
     deleteMapData();
 
-    if (region == "losangeles") {
+    if (region == "california") {
         
         // Set view model to Los Angeles
-        my.viewModel.currentRegion("Los Angeles");
+        // This part is just for the display of the region name on the front end
+        my.viewModel.currentRegion("Los Angeles, CA");
 
         // Fly to Los Angeles
         // TODO: Instead of hardcoding in these coordinates
@@ -386,7 +387,7 @@ function changeRegion (region) {
             center: [-118.2437, 34.0522],
             zoom: [8]
         });
-    } else if (region == "seattle") {
+    } else if (region == "washington") {
        my.viewModel.currentRegion("Seattle"); 
         map.flyTo({
             center: [-122.33, 47.60],
@@ -400,6 +401,7 @@ function changeRegion (region) {
         });
     } 
 
+    // This function is what actually fetches the data and then renders the map
     getMapData(region);
 }
 
@@ -407,7 +409,7 @@ function changeRegion (region) {
 function deleteMapData () {
 
     // First remove the Layers and sources for the choropleth layer
-    if (my.viewModel.currentRegion() == "Seattle") {
+    if (my.viewModel.currentRegion() == "Seattle, WA") {
 
         // First test this to see if it works    
         map.removeLayer('wa-join');
