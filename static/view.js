@@ -13,9 +13,9 @@ var map = new mapboxgl.Map({
 
 // This is esentially  helper function that will be loaded
 // Once data is sucsessully returned from getMapData()
-function renderMap (mapData, region) {
+// TODO: Decide if the type parameter actually needs to come into this point
+function renderMap (mapData, region, type) {
     
-
     // Send map data to view model
     // So that we can derive the total count and display it
     
@@ -32,10 +32,10 @@ function renderMap (mapData, region) {
 
     // Add the correct layer for the map
     // This needs to be further parameterized
-    addMapSource(region);
+    addMapSource(region, type);
     
     // I'm esentially passing in the map data
-    createChoropleth(mapData, region);
+    createChoropleth(mapData, region, type);
 
     //Get Desination Data
     //Once the data is returned sucsessfully,
@@ -54,71 +54,28 @@ map.on('load', function() {
     // Render map
     // TODO: Make region a global variable in the view model
     // And don't have the default just be Seattle like it is here
-    var region = "washington";
     
-    getMapData(region);
-
-    
-    // This code basically renders the zip code that is being displayed
-    map.on('mousemove', function (e) {
-        var features = map.queryRenderedFeatures(e.point);
-        var hoveredPostalCode = features[0].properties.ZCTA5CE10;
-    
-        // In the case that the red dot blocks the zip code we have to get the
-        // second rendered feature down
-        if (hoveredPostalCode == null){
-            hoveredPostalCode = features[1].properties.ZCTA5CE10;
-            // But in this case we also want to get the red dot so we can
-            // display it to the user
-            var hoveredDestination = features[0].layer.id;
-            //console.log(hoveredDestination);
-        }
-
-
-        // Remember observables are functions
-        // https://stackoverflow.com/a/14159596/5420796
-        my.viewModel.highlightedPostalCode(hoveredPostalCode);
-    
-        my.viewModel.highlightedDestination(hoveredDestination);
-
-
-        });
-
-    // When clicking the map load all of the data
-    map.on('click', function (e) { 
-
-        // This is where I will call a fucntion to the back end and update the viewModel:
-        // With an array of objects giving me the counts for specific zip code two the different destinations
-
-        //console.log(my.viewModel.highlightedPostalCode());
-        var postalCode = my.viewModel.highlightedPostalCode();
-
-        var postalCodeToDestination = [];
-            $.ajax({
-            //url: 'http://0.0.0.0:8000/postalCodeToDestination/' + postalCode,
-            url: '/postalCodeToDestination/' + postalCode,
-            async: false,
-            dataType: 'json',
-            success: function (json) {
-            postalCodeToDestination = json;
-            }
-        });
-            //my.viewModel.postalCodeToDestinationData.removeAll();
-            my.viewModel.postalCodeToDestinationData(postalCodeToDestination);
-            renderGraph();
-            setCircles();
-    });
+    getMapData(my.viewModel.currentRegion(), my.viewModel.mapType());
+    enableMapClick();
 
 
 });
 
 
-function addMapSource (region) {
+function addMapSource (region, type) {
+
+
 
     // TODO: Parameterize this function further
+    // TODO: I will need to keep parameterizing this function as well
     if (region == "washington") {
-        url = "mapbox://axme100.0bz1txrj";
-        name = "wa";
+        if (type == "postal") {
+            url = "mapbox://axme100.0bz1txrj";
+            name = "wa";
+        } else if (type == "barrio") {
+            url = "mapbox://axme100.1u3r9yki";
+            name = "wazillow";
+        }
     } else if (region == "california") {
         url = "mapbox://axme100.1e3djubr";
         name = "ca";
@@ -130,48 +87,53 @@ function addMapSource (region) {
         type: "vector",
         url: url
     });
+    
+
 }
     
 
-function createChoropleth (mapData, region) {
-
+function createChoropleth (mapData, region, type) {
     
+  
 
-
-    
     // TODO: Parameterize this function further
         if (region == "washington") {
-            id = "wa-join";
-            sourceLayer = "wa";
+            if (type == "postal") {
+                id = "wa-join";
+                sourceLayer = "wa";
+            } else if (type == "barrio") {
+                // Notice how I have kept the id of the map the same
+                // This could be a problem might need to come back and check this
+                id = "wazillow-join"
+                sourceLayer = "wazillow";
+            }
         } else if (region == "california") {
            
             id = "ca-join";
             sourceLayer = "ca";
         }
 
-    
-    //var mapLayer = map.getLayer(id);
-    //    if(typeof mapLayer !== 'undefined') {
-    //    // Remove map layer & source.
-    //    map.removeLayer(id);
-    //    }
 
-    var expression = ["match", ["get", "ZCTA5CE10"]];
+    if (my.viewModel.mapType() == "postal") {
+        var expression = ["match", ["get", "ZCTA5CE10"]];
+    } else if (my.viewModel.mapType() == "barrio") {
+        var expression = ["match", ["get", "RegionID"]];
+    }
 
     // Calulate Max Value
     // https://stackoverflow.com/questions/4020796/finding-the-max-value-of-an-attribute-in-an-array-of-objects
-    maxValue = Math.max.apply(Math, mapData.map(function(o) { return o.postalCodeHits; }));
+    maxValue = Math.max.apply(Math, mapData.map(function(o) { return o.mapAreaHits; }));
 
-
-    // Calculate color for each state based on the unemployment rate
+    // Calculate color for each state based on the number of hits in that area
     mapData.forEach(function(row) {
-        var green = (row.postalCodeHits / maxValue) * 500;
+        var green = (row.mapAreaHits / maxValue) * 500;
         var color = "rgba(" + 0 + ", " + green + ", " + 0 + ", 1)";
-        expression.push(row.ZCTA5CE10, color);
+        expression.push(row.mapAreaName, color);
     });
 
     // Last value is the default, used where there is no data
     expression.push("rgba(0,0,0,0)");
+
 
     // Add layer from the vector tile source with data-driven style
     map.addLayer({
@@ -368,7 +330,7 @@ function setCircles () {
     }
 }
 
-function changeRegion (region) {
+function changeRegion (region, type) {
 
     
     // First delete all of the data that was already in there
@@ -378,7 +340,10 @@ function changeRegion (region) {
         
         // Set view model to Los Angeles
         // This part is just for the display of the region name on the front end
-        my.viewModel.currentRegion("Los Angeles, CA");
+        my.viewModel.currentRegionDisplay("Los Angeles, CA");
+
+        // Actually change the value in the view model
+        my.viewModel.currentRegion(region);
 
         // Fly to Los Angeles
         // TODO: Instead of hardcoding in these coordinates
@@ -388,35 +353,41 @@ function changeRegion (region) {
             zoom: [8]
         });
     } else if (region == "washington") {
-       my.viewModel.currentRegion("Seattle"); 
+       my.viewModel.currentRegionDisplay("Seattle");
+       my.viewModel.currentRegion(region);
         map.flyTo({
             center: [-122.33, 47.60],
             zoom: [8]
         });
-    } else if (regrion =="seattle_zillow") {
-        my.viewModel.currentRegion("Seattle_Zillow")
-        map.flyTo({
-            center: [-122.33, 47.60],
-            zoom: [8]
-        });
-    } 
+    }
 
-    // This function is what actually fetches the data and then renders the map
-    getMapData(region);
+    getMapData(my.viewModel.currentRegion(), my.viewModel.mapType());
+}
+
+function toggleMapType () {
+
+    if (my.viewModel.mapType() == "barrio") {
+        my.viewModel.mapType("postal"); 
+    } else if (my.viewModel.mapType() == "postal") {
+        my.viewModel.mapType("barrio")
+    }
+
+    
+    changeRegion(my.viewModel.currentRegion(), my.viewModel.mapType())
 }
 
 
 function deleteMapData () {
 
     // First remove the Layers and sources for the choropleth layer
-    if (my.viewModel.currentRegion() == "Seattle, WA") {
+    if (my.viewModel.currentRegion() == "washington") {
 
         // First test this to see if it works    
         map.removeLayer('wa-join');
         map.removeSource('wa');
     }
     
-    if (my.viewModel.currentRegion() == "Los Angeles") {
+    if (my.viewModel.currentRegion() == "california") {
 
         // First test this to see if it works    
         map.removeLayer('ca-join');
@@ -430,7 +401,7 @@ function deleteMapData () {
         // First get the name of the desintation circle
         nameID = my.viewModel.destinationCircles()[i].name;
         
-        // Remove them
+        // Remove theme
         map.removeLayer(nameID);
         map.removeSource(nameID);
 
@@ -442,6 +413,64 @@ function deleteMapData () {
 
 
     my.viewModel.postalCodeToDestinationData.removeAll();
+
+}
+
+function enableMapClick () {
+
+// This code basically renders the zip code that is being displayed
+    map.on('mousemove', function (e) {
+        var features = map.queryRenderedFeatures(e.point);
+        console.log(features);
+        var hoveredPostalCode = features[0].properties.ZCTA5CE10;
+    
+        // In the case that the red dot blocks the zip code we have to get the
+        // second rendered feature down
+        if (hoveredPostalCode == null){
+            hoveredPostalCode = features[1].properties.ZCTA5CE10;
+            // But in this case we also want to get the red dot so we can
+            // display it to the user
+            var hoveredDestination = features[0].layer.id;
+            //console.log(hoveredDestination);
+        }
+
+
+        // Remember observables are functions
+        // https://stackoverflow.com/a/14159596/5420796
+        my.viewModel.highlightedPostalCode(hoveredPostalCode);
+    
+        my.viewModel.highlightedDestination(hoveredDestination);
+
+
+        });
+
+    // When clicking the map load all of the data
+    map.on('click', function (e) { 
+
+        // This is where I will call a fucntion to the back end and update the viewModel:
+        // With an array of objects giving me the counts for specific zip code two the different destination
+
+
+        console.log(my.viewModel.highlightedPostalCode());
+        var postalCode = my.viewModel.highlightedPostalCode();
+
+
+
+        var postalCodeToDestination = [];
+            $.ajax({
+            //url: 'http://0.0.0.0:8000/postalCodeToDestination/' + postalCode,
+            url: '/postalCodeToDestination/' + postalCode,
+            async: false,
+            dataType: 'json',
+            success: function (json) {
+            postalCodeToDestination = json;
+            }
+        });
+            //my.viewModel.postalCodeToDestinationData.removeAll();
+            my.viewModel.postalCodeToDestinationData(postalCodeToDestination);
+            renderGraph();
+            setCircles();
+    });
 
 }
 

@@ -2,8 +2,17 @@
 var ViewModel = function() {
     var self = this;
 
-    self.currentRegion = ko.observable("Seattle, WA");
+    // This is the string that will actually be displayed to the user
+    self.currentRegionDisplay = ko.observable("Seattle, WA");
 
+    // This is the regionID that will be used to control the map
+    // The default, for now, will just be set to Washington
+    self.currentRegion = ko.observable("washington");
+
+
+    // Have the deafult map type be postal
+    self.mapType = ko.observable("postal");
+    
     self.highlightedPostalCode = ko.observable("");
 
     self.highlightedDestination = ko.observable("");

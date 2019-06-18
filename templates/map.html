@@ -22,6 +22,10 @@
 	<!-- This is for the github buttons. -->
 	<script async defer src="https://buttons.github.io/buttons.js"></script>
 
+	<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
+
 </head>
 
 
@@ -32,13 +36,15 @@
 		<div class='map-overlay' id='features'><h2>Postal Code:</h2><div id='pd'><p>Hovering over:</p><p data-bind="text: displayedInfo()"></p><p>Total trips taken:</p><p data-bind="text: highlightedPostalCodeHits"></p></div></div>
 		</div>
 	<div class="col span_1_of_2">
-		<h1 data-bind="text: currentRegion"> </h1>
+		<h1 data-bind="text: currentRegionDisplay"> </h1>
 		<h2> Cick to Change Region </h2>
 		<button onclick="changeRegion('washington')" type="button" class="btn btn-primary">Seattle, WA</button>
 		<button type="button" class="btn btn-warning">Vancouver BC</button>
 		<button onclick="changeRegion('california')" type="button" class="btn btn-primary">Los Angeles</button>
 		<button type="button" class="btn btn-warning">San Diego</button>
 		<button type="button" class="btn btn-warning">New York</button>
+		<h2> Toggle between different maps </h2>
+		<button onclick="toggleMapType()" type="button" class="btn btn-warning">Toggle</button>
 		<h2> Click on a Zip Code Area to see where people are going </h2>
 		<div id=graph-container>
 		</div>

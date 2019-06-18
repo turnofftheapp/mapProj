@@ -67,22 +67,30 @@ def getDestination(region):
     return jsonify(json_data)
 
 
-@app.route('/count/<string:region>')
-def count(region):
+@app.route('/count/<string:region>/<string:myType>')
+def count(region, myType):
 
-    sqlQUERY = "SELECT postalcodemapped, COUNT(*) FROM itenerary WHERE region = '{}' GROUP BY postalcodemapped ORDER BY COUNT(*) desc;".format(region)
+    print("MADE CALL ********************")
 
-    print("**********")
-    print(sqlQUERY)
+    # sqlQUERY = "SELECT barrioMapped, COUNT(*) FROM itenerary WHERE region = 'washington' GROUP BY barrioMapped ORDER BY COUNT(*) desc;".format(region)
+
+    # Going to need to go back and chnage some stuff here
+    # For this project
+    if myType == "postal":
+        sqlQUERY = "SELECT postalcodemapped, COUNT(*) FROM itenerary WHERE region = '{}' GROUP BY postalcodemapped ORDER BY COUNT(*) desc;".format(region)
+    elif myType == "barrio":
+        sqlQUERY = "SELECT barrioMapped, COUNT(*) FROM itenerary WHERE region = '{}' GROUP BY barrioMapped ORDER BY COUNT(*) desc;".format(region)
 
     result = session.execute(sqlQUERY)
     data = []
     for row in result:
         #print(row[0])
-        nestedDictionary = {"postalCode": row[0],
-                            "postalCodeHits": row[1]}
+        nestedDictionary = {"mapArea": row[0],
+                            "mapAreaHits": row[1]}
         data.append(nestedDictionary)
     
+    print(data)
+
     return jsonify(data)
 
 @app.route('/map/')

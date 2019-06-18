@@ -3,13 +3,17 @@
 // See Mapbox documentation here: https://www.mapbox.com/help/define-access-token/
 mapboxgl.accessToken = 'pk.eyJ1IjoiYXhtZTEwMCIsImEiOiJjam0ybHJpYWgycnU1M3BsaXBmbnJicmxuIn0.rec0Fay3v7aDTAuptsaqEA';
 
-function getMapData (region) {
+function getMapData (region, type) {
+
+    console.log(type)
 
     // make a region URL with the correct parameter
     // TODO: Create backend calls so that is can work for other regions
     // As of now, this just calls a backend call for all the data and
     // then filters in to Seattle specifically
-    regionURL = '/count/' + region;
+    regionURL = '/count/' + region + "/" + type;
+
+    console.log(regionURL)
 
     var mydata = [];
     $.ajax({
@@ -23,20 +27,27 @@ function getMapData (region) {
 
             for (var i = 0; i < arrayLength; i++) {
     
-                var postalCode = mydata[i]['postalCode'];
+                var mapArea = mydata[i]['mapArea'];
     
-                if (postalCode !== null) {
+                if (mapArea !== null) {
                     // Get the hits for that postal code
                     // Example to follow from map
                     // Construct a variable like this but for traits in mapbox
                     //{"STATE_ID": "01", "unemployment": 13.17}
-                    postalCodeHits = mydata[i]['postalCodeHits']
-                    var entry = {"ZCTA5CE10": postalCode.toString(), "postalCodeHits": postalCodeHits};
+                    mapAreaHits = mydata[i]['mapAreaHits']
+                    
+                    if (type == "postal") {
+                        mapAreaName = "ZCTA5CE10";
+                    } else if (type == "barrio") {
+                        mapAreaName = "RegionID"
+                    }
+
+                    var entry = {mapAreaName: mapArea.toString(), "mapAreaHits": mapAreaHits};
                     mapData.push(entry);
                 }
             }
             // Call the helper function to render the map
-            renderMap(mapData, region);
+            renderMap(mapData, region, type);
             // Call the function tha renders the map
         }
     });
