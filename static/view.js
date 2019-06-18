@@ -427,21 +427,13 @@ function enableMapClick () {
         
         // First get the actual features taht are being rendered
         var features = map.queryRenderedFeatures(e.point);
-        //console.log(features);
         
+        // Get hovered postal code
+        my.viewModel.highlightedPostalCode(getHoveredPostalCode(features));
 
-        // First get the object where the value of the source property
-        // is either washington or one of the other map names
-        var result = features.filter(obj => {
-            return obj.source === my.viewModel.currentSourceLayer()
-        })
-        
-        var hoveredPostalCode = result[0].properties.ZCTA5CE10;
-    
-        
-        my.viewModel.highlightedPostalCode(hoveredPostalCode);
-    
-        my.viewModel.highlightedDestination(hoveredDestination);
+
+        // Get hovered destination
+        my.viewModel.highlightedDestination(getHoveredDestination(features));
 
 
         });
@@ -476,6 +468,35 @@ function enableMapClick () {
 
 }
 
+function getHoveredPostalCode (features) {
+
+    // First get the object where the value of the source property
+    // is either washington or one of the other map names
+        var result = features.filter(obj => {
+            return obj.source === my.viewModel.currentSourceLayer()
+        })
+        
+        var hoveredPostalCode = result[0].properties.ZCTA5CE10;
+
+        // Set the value of hoveredPostal Code
+        return hoveredPostalCode; 
+
+}
+
+function getHoveredDestination (features) {
+
+     // Here is where I need to get the hovered destination
+        // As of now the fill-color seems to be the unique identifier that
+        // I have, so I will obviously have to change this if the fill color changes
+        var result = features.filter(obj => {
+            return obj.layer.paint["fill-color"] == "red";
+        })
+
+
+        var hoveredDestination = result[0].source;
+        return hoveredDestination;
+
+}
 /** Apply Bindings */
 // This was copied over from my udacity project: https://github.com/axme100/mapProj/blob/master/js/app.js
 // I'm creating an instance of my view model called "my" 
