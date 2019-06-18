@@ -113,6 +113,10 @@ function createChoropleth (mapData, region, type) {
             sourceLayer = "ca";
         }
 
+    // Set the current source layer
+    my.viewModel.currentSourceLayer(sourceLayer);
+
+
 
     if (my.viewModel.mapType() == "postal") {
         var expression = ["match", ["get", "ZCTA5CE10"]];
@@ -420,23 +424,21 @@ function enableMapClick () {
 
 // This code basically renders the zip code that is being displayed
     map.on('mousemove', function (e) {
+        
+        // First get the actual features taht are being rendered
         var features = map.queryRenderedFeatures(e.point);
-        console.log(features);
-        var hoveredPostalCode = features[0].properties.ZCTA5CE10;
+        //console.log(features);
+        
+
+        // First get the object where the value of the source property
+        // is either washington or one of the other map names
+        var result = features.filter(obj => {
+            return obj.source === my.viewModel.currentSourceLayer()
+        })
+        
+        var hoveredPostalCode = result[0].properties.ZCTA5CE10;
     
-        // In the case that the red dot blocks the zip code we have to get the
-        // second rendered feature down
-        if (hoveredPostalCode == null){
-            hoveredPostalCode = features[1].properties.ZCTA5CE10;
-            // But in this case we also want to get the red dot so we can
-            // display it to the user
-            var hoveredDestination = features[0].layer.id;
-            //console.log(hoveredDestination);
-        }
-
-
-        // Remember observables are functions
-        // https://stackoverflow.com/a/14159596/5420796
+        
         my.viewModel.highlightedPostalCode(hoveredPostalCode);
     
         my.viewModel.highlightedDestination(hoveredDestination);

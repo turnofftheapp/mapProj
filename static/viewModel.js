@@ -9,6 +9,10 @@ var ViewModel = function() {
     // The default, for now, will just be set to Washington
     self.currentRegion = ko.observable("washington");
 
+    // Make a current source layer
+    // So that we can call upon this for mapClick() function
+    self.currentSourceLayer = ko.observable("");
+
 
     // Have the deafult map type be postal
     self.mapType = ko.observable("postal");
