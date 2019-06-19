@@ -14,10 +14,13 @@ var ViewModel = function() {
     self.currentSourceLayer = ko.observable("");
 
 
+
     // Have the deafult map type be postal
     self.mapType = ko.observable("postal");
     
-    self.highlightedPostalCode = ko.observable("");
+    self.selectedMapArea = ko.observable("");
+    
+    self.highlightedMapArea = ko.observable("");
 
     self.highlightedDestination = ko.observable("");
     
@@ -27,7 +30,7 @@ var ViewModel = function() {
     self.displayedInfo = ko.computed(function() {
     
         destinationDisplayed = self.highlightedDestination();
-        postalCodeDisplayed = self.highlightedPostalCode();
+        postalCodeDisplayed = self.highlightedMapArea();
         
 
         if (typeof destinationDisplayed !== 'undefined') {
@@ -48,7 +51,7 @@ var ViewModel = function() {
     
         // https://stackoverflow.com/a/7178381/5420796
         for(var i = 0; i < self.regionData().length; i += 1) {
-            if(self.regionData()[i]["ZCTA5CE10"] == self.highlightedPostalCode()) {
+            if(self.regionData()[i]["ZCTA5CE10"] == self.highlightedMapArea()) {
                 return self.regionData()[i]["postalCodeHits"];
             }
         }   

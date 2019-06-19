@@ -102,7 +102,7 @@ def postalCodeToDestination(mapArea, mapType):
     if mapType == "postal":
         sqlQUERY = "SELECT postalcodemapped, selecteddestination_id, selecteddestination_name, COUNT(*) FROM itenerary WHERE valid = TRUE and postalcodemapped = '{}' GROUP BY postalcodemapped, selecteddestination_id, selecteddestination_name ORDER BY COUNT(*) DESC;".format(mapArea)
     elif mapType == "barrio":
-        sqlQUERY = "SELECT postalcodemapped, selecteddestination_id, selecteddestination_name, COUNT(*) FROM itenerary WHERE valid = TRUE and postalcodemapped = '{}' GROUP BY postalcodemapped, selecteddestination_id, selecteddestination_name ORDER BY COUNT(*) DESC;".format(mapArea)
+        sqlQUERY = "SELECT barrioMapped, selecteddestination_id, selecteddestination_name, COUNT(*) FROM itenerary WHERE valid = TRUE and barrioMapped = '{}' GROUP BY barrioMapped, selecteddestination_id, selecteddestination_name ORDER BY COUNT(*) DESC;".format(mapArea)
 
     result = session.execute(sqlQUERY)
     # https://stackoverflow.com/questions/17972020/how-to-execute-raw-sql-in-sqlalchemy-flask-app
@@ -111,7 +111,7 @@ def postalCodeToDestination(mapArea, mapType):
     # This whole for loop could be redundant but we do not want to get rid of it just yet
     for row in result:
         if row[0] == str(mapArea):
-            nestedDictionary = {"postalCode": row[0],
+            nestedDictionary = {"mapArea": row[0],
                                 "destinationID": row[1],
                                 "destinationName": row[2],
                                 "count": row[3]}

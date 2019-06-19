@@ -428,9 +428,19 @@ function enableMapClick () {
         // First get the actual features taht are being rendered
         var features = map.queryRenderedFeatures(e.point);
         
-        // Get hovered postal code
-        my.viewModel.highlightedPostalCode(getHoveredPostalCode(features));
+        hoveredData = getHoveredMapArea(features)
 
+        if (hoveredData instanceof Array) {
+            mapAreaToDisplay = hoveredData[0];
+            barrioID = hoveredData[1];
+            my.viewModel.highlightedMapArea(mapAreaToDisplay);
+            my.viewModel.selectedMapArea(barrioID);
+        // If it's a a postal code then we are displaying and sending
+        // data to the same thing
+        } else {
+            my.viewModel.highlightedMapArea(hoveredData);
+            my.viewModel.selectedMapArea(hoveredData);
+        }
 
         // Get hovered destination
         my.viewModel.highlightedDestination(getHoveredDestination(features));
@@ -443,21 +453,18 @@ function enableMapClick () {
 
         // This is where I will call a fucntion to the back end and update the viewModel:
         // With an array of objects giving me the counts for specific zip code two the different destination
-
-
-        console.log(my.viewModel.highlightedPostalCode());
         
         // Freeze the postal code that is highlighted
-        var postalCode = my.viewModel.highlightedPostalCode();
+        var mapArea = my.viewModel.selectedMapArea();
         
         // Call a function to get the data
-        getDestinationFromAreaData(postalCode);
+        getDestinationFromAreaData(mapArea);
 
     });
 
 }
 
-function getHoveredPostalCode (features) {
+function getHoveredMapArea (features) {
 
     // First get the object where the value of the source property
     // is either washington or one of the other map names
@@ -465,11 +472,21 @@ function getHoveredPostalCode (features) {
             return obj.source === my.viewModel.currentSourceLayer()
         })
         
-        var hoveredPostalCode = result[0].properties.ZCTA5CE10;
+        if (my.viewModel.mapType() == "postal") {
+
+            hoveredTargetArea = result[0].properties.ZCTA5CE10;
+
+        } else if (my.viewModel.mapType() == "barrio") {
+
+            hoveredArea = result[0].properties.Name;
+            hoveredRegionID = result[0].properties.RegionID;
+
+            hoveredTargetArea = [hoveredArea, hoveredRegionID]
+
+        }
 
         // Set the value of hoveredPostal Code
-        return hoveredPostalCode; 
-
+        return hoveredTargetArea; 
 }
 
 function getHoveredDestination (features) {

@@ -79,17 +79,17 @@ function getDestinationData (region) {
     });
 };
 
-function getDestinationFromAreaData(postalCode) {
+function getDestinationFromAreaData(mapArea) {
 
     var postalCodeToDestination = [];
         $.ajax({
             //url: 'http://0.0.0.0:8000/postalCodeToDestination/' + postalCode,
-            url: '/postalCodeToDestination/' + postalCode + "/" + my.viewModel.mapType(),
+            url: '/postalCodeToDestination/' + mapArea + "/" + my.viewModel.mapType(),
             async: false,
             dataType: 'json',
             success: function (json) {
-            postalCodeToDestination = json;
-            my.viewModel.postalCodeToDestinationData(postalCodeToDestination);
+            mapAreaData = json;
+            my.viewModel.postalCodeToDestinationData(mapAreaData);
             renderGraph();
             setCircles();
             }
