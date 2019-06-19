@@ -79,7 +79,22 @@ function getDestinationData (region) {
     });
 };
 
-//getDestinationData("seattle");
+function getDestinationFromAreaData(postalCode) {
+
+    var postalCodeToDestination = [];
+        $.ajax({
+            //url: 'http://0.0.0.0:8000/postalCodeToDestination/' + postalCode,
+            url: '/postalCodeToDestination/' + postalCode,
+            async: false,
+            dataType: 'json',
+            success: function (json) {
+            postalCodeToDestination = json;
+            my.viewModel.postalCodeToDestinationData(postalCodeToDestination);
+            renderGraph();
+            setCircles();
+            }
+        });
+}
 
 
 // Function to Create Objects that will live in the view model

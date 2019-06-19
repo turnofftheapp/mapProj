@@ -446,24 +446,13 @@ function enableMapClick () {
 
 
         console.log(my.viewModel.highlightedPostalCode());
+        
+        // Freeze the postal code that is highlighted
         var postalCode = my.viewModel.highlightedPostalCode();
+        
+        // Call a function to get the data
+        getDestinationFromAreaData(postalCode);
 
-
-
-        var postalCodeToDestination = [];
-            $.ajax({
-            //url: 'http://0.0.0.0:8000/postalCodeToDestination/' + postalCode,
-            url: '/postalCodeToDestination/' + postalCode,
-            async: false,
-            dataType: 'json',
-            success: function (json) {
-            postalCodeToDestination = json;
-            }
-        });
-            //my.viewModel.postalCodeToDestinationData.removeAll();
-            my.viewModel.postalCodeToDestinationData(postalCodeToDestination);
-            renderGraph();
-            setCircles();
     });
 
 }
