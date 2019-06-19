@@ -39,6 +39,11 @@ def getJSON():
     return jsonify(Itenerary=[i.serialize for i in iteneraries])
 
 
+@app.route('/map/')
+def showMap():
+    return render_template('map.html')
+
+
 # Because CORS is not enabled for this totago API and I'm not ont there domain
 # I Am esentially creating a server-side proxy script to get this data then send it to the front end
 # See this post here
@@ -70,8 +75,6 @@ def getDestination(region):
 @app.route('/count/<string:region>/<string:myType>')
 def count(region, myType):
 
-    print("MADE CALL ********************")
-
     # sqlQUERY = "SELECT barrioMapped, COUNT(*) FROM itenerary WHERE region = 'washington' GROUP BY barrioMapped ORDER BY COUNT(*) desc;".format(region)
 
     # Going to need to go back and chnage some stuff here
@@ -93,21 +96,21 @@ def count(region, myType):
 
     return jsonify(data)
 
-@app.route('/map/')
-def showMap():
-    return render_template('map.html')
-
-@app.route('/postalCodeToDestination/<int:postal_code>')
-def postalCodeToDestination(postal_code):
+@app.route('/postalCodeToDestination/<int:mapArea>/<string:mapType>')
+def postalCodeToDestination(mapArea, mapType):
     
-    # Construct the raw SQL query
-    sql = text('SELECT postalcodemapped, selecteddestination_id, selecteddestination_name, COUNT(*) FROM itenerary WHERE valid = TRUE GROUP BY postalcodemapped, selecteddestination_id, selecteddestination_name ORDER BY COUNT(*) DESC;')
-    result = session.execute(sql)
+    if mapType == "postal":
+        sqlQUERY = "SELECT postalcodemapped, selecteddestination_id, selecteddestination_name, COUNT(*) FROM itenerary WHERE valid = TRUE and postalcodemapped = '{}' GROUP BY postalcodemapped, selecteddestination_id, selecteddestination_name ORDER BY COUNT(*) DESC;".format(mapArea)
+    elif mapType == "barrio":
+        sqlQUERY = "SELECT postalcodemapped, selecteddestination_id, selecteddestination_name, COUNT(*) FROM itenerary WHERE valid = TRUE and postalcodemapped = '{}' GROUP BY postalcodemapped, selecteddestination_id, selecteddestination_name ORDER BY COUNT(*) DESC;".format(mapArea)
+
+    result = session.execute(sqlQUERY)
     # https://stackoverflow.com/questions/17972020/how-to-execute-raw-sql-in-sqlalchemy-flask-app
     data = []
     
+    # This whole for loop could be redundant but we do not want to get rid of it just yet
     for row in result:
-        if row[0] == str(postal_code):
+        if row[0] == str(mapArea):
             nestedDictionary = {"postalCode": row[0],
                                 "destinationID": row[1],
                                 "destinationName": row[2],

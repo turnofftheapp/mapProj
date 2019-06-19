@@ -84,7 +84,7 @@ function getDestinationFromAreaData(postalCode) {
     var postalCodeToDestination = [];
         $.ajax({
             //url: 'http://0.0.0.0:8000/postalCodeToDestination/' + postalCode,
-            url: '/postalCodeToDestination/' + postalCode,
+            url: '/postalCodeToDestination/' + postalCode + "/" + my.viewModel.mapType(),
             async: false,
             dataType: 'json',
             success: function (json) {
@@ -95,7 +95,6 @@ function getDestinationFromAreaData(postalCode) {
             }
         });
 }
-
 
 // Function to Create Objects that will live in the view model
 // This comes from this post:
