@@ -64,8 +64,6 @@ map.on('load', function() {
 
 function addMapSource (region, type) {
 
-
-
     // TODO: Parameterize this function further
     // TODO: I will need to keep parameterizing this function as well
     if (region == "washington") {
@@ -77,8 +75,13 @@ function addMapSource (region, type) {
             name = "wazillow";
         }
     } else if (region == "california") {
-        url = "mapbox://axme100.1e3djubr";
-        name = "ca";
+        if (type=="postal") {
+            url = "mapbox://axme100.1e3djubr";
+            name = "ca";
+        } else if (type=="barrio") {
+            url = "mapbox://axme100.8u48g7xl";
+            name = "cazillow"
+        }
     }
 
     // Add source for zip code polygons hosted on Mapbox, based on US Census Data:
@@ -94,8 +97,6 @@ function addMapSource (region, type) {
 
 function createChoropleth (mapData, region, type) {
     
-  
-
     // TODO: Parameterize this function further
         if (region == "washington") {
             if (type == "postal") {
@@ -108,14 +109,17 @@ function createChoropleth (mapData, region, type) {
                 sourceLayer = "wazillow";
             }
         } else if (region == "california") {
-           
-            id = "ca-join";
-            sourceLayer = "ca";
+            if (type == "postal") {
+                id = "ca-join";
+                sourceLayer = "ca";
+            } else if (type=="barrio") {
+                id = "cazillow-join";
+                sourceLayer = "cazillow";
+            }
         }
 
     // Set the current source layer
     my.viewModel.currentSourceLayer(sourceLayer);
-
 
 
     if (my.viewModel.mapType() == "postal") {
@@ -334,11 +338,18 @@ function setCircles () {
     }
 }
 
-function changeRegion (region, type) {
+function changeRegion (region, type, toggle=false) {
+    
+    
+    // If not toggling that means you are changing regions,
+    // If we are changing regions, need to delete data Here
+    if (!toggle) {
+     deleteMapData();   
+    }
 
     
     // First delete all of the data that was already in there
-    deleteMapData();
+    //deleteMapData();
 
     if (region == "california") {
         
@@ -370,6 +381,11 @@ function changeRegion (region, type) {
 
 function toggleMapType () {
 
+    deleteMapData()
+
+    // This function just switches the global variable
+    console.log("Entered Toggle Map Type Function")
+    console.log()
     if (my.viewModel.mapType() == "barrio") {
         my.viewModel.mapType("postal"); 
     } else if (my.viewModel.mapType() == "postal") {
@@ -377,29 +393,27 @@ function toggleMapType () {
     }
 
     
-    changeRegion(my.viewModel.currentRegion(), my.viewModel.mapType())
+    changeRegion(my.viewModel.currentRegion(), my.viewModel.mapType(), toggle=true)
 }
 
 
 function deleteMapData () {
 
-    // First remove the Layers and sources for the choropleth layer
-    if (my.viewModel.currentRegion() == "washington") {
-
-        // First test this to see if it works    
-        map.removeLayer('wa-join');
-        map.removeSource('wa');
-    }
+    // Just acsess the global varibles to change the layers
+    // But first create the variable otherLayer which just appends
+    // "-join to the base layer", "other"
     
-    if (my.viewModel.currentRegion() == "california") {
+    sourceLayer = my.viewModel.currentSourceLayer();
+    choroplethLayer = sourceLayer + "-join"
+   
 
-        // First test this to see if it works    
-        map.removeLayer('ca-join');
-        map.removeSource('ca');
-    }
+    // Actually remove the layeres
+    map.removeLayer(choroplethLayer);
+    map.removeSource(my.viewModel.currentSourceLayer());
 
-    // Next remove all of the desination circles and sources
-    // Loop through all of the circles and then erase them
+
+    // Next delete all the destination circles and they will just
+    // Be re-populated.
     for (var i = 0; i < my.viewModel.destinationCircles().length; i++) {
 
         // First get the name of the desintation circle
