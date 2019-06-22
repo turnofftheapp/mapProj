@@ -33,7 +33,7 @@
 	<div class="col span_1_of_2">
 		<h1>Totago Mapping Project</h1>
 		<div id='map' style='width: 100%; height: 750px;'></div>
-		<div class='map-overlay' id='features'><h2>Postal Code:</h2><div id='pd'><p>Hovering over:</p><p data-bind="text: displayedInfo()"></p><p>Total trips taken:</p><p data-bind="text: highlightedPostalCodeHits"></p></div></div>
+		<div class='map-overlay' id='features'><h2 data-bind="text: mapType"></h2><div id='pd'><p>Hovering over:</p><p data-bind="text: displayedInfo()"></p><p>Total trips taken:</p><p data-bind="text: highlightedPostalCodeHits"></p></div></div>
 		</div>
 	<div class="col span_1_of_2">
 		<h1 data-bind="text: currentRegionDisplay"> </h1>
@@ -43,8 +43,8 @@
 		<button onclick="changeRegion('california')" type="button" class="btn btn-primary">Los Angeles</button>
 		<button type="button" class="btn btn-warning">San Diego</button>
 		<button onclick="changeRegion('newyork')" type="button" class="btn btn-primary">New York</button>
-		<h2> Toggle between different maps </h2>
-		<button onclick="toggleMapType()" type="button" class="btn btn-warning">Toggle</button>
+		<h2>Toggle Map Type</h2>
+		<button onclick="toggleMapType()" type="button" class="btn btn-warning">Toggle Map Type</button>
 		<h2> Click on a Zip Code Area to see where people are going </h2>
 		<div id=graph-container>
 		</div>
