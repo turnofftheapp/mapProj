@@ -14,7 +14,7 @@ var map = new mapboxgl.Map({
 // This is esentially  helper function that will be loaded
 // Once data is sucsessully returned from getMapData()
 // TODO: Decide if the type parameter actually needs to come into this point
-function renderMap (mapData, region, type) {
+function renderMap (mapData) {
     
     // Send map data to view model
     // So that we can derive the total count and display it
@@ -26,21 +26,18 @@ function renderMap (mapData, region, type) {
         my.viewModel.regionData.removeAll();
     }
 
-    
-
-    my.viewModel.regionData(mapData);
 
     // Add the correct layer for the map
     // This needs to be further parameterized
-    addMapSource(region, type);
+    addMapSource();
     
     // I'm esentially passing in the map data
-    createChoropleth(mapData, region, type);
+    createChoropleth(mapData);
 
     //Get Desination Data
     //Once the data is returned sucsessfully,
     // An additional functio will be called that will render all of this data
-    getDestinationData(region);
+    getDestinationData();
     
 }
 
@@ -62,31 +59,41 @@ map.on('load', function() {
 });
 
 
-function addMapSource (region, type) {
+function addMapSource () {
 
     // TODO: Parameterize this function further
     // TODO: I will need to keep parameterizing this function as well
-    if (region == "washington") {
-        if (type == "postal") {
+    if (my.viewModel.currentRegion() == "washington") {
+        if (my.viewModel.mapType() == "postal") {
             url = "mapbox://axme100.0bz1txrj";
-            name = "wa";
-        } else if (type == "barrio") {
+            // Set the current source layer
+            my.viewModel.currentSourceLayer("wa");
+        } else if (my.viewModel.mapType() == "barrio") {
             url = "mapbox://axme100.1u3r9yki";
-            name = "wazillow";
+            my.viewModel.currentSourceLayer("wazillow");
         }
-    } else if (region == "california") {
-        if (type=="postal") {
+    } else if (my.viewModel.currentRegion() == "california") {
+        if (my.viewModel.mapType()=="postal") {
             url = "mapbox://axme100.1e3djubr";
-            name = "ca";
-        } else if (type=="barrio") {
+            my.viewModel.currentSourceLayer("ca");
+        } else if (my.viewModel.mapType()=="barrio") {
             url = "mapbox://axme100.8u48g7xl";
-            name = "cazillow"
+            my.viewModel.currentSourceLayer("cazillow");
         }
+    } else if (my.viewModel.currentRegion() == "newyork") {
+        if (my.viewModel.mapType()=="postal") {
+            url = "mapbox://axme100.8oa45yw8";
+            my.viewModel.currentSourceLayer("ny");
+        } else if (my.viewModel.mapType()=="barrio") {
+            url = "mapbox://axme100.1bcb4m9d";
+            my.viewModel.currentSourceLayer("nyzillow");
+        }
+
     }
 
     // Add source for zip code polygons hosted on Mapbox, based on US Census Data:
     // https://www.census.gov/geo/maps-data/data/cbf/cbf_state.html
-    map.addSource(name, {
+    map.addSource(my.viewModel.currentSourceLayer(), {
         type: "vector",
         url: url
     });
@@ -94,33 +101,9 @@ function addMapSource (region, type) {
 
 }
     
-
-function createChoropleth (mapData, region, type) {
+function createChoropleth (mapData) {
     
-    // TODO: Parameterize this function further
-        if (region == "washington") {
-            if (type == "postal") {
-                id = "wa-join";
-                sourceLayer = "wa";
-            } else if (type == "barrio") {
-                // Notice how I have kept the id of the map the same
-                // This could be a problem might need to come back and check this
-                id = "wazillow-join"
-                sourceLayer = "wazillow";
-            }
-        } else if (region == "california") {
-            if (type == "postal") {
-                id = "ca-join";
-                sourceLayer = "ca";
-            } else if (type=="barrio") {
-                id = "cazillow-join";
-                sourceLayer = "cazillow";
-            }
-        }
-
-    // Set the current source layer
-    my.viewModel.currentSourceLayer(sourceLayer);
-
+    
 
     if (my.viewModel.mapType() == "postal") {
         var expression = ["match", ["get", "ZCTA5CE10"]];
@@ -131,6 +114,8 @@ function createChoropleth (mapData, region, type) {
     // Calulate Max Value
     // https://stackoverflow.com/questions/4020796/finding-the-max-value-of-an-attribute-in-an-array-of-objects
     maxValue = Math.max.apply(Math, mapData.map(function(o) { return o.mapAreaHits; }));
+    console.log("HHHHHHELLO")
+    console.log(maxValue);
 
     // Calculate color for each state based on the number of hits in that area
     mapData.forEach(function(row) {
@@ -146,10 +131,10 @@ function createChoropleth (mapData, region, type) {
     // Add layer from the vector tile source with data-driven style
     map.addLayer({
         // be careful that second dash works
-        "id": id,
+        "id": my.viewModel.currentSourceLayer() + '-join',
         "type": "fill",
-        "source": sourceLayer,
-        "source-layer": sourceLayer,
+        "source": my.viewModel.currentSourceLayer(),
+        "source-layer": my.viewModel.currentSourceLayer(),
         "paint": {
             "fill-color": expression
         }
@@ -166,6 +151,9 @@ function addDestinationCircles (myData) {
     //my.viewModel.destinationCircles.removeAll();
 
     // This should be 24 in the case of Seattle
+    
+    console.log("made it here")
+
     var myDataLength = myData.length;
 
 
@@ -341,42 +329,37 @@ function setCircles () {
 function changeRegion (region, type, toggle=false) {
     
     
+
+
     // If not toggling that means you are changing regions,
     // If we are changing regions, need to delete data Here
     if (!toggle) {
      deleteMapData();   
     }
 
+    // Set the current region in the view model
+    my.viewModel.currentRegion(region);
     
-    // First delete all of the data that was already in there
-    //deleteMapData();
 
-    if (region == "california") {
-        
-        // Set view model to Los Angeles
-        // This part is just for the display of the region name on the front end
-        my.viewModel.currentRegionDisplay("Los Angeles, CA");
+    // Pull information from the global object region data
+    // You can find this object hard coded at end of model.js
+    var regionInfo = regionData.find(obj => {
+        return obj.name === region
+    })
 
-        // Actually change the value in the view model
-        my.viewModel.currentRegion(region);
+    console.log(regionInfo);
 
-        // Fly to Los Angeles
-        // TODO: Instead of hardcoding in these coordinates
-        // calculate the bounds dynamically.
-        map.flyTo({
-            center: [-118.2437, 34.0522],
-            zoom: [8]
-        });
-    } else if (region == "washington") {
-       my.viewModel.currentRegionDisplay("Seattle");
-       my.viewModel.currentRegion(region);
-        map.flyTo({
-            center: [-122.33, 47.60],
-            zoom: [8]
-        });
-    }
+    // Set display
+    my.viewModel.currentRegionDisplay(regionInfo.displayName);
 
-    getMapData(my.viewModel.currentRegion(), my.viewModel.mapType());
+    // Fly to new location
+    map.flyTo({
+        center: regionInfo.coordinates,
+        zoom: [8]
+    });
+    
+    // Call the get Map data function in model
+    getMapData();
 }
 
 function toggleMapType () {

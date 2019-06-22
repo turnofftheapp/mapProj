@@ -57,6 +57,8 @@ def getDestination(region):
         region_id = "1"
     if region == "california":
         region_id = "7"
+    if region == "newyork":
+        region_id = "11"
     
     print(region_id)
 
@@ -75,10 +77,6 @@ def getDestination(region):
 @app.route('/count/<string:region>/<string:myType>')
 def count(region, myType):
 
-    # sqlQUERY = "SELECT barrioMapped, COUNT(*) FROM itenerary WHERE region = 'washington' GROUP BY barrioMapped ORDER BY COUNT(*) desc;".format(region)
-
-    # Going to need to go back and chnage some stuff here
-    # For this project
     if myType == "postal":
         sqlQUERY = "SELECT postalcodemapped, COUNT(*) FROM itenerary WHERE region = '{}' GROUP BY postalcodemapped ORDER BY COUNT(*) desc;".format(region)
     elif myType == "barrio":
@@ -92,7 +90,6 @@ def count(region, myType):
                             "mapAreaHits": row[1]}
         data.append(nestedDictionary)
     
-    print(data)
 
     return jsonify(data)
 

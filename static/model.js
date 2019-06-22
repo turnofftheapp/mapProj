@@ -3,15 +3,15 @@
 // See Mapbox documentation here: https://www.mapbox.com/help/define-access-token/
 mapboxgl.accessToken = 'pk.eyJ1IjoiYXhtZTEwMCIsImEiOiJjam0ybHJpYWgycnU1M3BsaXBmbnJicmxuIn0.rec0Fay3v7aDTAuptsaqEA';
 
-function getMapData (region, type) {
+function getMapData () {
 
-    console.log(type)
+    
 
     // make a region URL with the correct parameter
     // TODO: Create backend calls so that is can work for other regions
     // As of now, this just calls a backend call for all the data and
     // then filters in to Seattle specifically
-    regionURL = '/count/' + region + "/" + type;
+    regionURL = '/count/' + my.viewModel.currentRegion() + "/" + my.viewModel.mapType();
 
     console.log(regionURL)
 
@@ -36,9 +36,9 @@ function getMapData (region, type) {
                     //{"STATE_ID": "01", "unemployment": 13.17}
                     mapAreaHits = mydata[i]['mapAreaHits']
                     
-                    if (type == "postal") {
+                    if (my.viewModel.mapType() == "postal") {
                         mapAreaName = "ZCTA5CE10";
-                    } else if (type == "barrio") {
+                    } else if (my.viewModel.mapType() == "barrio") {
                         mapAreaName = "RegionID"
                     }
 
@@ -46,8 +46,9 @@ function getMapData (region, type) {
                     mapData.push(entry);
                 }
             }
+
             // Call the helper function to render the map
-            renderMap(mapData, region, type);
+            renderMap(mapData);
             // Call the function tha renders the map
         }
     });
@@ -60,9 +61,9 @@ function getMapData (region, type) {
 //console.log("Original Destinations:")
 //console.log(waDestinations);
 
-function getDestinationData (region) {
+function getDestinationData () {
 
-    var url = '/destinations/' + region
+    var url = '/destinations/' + my.viewModel.currentRegion()
 
     var mydata = [];
     $.ajax({
@@ -140,3 +141,22 @@ var createGeoJSONCircle = function(center, radiusInKm, points) {
         }
     };
 };
+
+
+let regionData = [
+  {
+    name: "washington",
+    coordinates: [-122.33, 47.60],
+    displayName: "Seattle, WA"
+  },
+  {
+    name: "california",
+    coordinates: [-118.2437, 34.0522],
+    displayName: "Los Angeles, California"
+  },
+  {
+    name: "newyork",
+    coordinates: [-74.00, 40.71],
+    displayName: "New York, New York"
+  }
+]
