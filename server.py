@@ -59,6 +59,8 @@ def getDestination(region):
         region_id = "7"
     if region == "newyork":
         region_id = "11"
+    if region == "canada":
+        region_id = "3"
     
     print(region_id)
 

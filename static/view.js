@@ -88,7 +88,14 @@ function addMapSource () {
             url = "mapbox://axme100.1bcb4m9d";
             my.viewModel.currentSourceLayer("nyzillow");
         }
-
+    } else if (my.viewModel.currentRegion() == "canada") {
+        if (my.viewModel.mapType()=="postal") {
+            url = "mapbox://axme100.5owh56ok";
+            my.viewModel.currentSourceLayer("canada-dydv58");
+        } else if (my.viewModel.mapType()=="barrio") {
+            url = "mapbox://axme100.7hpuslix";
+            my.viewModel.currentSourceLayer("vancouver_area");
+        }
     }
 
     // Add source for zip code polygons hosted on Mapbox, based on US Census Data:
@@ -103,19 +110,28 @@ function addMapSource () {
     
 function createChoropleth (mapData) {
     
-    
+    if (my.viewModel.currentRegion() == "canada") {
+        if (my.viewModel.mapType() == "postal") {
+            var expression = ["match", ["get", "CFSAUID"]];
+        } else if (my.viewModel.mapType() == "barrio") {
+            var expression = ["match", ["get", "MAPID"]];
+        }
 
-    if (my.viewModel.mapType() == "postal") {
-        var expression = ["match", ["get", "ZCTA5CE10"]];
-    } else if (my.viewModel.mapType() == "barrio") {
-        var expression = ["match", ["get", "RegionID"]];
+    // In the case of a US map these are the fields all of the polygon names
+    // Are the same
+    } else {
+
+        if (my.viewModel.mapType() == "postal") {
+            var expression = ["match", ["get", "ZCTA5CE10"]];
+        } else if (my.viewModel.mapType() == "barrio") {
+            var expression = ["match", ["get", "RegionID"]];
+        }
     }
 
     // Calulate Max Value
     // https://stackoverflow.com/questions/4020796/finding-the-max-value-of-an-attribute-in-an-array-of-objects
     maxValue = Math.max.apply(Math, mapData.map(function(o) { return o.mapAreaHits; }));
-    console.log("HHHHHHELLO")
-    console.log(maxValue);
+
 
     // Calculate color for each state based on the number of hits in that area
     mapData.forEach(function(row) {
@@ -328,9 +344,6 @@ function setCircles () {
 
 function changeRegion (region, type, toggle=false) {
     
-    
-
-
     // If not toggling that means you are changing regions,
     // If we are changing regions, need to delete data Here
     if (!toggle) {
@@ -347,7 +360,6 @@ function changeRegion (region, type, toggle=false) {
         return obj.name === region
     })
 
-    console.log(regionInfo);
 
     // Set display
     my.viewModel.currentRegionDisplay(regionInfo.displayName);
@@ -366,15 +378,11 @@ function toggleMapType () {
 
     deleteMapData()
 
-    // This function just switches the global variable
-    console.log("Entered Toggle Map Type Function")
-    console.log()
     if (my.viewModel.mapType() == "barrio") {
         my.viewModel.mapType("postal"); 
     } else if (my.viewModel.mapType() == "postal") {
         my.viewModel.mapType("barrio")
     }
-
     
     changeRegion(my.viewModel.currentRegion(), my.viewModel.mapType(), toggle=true)
 }
@@ -424,6 +432,8 @@ function enableMapClick () {
         
         // First get the actual features taht are being rendered
         var features = map.queryRenderedFeatures(e.point);
+
+        console.log(features);
         
         hoveredData = getHoveredMapArea(features)
 
@@ -468,18 +478,36 @@ function getHoveredMapArea (features) {
         var result = features.filter(obj => {
             return obj.source === my.viewModel.currentSourceLayer()
         })
+
+        if (my.viewModel.currentRegion()=="canada") {
+
+            if (my.viewModel.mapType() == "postal") {
+
+                hoveredTargetArea = result[0].properties.CFSAUID;
+
+            } else if (my.viewModel.mapType() == "barrio") {
+
+                hoveredArea = result[0].properties.Name;
+                hoveredRegionID = result[0].properties.RegionID;
+
+                hoveredTargetArea = [hoveredArea, hoveredRegionID]
+
+            }
+
+        } else {
         
-        if (my.viewModel.mapType() == "postal") {
+            if (my.viewModel.mapType() == "postal") {
 
-            hoveredTargetArea = result[0].properties.ZCTA5CE10;
+                hoveredTargetArea = result[0].properties.ZCTA5CE10;
 
-        } else if (my.viewModel.mapType() == "barrio") {
+            } else if (my.viewModel.mapType() == "barrio") {
 
-            hoveredArea = result[0].properties.Name;
-            hoveredRegionID = result[0].properties.RegionID;
+                hoveredArea = result[0].properties.NAME;
+                hoveredRegionID = result[0].properties.MAPID;
 
-            hoveredTargetArea = [hoveredArea, hoveredRegionID]
+                hoveredTargetArea = [hoveredArea, hoveredRegionID]
 
+            }
         }
 
         // Set the value of hoveredPostal Code

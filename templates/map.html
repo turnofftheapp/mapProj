@@ -39,12 +39,12 @@
 		<h1 data-bind="text: currentRegionDisplay"> </h1>
 		<h2> Cick to Change Region </h2>
 		<button onclick="changeRegion('washington')" type="button" class="btn btn-primary">Seattle, WA</button>
-		<button type="button" class="btn btn-warning">Vancouver BC</button>
+		<button onclick="changeRegion('canada')" type="button" class="btn btn-primary">Vancouver BC</button>
 		<button onclick="changeRegion('california')" type="button" class="btn btn-primary">Los Angeles</button>
 		<button type="button" class="btn btn-warning">San Diego</button>
 		<button onclick="changeRegion('newyork')" type="button" class="btn btn-primary">New York</button>
 		<h2>Toggle Map Type</h2>
-		<button onclick="toggleMapType()" type="button" class="btn btn-warning">Toggle Map Type</button>
+		<button onclick="toggleMapType()" type="button" class="btn btn-info">Toggle Map Type</button>
 		<h2> Click on a Zip Code Area to see where people are going </h2>
 		<div id=graph-container>
 		</div>

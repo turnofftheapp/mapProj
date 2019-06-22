@@ -36,22 +36,37 @@ function getMapData () {
                     //{"STATE_ID": "01", "unemployment": 13.17}
                     mapAreaHits = mydata[i]['mapAreaHits']
                     
-                    if (my.viewModel.mapType() == "postal") {
-                        mapAreaName = "ZCTA5CE10";
-                    } else if (my.viewModel.mapType() == "barrio") {
-                        mapAreaName = "RegionID"
-                    }
+                    // The canada maps have different fields
+                    // That is, not ZCTA5CE10 nor RegionID
+                    if (my.viewModel.currentRegion() == "canada") {
 
+                         if (my.viewModel.mapType() == "postal") {
+                            mapAreaName = "CFSAUID";
+                        } else if (my.viewModel.mapType() == "barrio") {
+                            mapAreaName = "MAPID"
+                        }
+
+                    // If it is not Canada then it comes from the US
+                    // So ZCTA5EC10 should work just fine
+                    } else {
+
+                        if (my.viewModel.mapType() == "postal") {
+                            mapAreaName = "ZCTA5CE10";
+                        } else if (my.viewModel.mapType() == "barrio") {
+                            mapAreaName = "RegionID"
+                        }
+                    
+                    }
                     var entry = {mapAreaName: mapArea.toString(), "mapAreaHits": mapAreaHits};
                     mapData.push(entry);
                 }
             }
-
             // Call the helper function to render the map
-            renderMap(mapData);
-            // Call the function tha renders the map
+            renderMap(mapData);      
         }
     });
+
+    
 };
 
 
@@ -158,5 +173,10 @@ let regionData = [
     name: "newyork",
     coordinates: [-74.00, 40.71],
     displayName: "New York, New York"
+  },
+  {
+    name: "canada",
+    coordinates: [-123.120, 49.282],
+    displayName: "Vancouver, BC"
   }
 ]
