@@ -433,7 +433,7 @@ function enableMapClick () {
         // First get the actual features taht are being rendered
         var features = map.queryRenderedFeatures(e.point);
 
-        console.log(features);
+        //console.log(features);
         
         hoveredData = getHoveredMapArea(features)
 
@@ -479,34 +479,37 @@ function getHoveredMapArea (features) {
             return obj.source === my.viewModel.currentSourceLayer()
         })
 
-        if (my.viewModel.currentRegion()=="canada") {
+        if (typeof result[0] !== 'undefined') {
 
-            if (my.viewModel.mapType() == "postal") {
+            if (my.viewModel.currentRegion()=="canada") {
 
-                hoveredTargetArea = result[0].properties.CFSAUID;
+                if (my.viewModel.mapType() == "postal") {
 
-            } else if (my.viewModel.mapType() == "barrio") {
+                    hoveredTargetArea = result[0].properties.CFSAUID;
 
-                hoveredArea = result[0].properties.Name;
-                hoveredRegionID = result[0].properties.RegionID;
+                } else if (my.viewModel.mapType() == "barrio") {
 
-                hoveredTargetArea = [hoveredArea, hoveredRegionID]
+                    hoveredArea = result[0].properties.NAME;
+                    hoveredRegionID = result[0].properties.MAPID;
 
-            }
+                    hoveredTargetArea = [hoveredArea, hoveredRegionID]
 
-        } else {
-        
-            if (my.viewModel.mapType() == "postal") {
+                }
 
-                hoveredTargetArea = result[0].properties.ZCTA5CE10;
+            } else {
+            
+                if (my.viewModel.mapType() == "postal") {
 
-            } else if (my.viewModel.mapType() == "barrio") {
+                    hoveredTargetArea = result[0].properties.ZCTA5CE10;
 
-                hoveredArea = result[0].properties.NAME;
-                hoveredRegionID = result[0].properties.MAPID;
+                } else if (my.viewModel.mapType() == "barrio") {
 
-                hoveredTargetArea = [hoveredArea, hoveredRegionID]
+                    hoveredArea = result[0].properties.Name;
+                    hoveredRegionID = result[0].properties.RegionID;
 
+                    hoveredTargetArea = [hoveredArea, hoveredRegionID]
+
+                }
             }
         }
 
@@ -516,16 +519,23 @@ function getHoveredMapArea (features) {
 
 function getHoveredDestination (features) {
 
-     // Here is where I need to get the hovered destination
+        // Here is where I need to get the hovered destination
         // As of now the fill-color seems to be the unique identifier that
         // I have, so I will obviously have to change this if the fill color changes
+        console.log("features:");
+        console.log(features);
+
         var result = features.filter(obj => {
             return obj.layer.paint["fill-color"] == "red";
         })
 
+        if (typeof result[0] !== 'undefined') {
+            console.log(result);
+            var hoveredDestination = result[0].source;
+            return hoveredDestination;
+        }
 
-        var hoveredDestination = result[0].source;
-        return hoveredDestination;
+        
 
 }
 /** Apply Bindings */
