@@ -436,6 +436,8 @@ function enableMapClick () {
         //console.log(features);
         
         hoveredData = getHoveredMapArea(features)
+        console.log("******HERE");
+        console.log(hoveredData);
 
         if (hoveredData instanceof Array) {
             mapAreaToDisplay = hoveredData[0];

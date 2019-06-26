@@ -95,13 +95,16 @@ def count(region, myType):
 
     return jsonify(data)
 
-@app.route('/postalCodeToDestination/<int:mapArea>/<string:mapType>')
+@app.route('/postalCodeToDestination/<string:mapArea>/<string:mapType>')
 def postalCodeToDestination(mapArea, mapType):
     
+
     if mapType == "postal":
         sqlQUERY = "SELECT postalcodemapped, selecteddestination_id, selecteddestination_name, COUNT(*) FROM itenerary WHERE valid = TRUE and postalcodemapped = '{}' GROUP BY postalcodemapped, selecteddestination_id, selecteddestination_name ORDER BY COUNT(*) DESC;".format(mapArea)
     elif mapType == "barrio":
         sqlQUERY = "SELECT barrioMapped, selecteddestination_id, selecteddestination_name, COUNT(*) FROM itenerary WHERE valid = TRUE and barrioMapped = '{}' GROUP BY barrioMapped, selecteddestination_id, selecteddestination_name ORDER BY COUNT(*) DESC;".format(mapArea)
+
+    print(sqlQUERY)
 
     result = session.execute(sqlQUERY)
     # https://stackoverflow.com/questions/17972020/how-to-execute-raw-sql-in-sqlalchemy-flask-app
