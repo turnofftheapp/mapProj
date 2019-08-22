@@ -38,7 +38,6 @@ def getJSON():
     iteneraries = session.query(Itenerary).all()
     return jsonify(Itenerary=[i.serialize for i in iteneraries])
 
-<<<<<<< HEAD
 
 @app.route('/map/')
 def showMap():
@@ -62,106 +61,13 @@ def getDestination(region):
         region_id = "11"
     if region == "canada":
         region_id = "3"
-||||||| merged common ancestors
-@app.route('/count/')
-def count():
     
-    # https://stackoverflow.com/questions/17972020/how-to-execute-raw-sql-in-sqlalchemy-flask-app
-    # Do it with good old SQL
-    # When you do it like this the result is not jsonifyble
-=======
-
-@app.route('/map/')
-def showMap():
-    return render_template('map.html')
-
-
-# Because CORS is not enabled for this totago API and I'm not ont there domain
-# I Am esentially creating a server-side proxy script to get this data then send it to the front end
-# See this post here
-# https://stackoverflow.com/a/31514305/5420796
-@app.route('/destinations/<string:region>')
-def getDestination(region):
->>>>>>> 275e8ae3c1b6afd6fb3b547a08d0291121ea60e0
-    
-<<<<<<< HEAD
-
-    urlString = 'https://www.totago.co/api/v1/destinations.json?region_id=' + region_id
-
-    r = requests.get(urlString)
-    json_data = json.loads(r.text)
-    return jsonify(json_data)
-
-
-@app.route('/count/<string:region>/<string:myType>')
-def count(region, myType):
-
-    if myType == "postal":
-        sqlQUERY = "SELECT postalcodemapped, COUNT(*) FROM itenerary WHERE region = '{}' GROUP BY postalcodemapped ORDER BY COUNT(*) desc;".format(region)
-    elif myType == "barrio":
-        sqlQUERY = "SELECT barrioMapped, COUNT(*) FROM itenerary WHERE region = '{}' GROUP BY barrioMapped ORDER BY COUNT(*) desc;".format(region)
-
-    result = session.execute(sqlQUERY)
-    data = []
-    for row in result:
-        #print(row[0])
-        nestedDictionary = {"mapArea": row[0],
-                            "mapAreaHits": row[1]}
-        data.append(nestedDictionary)
-||||||| merged common ancestors
-    #result = session.execute('SELECT postalCode, count(*) FROM itenerary GROUP BY postalCode ORDER BY COUNT(*) desc;')
-=======
-    print(region)
-
-    if region == "washington":
-        region_id = "1"
-    if region == "california":
-        region_id = "7"
-    if region == "newyork":
-        region_id = "11"
-    if region == "canada":
-        region_id = "3"
->>>>>>> 275e8ae3c1b6afd6fb3b547a08d0291121ea60e0
-    
-<<<<<<< HEAD
-||||||| merged common ancestors
-    # DO it with the ORM Syntax:
-    result = session.query(Itenerary.postalCode, func.count(Itenerary.postalCode)).group_by(Itenerary.postalCode).all()
-    # It looks like the result object is a list of tuples
-=======
     print(region_id)
->>>>>>> 275e8ae3c1b6afd6fb3b547a08d0291121ea60e0
 
-<<<<<<< HEAD
-    return jsonify(data)
-||||||| merged common ancestors
-    #for r in result:
-    #	print(r)
-=======
     print(region)
->>>>>>> 275e8ae3c1b6afd6fb3b547a08d0291121ea60e0
 
-<<<<<<< HEAD
-@app.route('/postalCodeToDestination/<string:mapArea>/<string:mapType>')
-def postalCodeToDestination(mapArea, mapType):
-    
-||||||| merged common ancestors
-    print("Done printing******")
-    return jsonify(result)
-=======
     urlString = 'https://www.totago.co/api/v1/destinations.json?region_id=' + region_id
->>>>>>> 275e8ae3c1b6afd6fb3b547a08d0291121ea60e0
 
-<<<<<<< HEAD
-    if mapType == "postal":
-        sqlQUERY = "SELECT postalcodemapped, selecteddestination_id, selecteddestination_name, COUNT(*) FROM itenerary WHERE valid = TRUE and postalcodemapped = '{}' GROUP BY postalcodemapped, selecteddestination_id, selecteddestination_name ORDER BY COUNT(*) DESC;".format(mapArea)
-    elif mapType == "barrio":
-        sqlQUERY = "SELECT barrioMapped, selecteddestination_id, selecteddestination_name, COUNT(*) FROM itenerary WHERE valid = TRUE and barrioMapped = '{}' GROUP BY barrioMapped, selecteddestination_id, selecteddestination_name ORDER BY COUNT(*) DESC;".format(mapArea)
-||||||| merged common ancestors
-@app.route('/map/')
-def showMap():
-    return render_template('map.html')
-=======
     print("URL STRING HERE:")
     print(urlString)
 
@@ -177,9 +83,27 @@ def count(region, myType):
         sqlQUERY = "SELECT postalcodemapped, COUNT(*) FROM itenerary WHERE region = '{}' GROUP BY postalcodemapped ORDER BY COUNT(*) desc;".format(region)
     elif myType == "barrio":
         sqlQUERY = "SELECT barrioMapped, COUNT(*) FROM itenerary WHERE region = '{}' GROUP BY barrioMapped ORDER BY COUNT(*) desc;".format(region)
->>>>>>> 275e8ae3c1b6afd6fb3b547a08d0291121ea60e0
 
-<<<<<<< HEAD
+    result = session.execute(sqlQUERY)
+    data = []
+    for row in result:
+        #print(row[0])
+        nestedDictionary = {"mapArea": row[0],
+                            "mapAreaHits": row[1]}
+        data.append(nestedDictionary)
+    
+
+    return jsonify(data)
+
+@app.route('/postalCodeToDestination/<string:mapArea>/<string:mapType>')
+def postalCodeToDestination(mapArea, mapType):
+    
+
+    if mapType == "postal":
+        sqlQUERY = "SELECT postalcodemapped, selecteddestination_id, selecteddestination_name, COUNT(*) FROM itenerary WHERE valid = TRUE and postalcodemapped = '{}' GROUP BY postalcodemapped, selecteddestination_id, selecteddestination_name ORDER BY COUNT(*) DESC;".format(mapArea)
+    elif mapType == "barrio":
+        sqlQUERY = "SELECT barrioMapped, selecteddestination_id, selecteddestination_name, COUNT(*) FROM itenerary WHERE valid = TRUE and barrioMapped = '{}' GROUP BY barrioMapped, selecteddestination_id, selecteddestination_name ORDER BY COUNT(*) DESC;".format(mapArea)
+
     print(sqlQUERY)
 
     result = session.execute(sqlQUERY)
@@ -195,44 +119,6 @@ def count(region, myType):
                                 "count": row[3]}
             data.append(nestedDictionary)
     return jsonify(data)
-||||||| merged common ancestors
-@app.route('/example/')
-def showExampleMap():
-    return render_template('example.html')
-=======
-    result = session.execute(sqlQUERY)
-    data = []
-    for row in result:
-        #print(row[0])
-        nestedDictionary = {"mapArea": row[0],
-                            "mapAreaHits": row[1]}
-        data.append(nestedDictionary)
-    
-
-    return jsonify(data)
-
-@app.route('/postalCodeToDestination/<int:mapArea>/<string:mapType>')
-def postalCodeToDestination(mapArea, mapType):
-    
-    if mapType == "postal":
-        sqlQUERY = "SELECT postalcodemapped, selecteddestination_id, selecteddestination_name, COUNT(*) FROM itenerary WHERE valid = TRUE and postalcodemapped = '{}' GROUP BY postalcodemapped, selecteddestination_id, selecteddestination_name ORDER BY COUNT(*) DESC;".format(mapArea)
-    elif mapType == "barrio":
-        sqlQUERY = "SELECT barrioMapped, selecteddestination_id, selecteddestination_name, COUNT(*) FROM itenerary WHERE valid = TRUE and barrioMapped = '{}' GROUP BY barrioMapped, selecteddestination_id, selecteddestination_name ORDER BY COUNT(*) DESC;".format(mapArea)
-
-    result = session.execute(sqlQUERY)
-    # https://stackoverflow.com/questions/17972020/how-to-execute-raw-sql-in-sqlalchemy-flask-app
-    data = []
-    
-    # This whole for loop could be redundant but we do not want to get rid of it just yet
-    for row in result:
-        if row[0] == str(mapArea):
-            nestedDictionary = {"mapArea": row[0],
-                                "destinationID": row[1],
-                                "destinationName": row[2],
-                                "count": row[3]}
-            data.append(nestedDictionary)
-    return jsonify(data)
->>>>>>> 275e8ae3c1b6afd6fb3b547a08d0291121ea60e0
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
