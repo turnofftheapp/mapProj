@@ -62,14 +62,8 @@ def getDestination(region):
     if region == "canada":
         region_id = "3"
     
-    print(region_id)
-
-    print(region)
 
     urlString = 'https://www.totago.co/api/v1/destinations.json?region_id=' + region_id
-
-    print("URL STRING HERE:")
-    print(urlString)
 
     r = requests.get(urlString)
     json_data = json.loads(r.text)
