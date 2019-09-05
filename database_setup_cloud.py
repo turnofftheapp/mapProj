@@ -83,6 +83,9 @@ class Itenerary(Base):
     barriomapped = Column(
         String())
 
+    valid = Column(
+        Boolean, nullable = False)
+
     region = Column(
         String())
 
