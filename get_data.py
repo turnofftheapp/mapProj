@@ -10,4 +10,4 @@ TOKEN = os.environ['token']
 mixpanel = Mixpanel(API_SECRET, token=TOKEN)
 
 # Export all generated itenary
-mixpanel.export_events('generated_itineraries.csv',{'from_date':'2011-07-11','to_date':'2019-02-18','event':'["Generated itineraries"]'}, format = "csv")
+mixpanel.export_events('generated_itineraries.csv',{'from_date':'2011-07-11','to_date':'2019-9-5','event':'["Generated itineraries"]'}, format = "csv")

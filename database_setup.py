@@ -109,6 +109,5 @@ class Itenerary(Base):
 
         }
 
-
 Base.metadata.create_all(engine)
 print(database_exists(engine.url))
