@@ -4,7 +4,7 @@ import os
 from datetime import datetime
 
 # Get the api key from the environment variable
-my_key = os.environ['my_key']
+my_key = os.environ['google_api_key']
 
 def geocode(address):
 	# Is this the best place for the gmaps object?

@@ -38,6 +38,9 @@ with open('shapefiles/nyzillow.geojson') as f:
 
 def mapToPoly(lat, lon, myType):
 
+	print("lat: " + lat)
+	print("lon: " + lon)
+
 	if myType == 'postal':
 
 		# construct point based on lon/lat returned by geocoder

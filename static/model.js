@@ -12,7 +12,7 @@ function getMapData () {
     // As of now, this just calls a backend call for all the data and
     // then filters in to Seattle specifically
     regionURL = '/count/' + my.viewModel.currentRegion() + "/" + my.viewModel.mapType();
-
+    console.log(regionURL);
     console.log(regionURL)
 
     var mydata = [];
@@ -21,6 +21,7 @@ function getMapData () {
         dataType: 'json',
         success: function (json) {
             mydata = json;
+            console.log(mydata);
             // Lines 26 - 43 are going to have to be incorporated ino the function above
             var arrayLength = mydata.length;
             var mapData = [];
@@ -61,6 +62,7 @@ function getMapData () {
                     mapData.push(entry);
                 }
             }
+            console.log(mapData);
             // Call the helper function to render the map
             renderMap(mapData);      
         }

@@ -131,7 +131,7 @@ function createChoropleth (mapData) {
     // Calulate Max Value
     // https://stackoverflow.com/questions/4020796/finding-the-max-value-of-an-attribute-in-an-array-of-objects
     maxValue = Math.max.apply(Math, mapData.map(function(o) { return o.mapAreaHits; }));
-
+    console.log(maxValue);
 
     // Calculate color for each state based on the number of hits in that area
     mapData.forEach(function(row) {

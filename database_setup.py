@@ -82,7 +82,7 @@ class Itenerary(Base):
         String())
 
     userid = Column(
-        Integer())   
+        String())
 
     region = Column(
         String())

@@ -84,6 +84,7 @@ def count(region, myType):
     elif myType == "barrio":
         sqlQUERY = "SELECT barrioMapped, COUNT(*) FROM itenerary WHERE region = '{}' GROUP BY barrioMapped ORDER BY COUNT(*) desc;".format(region)
 
+    print(sqlQUERY)
     result = session.execute(sqlQUERY)
     data = []
     for row in result:
@@ -92,7 +93,6 @@ def count(region, myType):
                             "mapAreaHits": row[1]}
         data.append(nestedDictionary)
     
-
     return jsonify(data)
 
 @app.route('/postalCodeToDestination/<string:mapArea>/<string:mapType>')
