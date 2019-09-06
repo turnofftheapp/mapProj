@@ -81,8 +81,8 @@ class Itenerary(Base):
     barriomapped = Column(
         String())
 
-    wta = Column(
-        Boolean, nullable = False)    
+    userid = Column(
+        String())   
 
     region = Column(
         String())
