@@ -3,7 +3,7 @@
 
 # # Import libraries, set options, connect to DB
 
-# In[25]:
+# In[ ]:
 
 
 # Configuration code for datawrangling
@@ -41,13 +41,13 @@ session = DBSession()
 
 # # Read in data as pandas data frame, selecting only certain fields
 
-# In[26]:
+# In[ ]:
 
 
-fields = ['distinct_id', 'numItinerariesReturned', 'departureDate', 'startFromLocation', 'selectedDestination_id', 'selectedDestination_name', 'time']
+fields = ['distinct_id', 'numItinerariesReturned', 'departureDate', 'startFromLocation', 'selectedDestination_id', 'selectedDestination_name', 'time', 'user_id']
 
 
-# In[27]:
+# In[ ]:
 
 
 df = pd.read_csv('generated_itineraries.csv', usecols = fields)
@@ -55,7 +55,7 @@ df = pd.read_csv('generated_itineraries.csv', usecols = fields)
 
 # # Wrange field: destinationIDs
 
-# In[28]:
+# In[ ]:
 
 
 # Replace all of the NAs for destinationIDs with 0
@@ -72,7 +72,7 @@ df['selectedDestination_id'] = df.selectedDestination_id.astype(int)
 
 # # Wrangle field: numItenerariesReturned
 
-# In[29]:
+# In[ ]:
 
 
 # Replace all of the NAs for numItinerariesReturned with 1
@@ -86,7 +86,7 @@ df['numItinerariesReturned'] = df.numItinerariesReturned.astype(int)
 
 # # Wrangle Field: Destination Name
 
-# In[30]:
+# In[ ]:
 
 
 #Replace all of the NAs in
@@ -98,7 +98,7 @@ print(len(df))
 
 # # Wrangle Field: departureDate
 
-# In[31]:
+# In[ ]:
 
 
 #Convert destinationIDs column to an integer value
@@ -158,7 +158,7 @@ df['departureDate'] = df.departureDate.apply(extractDate)
 
 # # Wrangle Field: distinctID
 
-# In[32]:
+# In[ ]:
 
 
 #It turns out distinc_id correpsonds to a user
@@ -179,7 +179,7 @@ unique_keys = df.primary_key.unique()
 
 # # Create a subset of the datle with sample method to test geocode and database entry logic
 
-# In[33]:
+# In[ ]:
 
 
 #Out put the entire database
@@ -188,14 +188,23 @@ unique_keys = df.primary_key.unique()
 len(df)
 
 
-# In[34]:
+# In[ ]:
 
 
 #Create a random sample of the database, these entries will be added to the database in the next section
-sampleDf = df.sample(1500)
+sampleDf = df.tail(1000)
+
+sampleDf.user_id.astype(np.int64)
+
 
 # Output this random sample
-sampleDf.head(len(sampleDf))    
+sampleDf.head(len(sampleDf))
+
+
+# In[ ]:
+
+
+sampleDf.dtypes
 
 
 # ## Read in the destination data to allow the possibility to pull the correct names
@@ -203,7 +212,7 @@ sampleDf.head(len(sampleDf))
 #  
 # 
 
-# In[35]:
+# In[ ]:
 
 
 f = open("destinations_mapping_Jul-30-18.csv")
@@ -221,7 +230,7 @@ print(destinations)
 
 # # Loop through the rows in the dataframe, geocode, add entry to database
 
-# In[36]:
+# In[ ]:
 
 
 # Loop through the subsetted pandas data frame
@@ -267,24 +276,15 @@ for index, row in sampleDf.iterrows():
 
             
             # Mapp the gps coordinates returned to the zip code polygons
-            
-            # import pdb; pdb.set_trace()
-
             zipCodeInfo = mapToPoly(geocodeInfo['lat'], geocodeInfo['lng'], 'postal')
+            print(zipCodeInfo)
+            zipCodeMapped = zipCodeInfo[0]
+            region = zipCodeInfo[1]
             
-            # Had to wrap these around try and except blocks
-            try:
-              zipCodeMapped = zipCodeInfo[0]
-            except:
-              zipCodeMapped = None
-
-            try:
-              region = zipCodeInfo[1]
-            except:
-              zipCodeMapped = None
-
-            barrioMapped = mapToPoly(geocodeInfo['lat'], geocodeInfo['lng'], 'barrio')
-            
+            barrioInfo = mapToPoly(geocodeInfo['lat'], geocodeInfo['lng'], 'barrio')
+            print(barrioInfo)
+            barrioMapped = barrioInfo[0]
+            region = zipCodeInfo[1]
             
             ## Get selected Destination Names
             # Pull the selected destination name
@@ -323,6 +323,7 @@ for index, row in sampleDf.iterrows():
                                       postalcode=geocodeInfo['postalCode'],
                                       postalcodemapped=zipCodeMapped,
                                       barriomapped=barrioMapped,
+                                      userid=row["user_id"],
                                       region=region,
                                       valid=valid)
         # If valid is false, just fill in the information that we have from the pandas data frame
@@ -333,6 +334,7 @@ for index, row in sampleDf.iterrows():
                                       selecteddestination_name=row["selectedDestination_name"],
                                       startfromlocation=row["startFromLocation"],
                                       departuredate=row["departureDate"],
+                                      userid=row["user_id"],
                                       valid=valid)
 
         # Add the the information to a database.    
