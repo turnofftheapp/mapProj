@@ -51,6 +51,9 @@ potential_data/
 # RStudio files
 .Rproj.user/
 
+# Ignore Rproj file
+**Rproj
+
 # produced vignettes
 vignettes/*.html
 vignettes/*.pdf
@@ -69,3 +72,8 @@ vignettes/*.pdf
 ### R.Bookdown Stack ###
 # R package: bookdown caching files
 /*_files/
+
+### R markdown files
+**Rmd
+
+**nb.html
