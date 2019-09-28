@@ -21,8 +21,8 @@ destinations <- destinations %>%
   mutate(destinations.name = str_trim(destinations.name)) %>%
   arrange(desc(destinations.name))
 
-datos <- datos %>%
-  select(startFromLocation, destination_id, selectedDestination_id, selectedDestination_name)
+# datos <- datos %>%
+#   select(startFromLocation, destination_id, selectedDestination_id, selectedDestination_name)
 
 datos <- datos %>%
   # For those cases in which the column destination_id contains at least a one charcter vector, replace the selected Destination column with this row
@@ -31,9 +31,9 @@ datos <- datos %>%
   mutate(selectedDestination_id = ifelse(!grepl("\\D", destination_id), destination_id, selectedDestination_id))
 
 # Drop  destination_id column
-datos <- datos %>%
-  #filter(user_id==827) %>%
-  select(startFromLocation, selectedDestination_id, selectedDestination_name)
+#datos <- datos %>%
+#  #filter(user_id==827) %>%
+#  select(startFromLocation, selectedDestination_id, selectedDestination_name)
 
 
 # Fix some of the column names:
@@ -93,8 +93,8 @@ getDestinationID <- function(destinationName, destinationID) {
   
 }
 
-datos$testName <- mapply(getDestinationName, datos$selectedDestination_id, datos$selectedDestination_name)
-datos$testID <- mapply(getDestinationID, datos$selectedDestination_name, datos$selectedDestination_id)
+datos$selectedDestination_name <- mapply(getDestinationName, datos$selectedDestination_id, datos$selectedDestination_name)
+datos$selectedDestination_id <- mapply(getDestinationID, datos$selectedDestination_name, datos$selectedDestination_id)
 
 
 noNames <- datos %>%
