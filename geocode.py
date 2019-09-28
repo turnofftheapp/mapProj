@@ -24,4 +24,5 @@ def geocode(address):
 		if componentTypeFirstIndex == "postal_code":
 			postalCode = component["long_name"]
 			geoCodeInfo["postalCode"] = postalCode
+	print(geoCodeInfo)
 	return(geoCodeInfo)

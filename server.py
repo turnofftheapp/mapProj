@@ -93,6 +93,7 @@ def count(region, myType):
                             "mapAreaHits": row[1]}
         data.append(nestedDictionary)
     
+    print(data)
     return jsonify(data)
 
 @app.route('/postalCodeToDestination/<string:mapArea>/<string:mapType>')

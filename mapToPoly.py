@@ -38,8 +38,8 @@ with open('shapefiles/nyzillow.geojson') as f:
 
 def mapToPoly(lat, lon, myType):
 
-	print("lat: " + lat)
-	print("lon: " + lon)
+	# print("lat: " + lat)
+	# print("lon: " + lon)
 
 	if myType == 'postal':
 

@@ -97,7 +97,4 @@ datos$selectedDestination_name <- mapply(getDestinationName, datos$selectedDesti
 datos$selectedDestination_id <- mapply(getDestinationID, datos$selectedDestination_name, datos$selectedDestination_id)
 
 
-noNames <- datos %>%
-  filter(is.na(testID)) %>%
-  count(testName) %>%
-  arrange(desc(n))
+write_csv(datos, path="./modified_iten.csv")
