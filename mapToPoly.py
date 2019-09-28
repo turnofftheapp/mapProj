@@ -93,21 +93,19 @@ def mapToPoly(lat, lon, myType):
 				    
 				    # See if it comes from the a zillow dataset
 				    try:
+				    	print(feature['properties']['RegionID'])
 				    	zillowSet = feature['properties']['RegionID']
 				    except:
 				    	zillowSet = False
 
 				    if zillowSet:
+				    	print(feature['properties']['RegionID'])
 				    	return(feature['properties']['RegionID'])
 				    # Otherwise it must come form the vancouver map
 				    else:
+					    print(feature['properties']['MAPID'])
 					    return(feature['properties']['MAPID'])
 
 
 # Test the function out, make sure to delete this
-#mapToPoly(34.0807282,-118.4130493, 'postal')
-#mapToPoly(47.6030565,-122.3290662, 'postal')
-#mapToPoly(49.283276,-123.1161202, 'postal')#
-#mapToPoly(34.0807282,-118.4130493, 'barrio')
-#mapToPoly(47.6030565,-122.3290662, 'barrio')
-#mapToPoly(49.283276,-123.1161202, 'barrio')
+mapToPoly(47.60621,-122.33207, 'barrio')
