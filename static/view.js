@@ -346,6 +346,7 @@ function changeRegion (region, type, toggle=false) {
     
     // If not toggling that means you are changing regions,
     // If we are changing regions, need to delete data Here
+    // This is also going to deelte the map data
     if (!toggle) {
      deleteMapData();   
     }
@@ -385,6 +386,17 @@ function toggleMapType () {
     }
     
     changeRegion(my.viewModel.currentRegion(), my.viewModel.mapType(), toggle=true)
+}
+
+function filterByUserID (userID) {
+    
+    if (my.viewModel.userID() == 'none') {
+        my.viewModel.userID(userID);
+    } else {
+        my.viewModel.userID('none')
+    }
+
+        changeRegion(my.viewModel.currentRegion(), my.viewModel.mapType(), toggle=false, filterUser=true)
 }
 
 

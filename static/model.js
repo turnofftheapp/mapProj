@@ -5,15 +5,13 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiYXhtZTEwMCIsImEiOiJjam0ybHJpYWgycnU1M3BsaXBmb
 
 function getMapData () {
 
-    
-
     // make a region URL with the correct parameter
     // TODO: Create backend calls so that is can work for other regions
     // As of now, this just calls a backend call for all the data and
     // then filters in to Seattle specifically
-    regionURL = '/count/' + my.viewModel.currentRegion() + "/" + my.viewModel.mapType();
+    
+    regionURL = '/count/' + my.viewModel.currentRegion() + "/" + my.viewModel.mapType() + "/" + my.viewModel.userID();
     console.log(regionURL);
-    console.log(regionURL)
 
     var mydata = [];
     $.ajax({

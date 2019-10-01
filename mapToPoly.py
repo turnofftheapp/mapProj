@@ -93,17 +93,14 @@ def mapToPoly(lat, lon, myType):
 				    
 				    # See if it comes from the a zillow dataset
 				    try:
-				    	print(feature['properties']['RegionID'])
 				    	zillowSet = feature['properties']['RegionID']
 				    except:
 				    	zillowSet = False
 
 				    if zillowSet:
-				    	print(feature['properties']['RegionID'])
 				    	return(feature['properties']['RegionID'])
 				    # Otherwise it must come form the vancouver map
 				    else:
-					    print(feature['properties']['MAPID'])
 					    return(feature['properties']['MAPID'])
 
 

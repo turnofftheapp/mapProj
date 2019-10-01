@@ -9,6 +9,8 @@ var ViewModel = function() {
     // The default, for now, will just be set to Washington
     self.currentRegion = ko.observable("washington");
 
+    self.userID = ko.observable("none");
+
     // Make a current source layer
     // So that we can call upon this for mapClick() function
     self.currentSourceLayer = ko.observable("");

@@ -66,7 +66,7 @@ def getDestination(region):
 
     print(region)
 
-    urlString = 'https://www.totago.co/api/v1/destinations.json?region_id=' + region_id
+    urlString = 'https://www.totago.co/api/v1/destinations.json?publication_stage=verified&region_id=' + region_id
 
     print("URL STRING HERE:")
     print(urlString)
@@ -76,13 +76,27 @@ def getDestination(region):
     return jsonify(json_data)
 
 
-@app.route('/count/<string:region>/<string:myType>')
-def count(region, myType):
+@app.route('/count/<string:region>/<string:myType>/<string:userID>')
+def count(region, myType, userID):
 
     if myType == "postal":
-        sqlQUERY = "SELECT postalcodemapped, COUNT(*) FROM itenerary WHERE region = '{}' GROUP BY postalcodemapped ORDER BY COUNT(*) desc;".format(region)
-    elif myType == "barrio":
-        sqlQUERY = "SELECT barrioMapped, COUNT(*) FROM itenerary WHERE region = '{}' GROUP BY barrioMapped ORDER BY COUNT(*) desc;".format(region)
+        column = "postalcodemapped"
+    elif mytye == "barrio":
+        column = "barriomapped"
+
+    if userID == "none":
+        sqlQUERY = "SELECT {}, COUNT(*) FROM itenerary WHERE region = '{}' GROUP BY postalcodemapped ORDER BY COUNT(*) desc;".format(column, region)
+    else:
+        sqlQUERY = "SELECT {}, COUNT(*) FROM itenerary WHERE region = '{}' AND userid = '{}' GROUP BY postalcodemapped ORDER BY COUNT(*) desc;".format(column, region, userID)
+
+
+    print("**************LOOK HERE DUMMY")
+    print(sqlQUERY)
+
+    #if myType == "postal":
+    #    sqlQUERY = "SELECT postalcodemapped, COUNT(*) FROM itenerary WHERE region = '{}' GROUP BY postalcodemapped ORDER BY COUNT(*) desc;".format(region)
+    #elif myType == "barrio":
+    #    sqlQUERY = "SELECT barrioMapped, COUNT(*) FROM itenerary WHERE region = '{}' GROUP BY barrioMapped ORDER BY COUNT(*) desc;".format(region)
 
     print(sqlQUERY)
     result = session.execute(sqlQUERY)
@@ -119,6 +133,8 @@ def postalCodeToDestination(mapArea, mapType):
                                 "destinationName": row[2],
                                 "count": row[3]}
             data.append(nestedDictionary)
+    print("*****************")
+    print()
     return jsonify(data)
 
 if __name__ == '__main__':
