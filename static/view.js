@@ -385,6 +385,7 @@ function toggleMapType () {
         my.viewModel.mapType("barrio")
     }
     
+    console.log("test test test")
     changeRegion(my.viewModel.currentRegion(), my.viewModel.mapType(), toggle=true)
 }
 
@@ -396,7 +397,7 @@ function filterByUserID (userID) {
         my.viewModel.userID('none')
     }
 
-        changeRegion(my.viewModel.currentRegion(), my.viewModel.mapType(), toggle=false, filterUser=true)
+        changeRegion(my.viewModel.currentRegion(), my.viewModel.mapType(), toggle=false)
 }
 
 

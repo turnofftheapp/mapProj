@@ -97,13 +97,9 @@ function getDestinationData () {
 
 function getDestinationFromAreaData(mapArea) {
 
-    console.log(mapArea);
-
-    console.log("Made it inside");
-    console.log('/postalCodeToDestination/' + mapArea + "/" + my.viewModel.mapType());
     var postalCodeToDestination = [];
         $.ajax({
-            url: '/postalCodeToDestination/' + mapArea + "/" + my.viewModel.mapType(),
+            url: '/postalCodeToDestination/' + mapArea + "/" + my.viewModel.mapType() + "/" + my.viewModel.userID(),
             async: false,
             dataType: 'json',
             success: function (json) {

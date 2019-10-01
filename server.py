@@ -62,14 +62,7 @@ def getDestination(region):
     if region == "canada":
         region_id = "3"
     
-    print(region_id)
-
-    print(region)
-
     urlString = 'https://www.totago.co/api/v1/destinations.json?publication_stage=verified&region_id=' + region_id
-
-    print("URL STRING HERE:")
-    print(urlString)
 
     r = requests.get(urlString)
     json_data = json.loads(r.text)
@@ -81,24 +74,14 @@ def count(region, myType, userID):
 
     if myType == "postal":
         column = "postalcodemapped"
-    elif mytye == "barrio":
+    else:
         column = "barriomapped"
 
     if userID == "none":
-        sqlQUERY = "SELECT {}, COUNT(*) FROM itenerary WHERE region = '{}' GROUP BY postalcodemapped ORDER BY COUNT(*) desc;".format(column, region)
+        sqlQUERY = "SELECT {}, COUNT(*) FROM itenerary WHERE region = '{}' GROUP BY {} ORDER BY COUNT(*) desc;".format(column, region, column)
     else:
-        sqlQUERY = "SELECT {}, COUNT(*) FROM itenerary WHERE region = '{}' AND userid = '{}' GROUP BY postalcodemapped ORDER BY COUNT(*) desc;".format(column, region, userID)
+        sqlQUERY = "SELECT {}, COUNT(*) FROM itenerary WHERE region = '{}' AND userid = '{}' GROUP BY {} ORDER BY COUNT(*) desc;".format(column, region, userID, column)
 
-
-    print("**************LOOK HERE DUMMY")
-    print(sqlQUERY)
-
-    #if myType == "postal":
-    #    sqlQUERY = "SELECT postalcodemapped, COUNT(*) FROM itenerary WHERE region = '{}' GROUP BY postalcodemapped ORDER BY COUNT(*) desc;".format(region)
-    #elif myType == "barrio":
-    #    sqlQUERY = "SELECT barrioMapped, COUNT(*) FROM itenerary WHERE region = '{}' GROUP BY barrioMapped ORDER BY COUNT(*) desc;".format(region)
-
-    print(sqlQUERY)
     result = session.execute(sqlQUERY)
     data = []
     for row in result:
@@ -107,19 +90,21 @@ def count(region, myType, userID):
                             "mapAreaHits": row[1]}
         data.append(nestedDictionary)
     
-    print(data)
     return jsonify(data)
 
-@app.route('/postalCodeToDestination/<string:mapArea>/<string:mapType>')
-def postalCodeToDestination(mapArea, mapType):
+@app.route('/postalCodeToDestination/<string:mapArea>/<string:mapType>/<string:userID>')
+def postalCodeToDestination(mapArea, mapType, userID):
     
-
-    if mapType == "postal":
-        sqlQUERY = "SELECT postalcodemapped, selecteddestination_id, selecteddestination_name, COUNT(*) FROM itenerary WHERE valid = TRUE and postalcodemapped = '{}' GROUP BY postalcodemapped, selecteddestination_id, selecteddestination_name ORDER BY COUNT(*) DESC;".format(mapArea)
-    elif mapType == "barrio":
-        sqlQUERY = "SELECT barrioMapped, selecteddestination_id, selecteddestination_name, COUNT(*) FROM itenerary WHERE valid = TRUE and barrioMapped = '{}' GROUP BY barrioMapped, selecteddestination_id, selecteddestination_name ORDER BY COUNT(*) DESC;".format(mapArea)
-
-    print(sqlQUERY)
+    if userID == "none":
+        if mapType == "postal":
+            sqlQUERY = "SELECT postalcodemapped, selecteddestination_id, selecteddestination_name, COUNT(*) FROM itenerary WHERE valid = TRUE and postalcodemapped = '{}' GROUP BY postalcodemapped, selecteddestination_id, selecteddestination_name ORDER BY COUNT(*) DESC;".format(mapArea)
+        elif mapType == "barrio":
+            sqlQUERY = "SELECT barrioMapped, selecteddestination_id, selecteddestination_name, COUNT(*) FROM itenerary WHERE valid = TRUE and barrioMapped = '{}' GROUP BY barrioMapped, selecteddestination_id, selecteddestination_name ORDER BY COUNT(*) DESC;".format(mapArea)
+    else:
+        if mapType == "postal":
+            sqlQUERY = "SELECT postalcodemapped, selecteddestination_id, selecteddestination_name, COUNT(*) FROM itenerary WHERE valid = TRUE and postalcodemapped = '{}' and userid = '{}' GROUP BY postalcodemapped, selecteddestination_id, selecteddestination_name ORDER BY COUNT(*) DESC;".format(mapArea, userID)
+        elif mapType == "barrio":
+            sqlQUERY = "SELECT barrioMapped, selecteddestination_id, selecteddestination_name, COUNT(*) FROM itenerary WHERE valid = TRUE and barrioMapped = '{}' and userid = '{}' GROUP BY barrioMapped, selecteddestination_id, selecteddestination_name ORDER BY COUNT(*) DESC;".format(mapArea, userID)
 
     result = session.execute(sqlQUERY)
     # https://stackoverflow.com/questions/17972020/how-to-execute-raw-sql-in-sqlalchemy-flask-app
@@ -133,8 +118,7 @@ def postalCodeToDestination(mapArea, mapType):
                                 "destinationName": row[2],
                                 "count": row[3]}
             data.append(nestedDictionary)
-    print("*****************")
-    print()
+  
     return jsonify(data)
 
 if __name__ == '__main__':
