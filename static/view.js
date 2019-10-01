@@ -393,8 +393,12 @@ function filterByUserID (userID) {
     
     if (my.viewModel.userID() == 'none') {
         my.viewModel.userID(userID);
+        // Set display
+        // TODO: Make this more dynamic when adding more users
+        my.viewModel.currentUSER("WTA")
     } else {
         my.viewModel.userID('none')
+        my.viewModel.currentUSER("ALL DATA")
     }
 
         changeRegion(my.viewModel.currentRegion(), my.viewModel.mapType(), toggle=false)

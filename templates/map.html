@@ -48,8 +48,9 @@
 		<button onclick="changeRegion('newyork')" type="button" class="btn btn-primary">New York</button>
 		<h2>Toggle Map Type</h2>
 		<button onclick="toggleMapType()" type="button" class="btn btn-info">Toggle Map Type</button>
-		<h2> Filter by WTA </h2>
+		<h2> Filter by: </h2>
 		<button onclick="filterByUserID('827')" type="button" class="btn btn-primary">WTA</button>
+		<h3 data-bind="text: currentUSER"> </h3>
 		<div id=graph-container>
 		</div>
 		<canvas id="myChart"></canvas>

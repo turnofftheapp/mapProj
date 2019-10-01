@@ -15,7 +15,7 @@ var ViewModel = function() {
     // So that we can call upon this for mapClick() function
     self.currentSourceLayer = ko.observable("");
 
-
+    self.currentUSER = ko.observable("ALL DATA");
 
     // Have the deafult map type be postal
     self.mapType = ko.observable("postal");
