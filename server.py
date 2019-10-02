@@ -9,20 +9,21 @@ from flask import (
 import os
 from sqlalchemy import create_engine, func, text
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, MixpanelMap
+from database_setup_cloud import Base, MixpanelMap
 import requests
 import json
 
 # Connect to postgres database
 # First get my password from an environment variable
-passWord = os.environ['my_password']
+passWord = os.environ['totagoPassWord']
 
 # Concatenate a strings to get the database URI
 
-DATABASE_URI = 'postgres+psycopg2://maxcarey:' + passWord + '@localhost:5432/totago'
+# This was the local database
+#DATABASE_URI = 'postgres+psycopg2://maxcarey:' + passWord + '@localhost:5432/totago'
 
 # This is how you connect to the remote database
-# DATABASE_URI = 'postgres://maxcarey:' + passWord + '@totago.cqfm37jhmjmk.ap-southeast-2.rds.amazonaws.com:5432/totago?sslrootcert=rds-combined-ca-bundle.pem&sslmode=require'
+DATABASE_URI = 'postgres://awsuser:' + passWord + '@totago-staging-06-28-19.cjtqfbi6mrth.us-west-2.rds.amazonaws.com:5432/totago'
 
 engine = create_engine(DATABASE_URI)
 
