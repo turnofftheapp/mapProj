@@ -9,7 +9,7 @@ from flask import (
 import os
 from sqlalchemy import create_engine, func, text
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, Itenerary
+from database_setup import Base, MixpanelMap
 import requests
 import json
 
@@ -35,7 +35,7 @@ app = Flask(__name__)
 # This is an API endpoint that will simply return all of the entries in the database
 @app.route('/api/')
 def getJSON():
-    iteneraries = session.query(Itenerary).all()
+    iteneraries = session.query(MixpanelMap).all()
     return jsonify(Itenerary=[i.serialize for i in iteneraries])
 
 
@@ -78,9 +78,9 @@ def count(region, myType, userID):
         column = "barriomapped"
 
     if userID == "none":
-        sqlQUERY = "SELECT {}, COUNT(*) FROM itenerary WHERE region = '{}' GROUP BY {} ORDER BY COUNT(*) desc;".format(column, region, column)
+        sqlQUERY = "SELECT {}, COUNT(*) FROM mixpanelmap WHERE region = '{}' GROUP BY {} ORDER BY COUNT(*) desc;".format(column, region, column)
     else:
-        sqlQUERY = "SELECT {}, COUNT(*) FROM itenerary WHERE region = '{}' AND userid = '{}' GROUP BY {} ORDER BY COUNT(*) desc;".format(column, region, userID, column)
+        sqlQUERY = "SELECT {}, COUNT(*) FROM mixpanelmap WHERE region = '{}' AND userid = '{}' GROUP BY {} ORDER BY COUNT(*) desc;".format(column, region, userID, column)
 
     result = session.execute(sqlQUERY)
     data = []
@@ -97,14 +97,14 @@ def postalCodeToDestination(mapArea, mapType, userID):
     
     if userID == "none":
         if mapType == "postal":
-            sqlQUERY = "SELECT postalcodemapped, selecteddestination_id, selecteddestination_name, COUNT(*) FROM itenerary WHERE valid = TRUE and postalcodemapped = '{}' GROUP BY postalcodemapped, selecteddestination_id, selecteddestination_name ORDER BY COUNT(*) DESC;".format(mapArea)
+            sqlQUERY = "SELECT postalcodemapped, selecteddestination_id, selecteddestination_name, COUNT(*) FROM mixpanelmap WHERE valid = TRUE and postalcodemapped = '{}' GROUP BY postalcodemapped, selecteddestination_id, selecteddestination_name ORDER BY COUNT(*) DESC;".format(mapArea)
         elif mapType == "barrio":
-            sqlQUERY = "SELECT barrioMapped, selecteddestination_id, selecteddestination_name, COUNT(*) FROM itenerary WHERE valid = TRUE and barrioMapped = '{}' GROUP BY barrioMapped, selecteddestination_id, selecteddestination_name ORDER BY COUNT(*) DESC;".format(mapArea)
+            sqlQUERY = "SELECT barrioMapped, selecteddestination_id, selecteddestination_name, COUNT(*) FROM mixpanelmap WHERE valid = TRUE and barrioMapped = '{}' GROUP BY barrioMapped, selecteddestination_id, selecteddestination_name ORDER BY COUNT(*) DESC;".format(mapArea)
     else:
         if mapType == "postal":
-            sqlQUERY = "SELECT postalcodemapped, selecteddestination_id, selecteddestination_name, COUNT(*) FROM itenerary WHERE valid = TRUE and postalcodemapped = '{}' and userid = '{}' GROUP BY postalcodemapped, selecteddestination_id, selecteddestination_name ORDER BY COUNT(*) DESC;".format(mapArea, userID)
+            sqlQUERY = "SELECT postalcodemapped, selecteddestination_id, selecteddestination_name, COUNT(*) FROM mixpanelmap WHERE valid = TRUE and postalcodemapped = '{}' and userid = '{}' GROUP BY postalcodemapped, selecteddestination_id, selecteddestination_name ORDER BY COUNT(*) DESC;".format(mapArea, userID)
         elif mapType == "barrio":
-            sqlQUERY = "SELECT barrioMapped, selecteddestination_id, selecteddestination_name, COUNT(*) FROM itenerary WHERE valid = TRUE and barrioMapped = '{}' and userid = '{}' GROUP BY barrioMapped, selecteddestination_id, selecteddestination_name ORDER BY COUNT(*) DESC;".format(mapArea, userID)
+            sqlQUERY = "SELECT barrioMapped, selecteddestination_id, selecteddestination_name, COUNT(*) FROM mixpanelmap WHERE valid = TRUE and barrioMapped = '{}' and userid = '{}' GROUP BY barrioMapped, selecteddestination_id, selecteddestination_name ORDER BY COUNT(*) DESC;".format(mapArea, userID)
 
     result = session.execute(sqlQUERY)
     # https://stackoverflow.com/questions/17972020/how-to-execute-raw-sql-in-sqlalchemy-flask-app

@@ -31,8 +31,8 @@ print(database_exists(engine.url))
 
 Base = declarative_base()
 
-class Itenerary(Base):
-    __tablename__ = 'itenerary'
+class MixpanelMap(Base):
+    __tablename__ = 'mixpanelmap'
 
     # Primary Key
     ## String

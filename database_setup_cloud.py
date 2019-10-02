@@ -12,12 +12,12 @@ from sqlalchemy_utils import database_exists, create_database
 # https://www.compose.com/articles/using-postgresql-through-sqlalchemy/
 
 # First get my password from an environment variable
-passWord = os.environ['my_password']
+passWord = os.environ['totagoPassWord']
 
 # Concatenate a strings to get the database URI
 # Looks like this command can be used to connect to the amazon instanece
 # but no tables are created so far
-DATABASE_URI = 'postgres://maxcarey:' + passWord + '@totago.cqfm37jhmjmk.ap-southeast-2.rds.amazonaws.com:5432/totago'
+DATABASE_URI = 'postgres://awsuser:' + passWord + '@totago-staging-06-28-19.cjtqfbi6mrth.us-west-2.rds.amazonaws.com:5432/totago'
 
 engine = create_engine(DATABASE_URI)
 
@@ -33,8 +33,8 @@ engine = create_engine(DATABASE_URI)
 
 Base = declarative_base()
 
-class Itenerary(Base):
-    __tablename__ = 'itenerary'
+class MixpanelMap(Base):
+    __tablename__ = 'mixpanelmap'
 
     # Primary Key
     ## String
