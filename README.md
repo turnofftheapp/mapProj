@@ -40,3 +40,13 @@ Good tutorial: https://www.idiotinside.com/2015/05/10/python-auto-generate-requi
 2. Then run the last section of the notebook (the for-loop which calls the `geocode()` funtion to add these entries to the database).
 
 3. The geocode() function will output the entire JSON response from google as well as the the dictionary that will be returned to the main script. You will see this output at the end of the notebook.
+
+## How to reload with the most recent data
+
+1. Modify the date of the `get_data.py` script (line 13) to the most recent date
+
+2. Run the script `get_data.py` (using Python 2)!
+
+3. Run the R script `wrangleColumnsFix.R`. This script takes as its input the output from step 2 and then outputs a new script in which the certain fields have been modified. I have been running this script from R Studio.
+
+4. Open Jupyter Notebook, run the script `wrangleDataAndFillDb.ipynb`. Be sure to specify sampleDf with the columns that you want to populate.
