@@ -3,6 +3,7 @@
 
 ### Ignroe api_secrets file ###
 app-env
+app-env-staging
 
 ### Ignore the database
 *.db

@@ -3,26 +3,28 @@ library(tidyverse)
 library(httr)
 library(jsonlite)
 
+# Load in CSV of itenearies, change name, set all columns to character vectors
 generated_itineraries <- read.csv("~/Documents/proj/mapProj/generated_itineraries.csv")
 datos <- generated_itineraries
 remove(generated_itineraries)
 datos[] <- lapply(datos, as.character)
 
+# Get Destinations from Totago API
 path <- "https://www.totago.co/api/v1/destinations.json?publication_stage=verified&limit=1000"
 request <- GET(url = path)
 response <- content(request, as = "text", encoding = "UTF-8")
 destinations <- fromJSON(response, flatten = TRUE) %>% 
   data.frame()
 
-
+# Create a subset of the destinations, remove trailing whitespace
 destinations <- destinations %>%
   select(destinations.id, destinations.name) %>%
   # Trim trailing white space from some of the strings
   mutate(destinations.name = str_trim(destinations.name)) %>%
   arrange(desc(destinations.name))
 
-# datos <- datos %>%
-#   select(startFromLocation, destination_id, selectedDestination_id, selectedDestination_name)
+
+# Merge duplicate columns
 
 datos <- datos %>%
   # For those cases in which the column destination_id contains at least a one charcter vector, replace the selected Destination column with this row
@@ -30,13 +32,9 @@ datos <- datos %>%
   # For those cases in which destination_id contains only numbers, replace selectedDestinationID with this value
   mutate(selectedDestination_id = ifelse(!grepl("\\D", destination_id), destination_id, selectedDestination_id))
 
-# Drop  destination_id column
-#datos <- datos %>%
-#  #filter(user_id==827) %>%
-#  select(startFromLocation, selectedDestination_id, selectedDestination_name)
-
 
 # Fix some of the column names:
+# So that they match up with the appropriate destinations
 datos <- datos %>%
   mutate(selectedDestination_name = ifelse(selectedDestination_name == "Poo Poo Point (High School Trail)", "Poo Poo Point",
                                     ifelse(selectedDestination_name == "Squak Mountain", "Squak Mountain Traverse (through hike)",
@@ -95,6 +93,10 @@ getDestinationID <- function(destinationName, destinationID) {
 
 datos$selectedDestination_name <- mapply(getDestinationName, datos$selectedDestination_id, datos$selectedDestination_name)
 datos$selectedDestination_id <- mapply(getDestinationID, datos$selectedDestination_name, datos$selectedDestination_id)
+
+# Merge the lat lng columns
+datos <- datos %>%
+  mutate(start_from_latlng = ifelse(grepl("\\D", startFromLatLng),startFromLatLng, start_from_latlng))
 
 
 write_csv(datos, path="./modified_iten.csv")

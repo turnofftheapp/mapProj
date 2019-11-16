@@ -17,8 +17,8 @@ db = dbConnect(PostgreSQL(),
                password=dbPassword,
                host="localhost",
                port=5432,
-               dbname="totago")
+               dbname="mixpanelmap")
 
-dbExistsTable(db, "itenerary")
+dbExistsTable(db, "mixpanelmap")
 
 df <- dbGetQuery(db, "SELECT * from itenerary")

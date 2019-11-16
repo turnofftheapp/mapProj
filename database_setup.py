@@ -15,7 +15,7 @@ from sqlalchemy_utils import database_exists, create_database
 passWord = os.environ['my_password']
 
 # Concatenate a strings to get the database URI
-DATABASE_URI = 'postgres+psycopg2://maxcarey:' + passWord + '@localhost:5432/totago'
+DATABASE_URI = 'postgres+psycopg2://maxcarey:' + passWord + '@localhost:5432/mixpanelmap'
 
 engine = create_engine(DATABASE_URI)
 
@@ -39,6 +39,8 @@ class MixpanelMap(Base):
     distinctkey = Column(
         String(), primary_key=True)
     
+    # Data blob
+    datablob = Column(String())
     
     #Departure date
     ## String
@@ -68,10 +70,6 @@ class MixpanelMap(Base):
 
     # Lng
     lng = Column(Float)
-
-    # Postal Code
-    postalcode = Column(
-        String())
 
     # Postal Code Mapped
     # When this script was originally run, I didn't have this column in there

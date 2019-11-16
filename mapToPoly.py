@@ -35,7 +35,6 @@ with open('shapefiles/cazillow.geojson') as f:
 with open('shapefiles/nyzillow.geojson') as f:
 	nyzillow_js = json.load(f)
 
-
 def mapToPoly(lat, lon, myType):
 
 	# print("lat: " + lat)
