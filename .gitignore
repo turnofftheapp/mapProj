@@ -4,6 +4,7 @@
 ### Ignroe api_secrets file ###
 app-env
 app-env-staging
+app-env-production
 
 ### Ignore the database
 *.db

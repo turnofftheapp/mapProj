@@ -9,9 +9,7 @@ from sqlalchemy_utils import database_exists, create_database
 
 # Connect to datbase
 dbURL = os.environ['dbURL']
-print("hello")
 engine = create_engine(dbURL)
-
 
 
 # Here it a tutorial that I loosely followed to get the logic for the next
