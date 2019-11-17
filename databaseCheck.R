@@ -10,15 +10,17 @@ library(ggplot2)
 # Get the password stored in a database
 # from an environment variable
 # https://cran.r-project.org/web/packages/httr/vignettes/secrets.html
-dbPassword <- Sys.getenv("my_password")
+dbPassword <- Sys.getenv("dbPassword")
+dbUser <- Sys.getenv("dbUser")
+dbHost <- Sys.getenv("dbHost")
 
 db = dbConnect(PostgreSQL(),
-               user="maxcarey",
+               user=dbUser,
                password=dbPassword,
-               host="localhost",
+               host=dbHost,
                port=5432,
-               dbname="mixpanelmap")
+               dbname="totago")
 
 dbExistsTable(db, "mixpanelmap")
 
-df <- dbGetQuery(db, "SELECT * from itenerary")
+df <- dbGetQuery(db, "SELECT * from mixpanelmap")

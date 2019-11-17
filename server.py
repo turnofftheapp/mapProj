@@ -21,10 +21,8 @@ import json
 # First get my password from an environment variable
 dbURL = os.environ['dbURL']
 
-# This is how you connect to the remote database
-# DATABASE_URI = 'postgres://awsuser:' + passWord + '@totago-staging-06-28-19.cjtqfbi6mrth.us-west-2.rds.amazonaws.com:5432/totago'
 
-engine = create_engine(DATABASE_URI)
+engine = create_engine(dbURL)
 
 
 Base.metadata.bind = engine

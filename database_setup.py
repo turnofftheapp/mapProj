@@ -7,17 +7,16 @@ from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database
 
 
+# Connect to datbase
+dbURL = os.environ['dbURL']
+print("hello")
+engine = create_engine(dbURL)
+
+
+
 # Here it a tutorial that I loosely followed to get the logic for the next
 # few lines:
-# https://www.compose.com/articles/using-postgresql-through-sqlalchemy/
-
-# First get my password from an environment variable
-passWord = os.environ['my_password']
-
-# Concatenate a strings to get the database URI
-DATABASE_URI = 'postgres+psycopg2://maxcarey:' + passWord + '@localhost:5432/mixpanelmap'
-
-engine = create_engine(DATABASE_URI)
+# https://www.compose.com/articles/using-postgresql-through-sqlalchemy
 
 
 # If the database specified at the end of the database url does not 
