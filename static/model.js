@@ -90,7 +90,8 @@ function getDestinationData () {
             console.log("New Desintations: ")
             console.log(mydata['destinations'])
             // Call the function to add these circles with this data 
-            addDestinationCircles(mydata['destinations'])
+            // TEMP: disabling circles
+            //addDestinationCircles(mydata['destinations'])
         }
     });
 };
